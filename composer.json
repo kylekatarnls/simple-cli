@@ -1,0 +1,38 @@
+{
+    "name": "simple-cli/simple-cli",
+    "description": "A simple command line framework",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "KyleK",
+            "email": "kylekatarnls@gmail.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^7",
+        "phpmd/phpmd": "^2",
+        "phpstan/phpstan": "^0.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "SimpleCli\\": "src/SimpleCli/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "unit": "phpunit --coverage-text",
+        "md": "phpmd src,tests text ./phpmd.xml",
+        "stan": "phpstan analyse --autoload-file=vendor/autoload.php --level max src tests",
+        "test": [
+            "@unit",
+            "@md",
+            "@stan"
+        ]
+    }
+}

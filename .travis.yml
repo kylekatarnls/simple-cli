@@ -1,0 +1,24 @@
+language: php
+
+php:
+  - '7.1'
+  - '7.2'
+  - '7.3'
+  - '7.4'
+  - '8.0'
+
+cache:
+  apt: true
+  directories:
+    - $HOME/.composer/cache
+
+sudo: false
+
+install:
+  - travis_retry composer update --prefer-dist --no-interaction --no-suggest --prefer-stable --prefer-lowest
+
+script:
+  - composer test
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
