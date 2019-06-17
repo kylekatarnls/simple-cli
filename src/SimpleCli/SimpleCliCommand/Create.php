@@ -8,6 +8,11 @@ use SimpleCli\SimpleCli;
 
 class Create implements Command
 {
+    public function getDescription(): string
+    {
+        return 'Create a program in the bin directory that call the class given as argument.';
+    }
+
     protected function error(SimpleCli $cli, $text)
     {
         $cli->writeLine($text, 'red');
