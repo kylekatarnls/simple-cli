@@ -2,7 +2,6 @@
 
 namespace SimpleCli\SimpleCliCommand;
 
-use ReflectionProperty;
 use SimpleCli\Command;
 use SimpleCli\SimpleCli;
 
@@ -13,20 +12,37 @@ class Create implements Command
         return 'Create a program in the bin directory that call the class given as argument.';
     }
 
-    protected function error(SimpleCli $cli, $text)
+    protected function error(SimpleCli $cli, $text): bool
     {
         $cli->writeLine($text, 'red');
 
         return false;
     }
 
-    protected function extractName($className)
+    protected function extractName($className): string
     {
         $parts = explode('\\', $className);
 
         return trim(preg_replace_callback('/[A-Z]/', function (array $match) {
             return '-'.strtolower($match[0]);
         }, end($parts)), '-');
+    }
+
+    protected function copyBinTemplate(string $name, string $className): void
+    {
+        $binTemplate = __DIR__.'/../../bin-template';
+
+        foreach (scandir($binTemplate) as $file) {
+            if (substr($file, 0, 1) !== '.') {
+                file_put_contents(
+                    'bin/'.str_replace('program', $name, $file),
+                    strtr(file_get_contents("$binTemplate/$file"), [
+                        '{name}' => $name,
+                        '{class}' => $className,
+                    ])
+                );
+            }
+        }
     }
 
     public function run(SimpleCli $cli, ...$parameters): bool
@@ -43,33 +59,11 @@ class Create implements Command
 
                 continue;
             }
-            try {
-                $cli = new $className();
-                $name = new ReflectionProperty($cli, 'name');
-                $name->setAccessible(true);
-                $name = $name->getValue($cli);
-            } catch (\ReflectionException $e) {
-                $name = null;
-            }
 
-            if (empty($name)) {
-                $name = $this->extractName($className);
-            }
-
-            $className = '\\'.ltrim($className, '\\');
-            $binTemplate = __DIR__.'/../../bin-template';
-
-            foreach (scandir($binTemplate) as $file) {
-                if (substr($file, 0, 1) !== '.') {
-                    file_put_contents(
-                        'bin/'.str_replace('program', $name, $file),
-                        strtr(file_get_contents("$binTemplate/$file"), [
-                            '{name}' => $name,
-                            '{class}' => $className,
-                        ])
-                    );
-                }
-            }
+            $this->copyBinTemplate(
+                $cli->getName() ?: $this->extractName($className),
+                '\\'.ltrim($className, '\\')
+            );
 
             $count++;
         }
