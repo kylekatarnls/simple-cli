@@ -8,6 +8,11 @@ use SimpleCli\Command\Version;
 abstract class SimpleCli
 {
     /**
+     * @var string|null
+     */
+    protected $name = null;
+
+    /**
      * @var string
      */
     protected $file;
@@ -67,6 +72,14 @@ abstract class SimpleCli
      * @var \Closure|callable|array|null
      */
     protected $currentCompletion = null;
+
+    /**
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
 
     /**
      * @return string
