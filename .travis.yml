@@ -15,8 +15,17 @@ sudo: false
 install:
   - travis_retry composer update --prefer-dist --no-interaction --no-suggest --prefer-stable
 
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
 script:
   - composer test
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
+env:
+  global:
+    - CC_TEST_REPORTER_ID=b4c0fd2741b7cd363d1d0dac87a95b3aff1d0faaa54ec76886e1a358f6e5b86e
