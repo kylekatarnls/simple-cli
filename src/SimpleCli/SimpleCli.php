@@ -7,6 +7,19 @@ use SimpleCli\Command\Version;
 
 abstract class SimpleCli
 {
+    /**
+     * @var string
+     */
+    protected $file;
+
+    /**
+     * @var string
+     */
+    protected $command;
+
+    /**
+     * @var array
+     */
     protected $colors = [
         'black'        => '0;30',
         'dark_gray'    => '1;30',
@@ -26,6 +39,9 @@ abstract class SimpleCli
         'white'        => '1;37',
     ];
 
+    /**
+     * @var array
+     */
     protected $backgrounds = [
         'black'      => '40',
         'red'        => '41',
@@ -37,11 +53,36 @@ abstract class SimpleCli
         'light_gray' => '47',
     ];
 
+    /**
+     * @var string
+     */
     protected $lastText = '';
 
+    /**
+     * @var string
+     */
     protected $escapeCharacter = "\033";
 
+    /**
+     * @var \Closure|callable|array|null
+     */
     protected $currentCompletion = null;
+
+    /**
+     * @return string
+     */
+    public function getFile(): string
+    {
+        return $this->file;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCommand(): string
+    {
+        return $this->command;
+    }
 
     public function getCommands(): array
     {
@@ -194,12 +235,20 @@ abstract class SimpleCli
         $this->write("\r$text", $color);
     }
 
-    public function __invoke(string $command = 'list', ...$parameters): bool
+    public function getAvailableCommands()
     {
-        $commands = array_filter(array_merge([
+        return array_filter(array_merge([
             'list'    => Usage::class,
             'version' => Version::class,
         ], $this->getCommands()), 'boolval');
+    }
+
+    public function __invoke(string $file, string $command = 'list', ...$parameters): bool
+    {
+        $this->file = $file;
+        $this->command = $command;
+
+        $commands = $this->getAvailableCommands();
 
         if (!isset($commands[$command])) {
             $this->write("Command $command not found", 'red');
