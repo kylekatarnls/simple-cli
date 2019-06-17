@@ -9,8 +9,8 @@ class Version implements Command
 {
     public function run(SimpleCli $cli, ...$parameters): bool
     {
-        $cli->write('ok');
+        $cli->writeLine($cli->getVersion());
 
-        return $parameters[0] !== 'error';
+        return true;
     }
 }
