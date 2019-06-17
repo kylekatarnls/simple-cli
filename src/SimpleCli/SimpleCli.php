@@ -123,7 +123,7 @@ abstract class SimpleCli
     public function getInstalledPackages()
     {
         $installedJson = __DIR__.'/../../../../composer/installed.json';
-        $installedData = file_exists($installedJson) ? @json_decode(file_get_contents($installedJson)) : null;
+        $installedData = file_exists($installedJson) ? @json_decode(file_get_contents($installedJson) ?: '') : null;
 
         return $installedData ?: [];
     }

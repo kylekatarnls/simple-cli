@@ -25,18 +25,18 @@ class Create implements Command
 
         return trim(preg_replace_callback('/[A-Z]/', function (array $match) {
             return '-'.strtolower($match[0]);
-        }, end($parts)), '-');
+        }, end($parts) ?: '') ?: '', '-');
     }
 
     protected function copyBinTemplate(string $name, string $className): void
     {
         $binTemplate = __DIR__.'/../../bin-template';
 
-        foreach (scandir($binTemplate) as $file) {
+        foreach (scandir($binTemplate) ?: [] as $file) {
             if (substr($file, 0, 1) !== '.') {
                 file_put_contents(
                     'bin/'.str_replace('program', $name, $file),
-                    strtr(file_get_contents("$binTemplate/$file"), [
+                    strtr(file_get_contents("$binTemplate/$file") ?: '', [
                         '{name}' => $name,
                         '{class}' => $className,
                     ])
@@ -45,6 +45,12 @@ class Create implements Command
         }
     }
 
+    /**
+     * @param SimpleCli $cli
+     * @param string[]  ...$parameters
+     *
+     * @return bool
+     */
     public function run(SimpleCli $cli, ...$parameters): bool
     {
         if (!is_dir('bin') && !@mkdir('bin')) {
