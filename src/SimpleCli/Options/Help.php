@@ -58,7 +58,7 @@ trait Help
 
         $argumentsNames = array_keys($arguments);
         $optionsNames = array_keys($options);
-        $length = max(...array_map('strlen', $argumentsNames), ...array_map('strlen', $optionsNames)) + 2;
+        $length = (int) max(...array_map('strlen', $argumentsNames), ...array_map('strlen', $optionsNames)) + 2;
         $defaultInstance = new static();
 
         $cli->writeLine('Usage:', 'brown');
@@ -69,16 +69,17 @@ trait Help
 
         $cli->writeLine('Arguments:', 'brown');
 
-        foreach ($arguments as $name => $definition) {
+        foreach ($arguments as $definition) {
+            $property = $definition['property'];
             $cli->write('  ');
-            $cli->write($name, 'green');
-            $cli->write(str_repeat(' ', $length - strlen($name)));
+            $cli->write($property, 'green');
+            $cli->write(str_repeat(' ', $length - strlen($property)));
             $cli->writeLine(str_replace(
                 "\n",
                 "\n".str_repeat(' ', $length + 2),
                 $definition['description']."\n".
                 $cli->colorize(str_pad($definition['values'] ?: $definition['type'], 16, ' ', STR_PAD_RIGHT), 'cyan').
-                $cli->colorize('default: '.var_export($defaultInstance->$name, true), 'brown')
+                $cli->colorize('default: '.var_export($defaultInstance->$property, true), 'brown')
             ));
         }
 

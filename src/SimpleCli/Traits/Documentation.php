@@ -11,7 +11,6 @@ use SimpleCli\Command;
 
 trait Documentation
 {
-
     /**
      * Get PHP comment doc block content of a given class.
      *
@@ -59,6 +58,15 @@ trait Documentation
         $source = trim($source, "\n");
 
         return $result;
+    }
+
+    private function cleanPhpDocComment(string $doc): string
+    {
+        $doc = (string) preg_replace('/^\s*\/\*+/', '', $doc);
+        $doc = (string) preg_replace('/\s*\*+\/$/', '', $doc);
+        $doc = (string) preg_replace('/^\s*\*\s?/m', '', $doc);
+
+        return rtrim($doc);
     }
 
     private function extractExpectations(Command $command): void
