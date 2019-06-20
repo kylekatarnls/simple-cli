@@ -4,20 +4,15 @@ namespace Tests\SimpleCli\DemoApp;
 
 use SimpleCli\Command;
 use SimpleCli\SimpleCli;
+use SimpleCli\Options\Help;
+use SimpleCli\Options\Verbose;
 
 /**
  * This is a demo.
  */
 class DemoCommand implements Command
 {
-    /**
-     * @option
-     *
-     * If this option is set, extra debug information will be displayed.
-     *
-     * @var bool
-     */
-    public $verbose = false;
+    use Verbose, Help;
 
     /**
      * @option

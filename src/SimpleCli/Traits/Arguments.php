@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SimpleCli\Traits;
@@ -25,6 +26,16 @@ trait Arguments
     public function getArguments(): array
     {
         return $this->arguments;
+    }
+
+    /**
+     * Get definitions of expected arguments.
+     *
+     * @return array[]
+     */
+    public function getExpectedArguments(): array
+    {
+        return $this->expectedArguments;
     }
 
     private function parseArgument(string $argument): void

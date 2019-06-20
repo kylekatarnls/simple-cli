@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SimpleCli\Traits;
@@ -25,6 +26,16 @@ trait Options
     public function getOptions(): array
     {
         return $this->options;
+    }
+
+    /**
+     * Get definition of expected options.
+     *
+     * @return array[]
+     */
+    public function getExpectedOptions(): array
+    {
+        return $this->expectedOptions;
     }
 
     /**

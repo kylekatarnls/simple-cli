@@ -18,4 +18,4 @@ if (!file_exists($dir.'/autoload.php')) {
 
 include $dir.'/autoload.php';
 
-exit((new {class}())(...array_slice($argv, 1)) ? 0 : 1);
+exit((new {class}())(...$argv) ? 0 : 1);
