@@ -1,15 +1,42 @@
 <?php
 
-namespace SimpleCli\Command;
+namespace Tests\SimpleCli\DemoApp;
 
 use SimpleCli\Command;
 use SimpleCli\SimpleCli;
 
 /**
- * Get the list of available commands in this program.
+ * This is a demo.
  */
-class Usage implements Command
+class DemoCommand implements Command
 {
+    /**
+     * @option('--verbose', '-v')
+     *
+     * If this option is set, extra debug information will be displayed.
+     *
+     * @var bool
+     */
+    public $verbose = false;
+
+    /**
+     * @option('--prefix', '-p')
+     *
+     * Append a prefix to $sentence.
+     *
+     * @var string
+     */
+    public $prefix = '';
+
+    /**
+     * @argument
+     *
+     * Sentence to display.
+     *
+     * @var string
+     */
+    public $sentence = '';
+
     public function run(SimpleCli $cli, ...$parameters): bool
     {
         $commands = $cli->getAvailableCommands();
@@ -25,7 +52,7 @@ class Usage implements Command
             $cli->write('  ');
             $cli->write($command, 'green');
             $cli->write(str_repeat(' ', $length - mb_strlen($command)));
-            $cli->writeLine($cli->extractClassNameDescription($className));
+            $cli->writeLine((new $className)->getDescription());
         }
 
         return true;

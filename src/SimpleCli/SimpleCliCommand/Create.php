@@ -5,13 +5,11 @@ namespace SimpleCli\SimpleCliCommand;
 use SimpleCli\Command;
 use SimpleCli\SimpleCli;
 
+/**
+ * Create a program in the bin directory that call the class given as argument.
+ */
 class Create implements Command
 {
-    public function getDescription(): string
-    {
-        return 'Create a program in the bin directory that call the class given as argument.';
-    }
-
     protected function error(SimpleCli $cli, $text): bool
     {
         $cli->writeLine($text, 'red');
