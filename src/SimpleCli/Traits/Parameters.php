@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SimpleCli\Traits;
@@ -26,18 +27,26 @@ trait Parameters
      * Cast argument/option according to type in the definition.
      *
      * @param string $parameter
-     * @param array  $optionDefinition
+     * @param array  $parameterDefinition
      *
-     * @return string
+     * @return string|int|float|bool|null
      */
-    public function getParameterValue(string $parameter, array $optionDefinition)
+    public function getParameterValue(string $parameter, array $parameterDefinition)
     {
-        if (!settype($parameter, $optionDefinition['type'] ?? 'string')) {
+        $value = $parameter;
+
+        if (!settype($value, $parameterDefinition['type'] ?? 'string')) {
             throw new InvalidArgumentException(
-                "Cannot cast $parameter to ".$optionDefinition['type']
+                "Cannot cast $parameter to ".$parameterDefinition['type']
             );
         }
 
-        return $parameter;
+        if ($parameter !== '' && $parameterDefinition['values'] && !in_array($parameter, array_map('trim', explode(',', $parameterDefinition['values'])))) {
+            throw new InvalidArgumentException(
+                "The parameter ".$parameterDefinition['property']." must be one of the following values: ".$parameterDefinition['values'].", '$parameter' given."
+            );
+        }
+
+        return $value;
     }
 }
