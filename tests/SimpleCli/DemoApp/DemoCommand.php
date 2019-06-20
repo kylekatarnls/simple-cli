@@ -37,23 +37,15 @@ class DemoCommand implements Command
      */
     public $sentence = '';
 
-    public function run(SimpleCli $cli, ...$parameters): bool
+    public function run(SimpleCli $cli): bool
     {
-        $commands = $cli->getAvailableCommands();
-        $length = max(...array_map('mb_strlen', array_keys($commands))) + 2;
+        $prefix = $this->prefix ?: '';
 
-        $cli->writeLine('Usage:', 'brown');
-        $cli->writeLine('  '.$cli->getFile().' [command] [options] [arguments]');
-        $cli->writeLine();
-
-        $cli->writeLine('Available commands:', 'brown');
-
-        foreach ($commands as $command => $className) {
-            $cli->write('  ');
-            $cli->write($command, 'green');
-            $cli->write(str_repeat(' ', $length - mb_strlen($command)));
-            $cli->writeLine((new $className)->getDescription());
+        if ($this->verbose) {
+            $cli->writeLine('prefix: '.$prefix);
         }
+
+        $cli->writeLine($prefix.$this->sentence);
 
         return true;
     }

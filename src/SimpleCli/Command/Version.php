@@ -10,7 +10,7 @@ use SimpleCli\SimpleCli;
  */
 class Version implements Command
 {
-    public function run(SimpleCli $cli, ...$parameters): bool
+    public function run(SimpleCli $cli): bool
     {
         $cli->writeLine($cli->getVersion());
 

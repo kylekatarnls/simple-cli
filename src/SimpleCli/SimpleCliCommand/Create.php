@@ -35,7 +35,7 @@ class Create implements Command
                 file_put_contents(
                     'bin/'.str_replace('program', $name, $file),
                     strtr(file_get_contents("$binTemplate/$file") ?: '', [
-                        '{name}' => $name,
+                        '{name}'  => $name,
                         '{class}' => $className,
                     ])
                 );
