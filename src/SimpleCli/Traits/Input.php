@@ -1,0 +1,53 @@
+<?php
+
+namespace SimpleCli\Traits;
+
+trait Input
+{
+    /**
+     * @var \Closure|callable|array|null
+     */
+    protected $currentCompletion = null;
+
+    protected function recordAutocomplete()
+    {
+        if (extension_loaded('readline') && function_exists('readline_completion_function')) {
+            readline_completion_function([$this, 'autocomplete']);
+        }
+    }
+
+    /**
+     * Get possible completions for a given start.
+     *
+     * @param string $start
+     *
+     * @return string[]
+     */
+    public function autocomplete(string $start = ''): array
+    {
+        if (is_array($this->currentCompletion)) {
+            $length = strlen($start);
+
+            return array_filter($this->currentCompletion, function ($suggestion) use ($length, $start) {
+                return substr($suggestion, 0, $length) === $start;
+            });
+        }
+
+        return $this->currentCompletion ? ($this->currentCompletion)($start) : [];
+    }
+
+    /**
+     * Ask the user $prompt and return the CLI input.
+     *
+     * @param string              $prompt
+     * @param array|callable|null $completion
+     *
+     * @return string
+     */
+    public function read($prompt, $completion = null): string
+    {
+        $this->currentCompletion = $completion;
+
+        return readline($prompt);
+    }
+}
