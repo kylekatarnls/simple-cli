@@ -8,115 +8,23 @@ use ReflectionObject;
 use SimpleCli\Command\Usage;
 use SimpleCli\Command\Version;
 use SimpleCli\Composer\InstalledPackage;
-use SimpleCli\Traits\Input;
-use SimpleCli\Traits\Output;
+use SimpleCli\Traits;
 
 abstract class SimpleCli
 {
-    use Input, Output;
-
-    /**
-     * @var string|null
-     */
-    protected $name = null;
-
-    /**
-     * @var string
-     */
-    protected $file;
-
-    /**
-     * @var string
-     */
-    protected $command;
-
-    /**
-     * @var string[]
-     */
-    protected $parameters;
-
-    /**
-     * @var array
-     */
-    protected $expectedArguments;
-
-    /**
-     * @var array
-     */
-    protected $expectedOptions;
-
-    /**
-     * @var array
-     */
-    protected $arguments;
-
-    /**
-     * @var array
-     */
-    protected $options;
+    use Traits\Input,
+        Traits\Output,
+        Traits\Name,
+        Traits\File,
+        Traits\Command,
+        Traits\Parameters,
+        Traits\Arguments,
+        Traits\Options;
 
     public function __construct(array $colors = null, array $backgrounds = null)
     {
         $this->setColors($colors, $backgrounds);
         $this->recordAutocomplete();
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    /**
-     * Get the current program file called from the CLI.
-     *
-     * @return string
-     */
-    public function getFile(): string
-    {
-        return $this->file;
-    }
-
-    /**
-     * Get the selected command.
-     *
-     * @return string
-     */
-    public function getCommand(): string
-    {
-        return $this->command;
-    }
-
-    /**
-     * Get raw parameters (options and arguments) not filtered.
-     *
-     * @return string[]
-     */
-    public function getParameters(): array
-    {
-        return $this->parameters;
-    }
-
-    /**
-     * Get list of current filtered options.
-     *
-     * @return array
-     */
-    public function getOptions(): array
-    {
-        return $this->options;
-    }
-
-    /**
-     * Get list of current filtered arguments.
-     *
-     * @return array
-     */
-    public function getArguments(): array
-    {
-        return $this->arguments;
     }
 
     /**
@@ -281,30 +189,11 @@ abstract class SimpleCli
         return $result;
     }
 
-    /**
-     * Get option definition and expected types/values of a given one identified by name or alias.
-     *
-     * @param string $name
-     *
-     * @return array
-     */
-    public function getOptionDefinition(string $name): array
-    {
-        foreach ($this->expectedOptions as $definition) {
-            if (in_array($name, $definition['names'])) {
-                return $definition;
-            }
-        }
-
-        $name = strlen($name) === 1 ? "-$name" : "--$name";
-
-        throw new InvalidArgumentException(
-            "Unknown $name option"
-        );
-    }
-
     private function extractExpectations(Command $command): void
     {
+        $this->expectedArguments = [];
+        $this->expectedOptions = [];
+
         $reflexion = new ReflectionObject($command);
 
         foreach ($reflexion->getProperties() as $property) {
@@ -346,106 +235,6 @@ abstract class SimpleCli
                 ];
             }
         }
-    }
-
-    private function parseArgument(string $argument): void
-    {
-        $definition = $this->expectedArguments[count($this->arguments)] ?? null;
-
-        if (!$definition) {
-            $count = count($this->expectedArguments);
-
-            throw new InvalidArgumentException(
-                'Expect only '.$count.' argument'.($count === 1 ? '' : 's')
-            );
-        }
-
-        $this->arguments[$definition['property']] = $this->getParameterValue($argument, $definition);
-    }
-
-    private function enableBooleanOption(array $definition, string $name, string $value = null)
-    {
-        if ($definition['type'] !== 'bool') {
-            throw new InvalidArgumentException(
-                "$name option is not a boolean, so you can't use it in a aliases group"
-            );
-        }
-
-        if ($value) {
-            throw new InvalidArgumentException(
-                "$name option is boolean and should not have value"
-            );
-        }
-
-        $this->options[$definition['property']] = true;
-    }
-
-    private function setOption(string $name, string $value = null, array &$optionDefinition = null)
-    {
-        $definition = $this->getOptionDefinition($name);
-        $name = strlen($name) === 1 ? "-$name" : "--$name";
-
-        if ($definition['type'] === 'bool') {
-            $this->enableBooleanOption($definition, $name, $value);
-
-            return;
-        }
-
-        if ($value) {
-            $this->options[$definition['property']] = $this->getParameterValue($value, $definition);
-
-            return;
-        }
-
-        $optionDefinition = $definition;
-    }
-
-    private function parseOption(string $option, array &$optionDefinition = null): void
-    {
-        $parts = explode('=', $option, 2);
-        $name = $parts[0];
-        $value = $parts[1] ?? null;
-
-        if (substr($name, 1, 1) !== '-') {
-            if (strlen($name) > 2) {
-                if ($value) {
-                    throw new InvalidArgumentException(
-                        "Unable to parse $option, maybe you would mean -$option"
-                    );
-                }
-
-                foreach (str_split(substr($name, 1)) as $alias) {
-                    $this->enableBooleanOption($this->getOptionDefinition($alias), "-$alias");
-                }
-
-                return;
-            }
-
-            $this->setOption(substr($name, 1), $value, $optionDefinition);
-
-            return;
-        }
-
-        $this->setOption(substr($name, 2), $value, $optionDefinition);
-    }
-
-    /**
-     * Cast argument/option according to type in the definition.
-     *
-     * @param string $parameter
-     * @param array  $optionDefinition
-     *
-     * @return string
-     */
-    public function getParameterValue(string $parameter, array $optionDefinition)
-    {
-        if (!settype($parameter, $optionDefinition['type'] ?? 'string')) {
-            throw new InvalidArgumentException(
-                "Cannot cast $parameter to ".$optionDefinition['type']
-            );
-        }
-
-        return $parameter;
     }
 
     private function parseParameters()
