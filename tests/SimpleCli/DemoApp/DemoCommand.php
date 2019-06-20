@@ -40,7 +40,7 @@ class DemoCommand implements Command
 
     public function run(SimpleCli $cli): bool
     {
-        $prefix = $this->prefix ?: '';
+        $prefix = (string) $this->prefix;
 
         if ($this->verbose) {
             $cli->writeLine('prefix: '.$prefix);
