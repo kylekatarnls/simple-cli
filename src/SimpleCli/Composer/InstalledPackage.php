@@ -1,0 +1,23 @@
+<?php
+
+namespace SimpleCli\Composer;
+
+class InstalledPackage
+{
+    /**
+     * @var string|null
+     */
+    public $name = null;
+
+    /**
+     * @var string|null
+     */
+    public $version = null;
+
+    public function __construct(array $data)
+    {
+        foreach ($data as $key => $value) {
+            $this->$key = $value;
+        }
+    }
+}
