@@ -13,7 +13,7 @@ class Usage implements Command
     public function run(SimpleCli $cli): bool
     {
         $commands = $cli->getAvailableCommands();
-        $length = max(...array_map('mb_strlen', array_keys($commands))) + 2;
+        $length = max(...array_map('strlen', array_keys($commands))) + 2;
 
         $cli->writeLine('Usage:', 'brown');
         $cli->writeLine('  '.$cli->getFile().' [command] [options] [arguments]');
@@ -24,8 +24,12 @@ class Usage implements Command
         foreach ($commands as $command => $className) {
             $cli->write('  ');
             $cli->write($command, 'green');
-            $cli->write(str_repeat(' ', $length - mb_strlen($command)));
-            $cli->writeLine($cli->extractClassNameDescription($className));
+            $cli->write(str_repeat(' ', $length - strlen($command)));
+            $cli->writeLine(str_replace(
+                "\n",
+                "\n".str_repeat(' ', $length + 2),
+                $cli->extractClassNameDescription($className)
+            ));
         }
 
         return true;

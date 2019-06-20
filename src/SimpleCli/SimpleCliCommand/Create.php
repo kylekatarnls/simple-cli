@@ -7,6 +7,8 @@ use SimpleCli\SimpleCli;
 
 /**
  * Create a program in the bin directory that call the class given as argument.
+ * Argument should be a class name (with namespace) that extends SimpleCli\SimpleCli.
+ * Note that you must escape it, e.g. MyNamespace\\MyClass.
  */
 class Create implements Command
 {

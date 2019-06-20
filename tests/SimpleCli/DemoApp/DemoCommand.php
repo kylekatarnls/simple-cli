@@ -11,7 +11,7 @@ use SimpleCli\SimpleCli;
 class DemoCommand implements Command
 {
     /**
-     * @option('--verbose', '-v')
+     * @option
      *
      * If this option is set, extra debug information will be displayed.
      *
@@ -20,7 +20,8 @@ class DemoCommand implements Command
     public $verbose = false;
 
     /**
-     * @option('--prefix', '-p')
+     * @option
+     * @values hello, hi, bye
      *
      * Append a prefix to $sentence.
      *
