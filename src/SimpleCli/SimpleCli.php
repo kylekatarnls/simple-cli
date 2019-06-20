@@ -74,80 +74,6 @@ abstract class SimpleCli
      */
     protected $currentCompletion = null;
 
-    /**
-     * @return string|null
-     */
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFile(): string
-    {
-        return $this->file;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCommand(): string
-    {
-        return $this->command;
-    }
-
-    public function getCommands(): array
-    {
-        return [];
-    }
-
-    public function getPackageName(): string
-    {
-        return '';
-    }
-
-    public function getVersionDetails(): string
-    {
-        return '';
-    }
-
-    public function getVersion()
-    {
-        $packageName = $this->getPackageName();
-        $start = $packageName === '' ? '' : $this->colorize($packageName, 'green').' version ';
-
-        return $start.$this->colorize($this->getInstalledPackageVersion($packageName), 'brown').$this->getVersionDetails();
-    }
-
-    public function getInstalledPackages()
-    {
-        $installedJson = __DIR__.'/../../../../composer/installed.json';
-        $installedData = file_exists($installedJson) ? @json_decode(file_get_contents($installedJson) ?: '') : null;
-
-        return $installedData ?: [];
-    }
-
-    public function getInstalledPackage($name)
-    {
-        foreach ($this->getInstalledPackages() as $package) {
-            if ($package->name === $name) {
-                return $package;
-            }
-        }
-
-        return null;
-    }
-
-    public function getInstalledPackageVersion($name)
-    {
-        $package = $this->getInstalledPackage($name);
-        $version = $package ? $package->version : null;
-
-        return $version ?: 'unknown';
-    }
-
     public function __construct(array $colors = null, array $backgrounds = null)
     {
         if ($colors) {
@@ -161,6 +87,123 @@ abstract class SimpleCli
         if (extension_loaded('readline') && function_exists('readline_completion_function')) {
             readline_completion_function([$this, 'autocomplete']);
         }
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Get the current program file called from the CLI.
+     *
+     * @return string
+     */
+    public function getFile(): string
+    {
+        return $this->file;
+    }
+
+    /**
+     * Get the selected command.
+     *
+     * @return string
+     */
+    public function getCommand(): string
+    {
+        return $this->command;
+    }
+
+    /**
+     * Get the list of commands expect those provided by SimpleCli.
+     *
+     * @return array
+     */
+    public function getCommands(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get the composer package name that handle the CLI program.
+     *
+     * @return string
+     */
+    public function getPackageName(): string
+    {
+        return '';
+    }
+
+    /**
+     * Get details to be displayed with the version command.
+     *
+     * @return string
+     */
+    public function getVersionDetails(): string
+    {
+        return '';
+    }
+
+    /**
+     * Get the composer version of the package handling the CLI program.
+     *
+     * @return string
+     */
+    public function getVersion()
+    {
+        $packageName = $this->getPackageName();
+        $start = $packageName === '' ? '' : $this->colorize($packageName, 'green').' version ';
+
+        return $start.$this->colorize($this->getInstalledPackageVersion($packageName), 'brown').$this->getVersionDetails();
+    }
+
+    /**
+     * Get the list of packages installed with composer.
+     *
+     * @return array
+     */
+    public function getInstalledPackages()
+    {
+        $installedJson = __DIR__.'/../../../../composer/installed.json';
+        $installedData = file_exists($installedJson) ? @json_decode(file_get_contents($installedJson) ?: '') : null;
+
+        return $installedData ?: [];
+    }
+
+    /**
+     * Get data for a given installed package.
+     *
+     * @param string $name
+     *
+     * @return object|null
+     */
+    public function getInstalledPackage(string $name)
+    {
+        foreach ($this->getInstalledPackages() as $package) {
+            if ($package->name === $name) {
+                return $package;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the version of a given installed package.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public function getInstalledPackageVersion(string $name): string
+    {
+        $package = $this->getInstalledPackage($name);
+        $version = $package ? $package->version : null;
+
+        return $version ?: 'unknown';
     }
 
     /**

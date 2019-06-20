@@ -10,7 +10,7 @@ use SimpleCli\SimpleCli;
  */
 class Usage implements Command
 {
-    public function run(SimpleCli $cli, ...$parameters): bool
+    public function run(SimpleCli $cli): bool
     {
         $commands = $cli->getAvailableCommands();
         $length = max(...array_map('mb_strlen', array_keys($commands))) + 2;

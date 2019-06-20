@@ -4,5 +4,5 @@ namespace SimpleCli;
 
 interface Command
 {
-    public function run(SimpleCli $cli, ...$parameters): bool;
+    public function run(SimpleCli $cli): bool;
 }
