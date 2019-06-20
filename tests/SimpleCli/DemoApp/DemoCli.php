@@ -10,6 +10,8 @@ class DemoCli extends SimpleCli
 
     public function getCommands(): array
     {
-        return [];
+        return [
+            'foobar' => DemoCommand::class,
+        ];
     }
 }

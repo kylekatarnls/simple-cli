@@ -2,6 +2,7 @@
 
 namespace SimpleCli;
 
+use ReflectionClass;
 use SimpleCli\Command\Usage;
 use SimpleCli\Command\Version;
 
@@ -254,6 +255,27 @@ abstract class SimpleCli
             'list'    => Usage::class,
             'version' => Version::class,
         ], $this->getCommands()), 'boolval');
+    }
+
+    public function extractClassNameDescription(string $className): string
+    {
+        try {
+            $reflexion = new ReflectionClass($className);
+
+            $doc = $reflexion->getDocComment();
+        } catch (\ReflectionException $e) {
+            $doc = null;
+        }
+
+        if (empty($doc)) {
+            return $className;
+        }
+
+        $doc = preg_replace('/^\s*\/\*+/', '', $doc);
+        $doc = preg_replace('/\s*\*+\/$/', '', $doc);
+        $doc = preg_replace('/^\s*\*\s?/m', '', $doc);
+
+        return trim($doc);
     }
 
     public function __invoke(string $file, string $command = 'list', ...$parameters): bool
