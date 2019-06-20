@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SimpleCli;
 
@@ -8,18 +9,25 @@ use ReflectionObject;
 use SimpleCli\Command\Usage;
 use SimpleCli\Command\Version;
 use SimpleCli\Composer\InstalledPackage;
-use SimpleCli\Traits;
+use SimpleCli\Traits\Arguments;
+use SimpleCli\Traits\Command as CommandTrait;
+use SimpleCli\Traits\File;
+use SimpleCli\Traits\Input;
+use SimpleCli\Traits\Name;
+use SimpleCli\Traits\Options;
+use SimpleCli\Traits\Output;
+use SimpleCli\Traits\Parameters;
 
 abstract class SimpleCli
 {
-    use Traits\Input,
-        Traits\Output,
-        Traits\Name,
-        Traits\File,
-        Traits\Command,
-        Traits\Parameters,
-        Traits\Arguments,
-        Traits\Options;
+    use Input,
+        Output,
+        Name,
+        File,
+        CommandTrait,
+        Parameters,
+        Arguments,
+        Options;
 
     public function __construct(array $colors = null, array $backgrounds = null)
     {
@@ -79,7 +87,7 @@ abstract class SimpleCli
     {
         $installedJson = __DIR__.'/../../../../composer/installed.json';
         $installedData = file_exists($installedJson)
-            ? @json_decode(file_get_contents($installedJson) ?: '', true)
+            ? @json_decode((string) file_get_contents($installedJson), true)
             : null;
 
         return $installedData ?: [];
@@ -133,9 +141,9 @@ abstract class SimpleCli
 
     private function cleanPhpDocComment(string $doc): string
     {
-        $doc = preg_replace('/^\s*\/\*+/', '', $doc) ?: '';
-        $doc = preg_replace('/\s*\*+\/$/', '', $doc) ?: '';
-        $doc = preg_replace('/^\s*\*\s?/m', '', $doc) ?: '';
+        $doc = (string) preg_replace('/^\s*\/\*+/', '', $doc);
+        $doc = (string) preg_replace('/\s*\*+\/$/', '', $doc);
+        $doc = (string) preg_replace('/^\s*\*\s?/m', '', $doc);
 
         return rtrim($doc);
     }
@@ -161,7 +169,7 @@ abstract class SimpleCli
             return $className;
         }
 
-        return $this->cleanPhpDocComment($doc ?: '');
+        return $this->cleanPhpDocComment((string) $doc);
     }
 
     /**
@@ -178,11 +186,11 @@ abstract class SimpleCli
         $length = strlen($code) + 1;
         $result = null;
 
-        $source = strval(preg_replace_callback('/^'.preg_quote($code).'( ([^\n]*(\n+'.str_repeat(' ', $length).'[^\n]*)*))?/m', function ($match) use (&$result, $length) {
+        $source = (string) preg_replace_callback('/^'.preg_quote($code).'( ([^\n]*(\n+'.str_repeat(' ', $length).'[^\n]*)*))?/m', function ($match) use (&$result, $length) {
             $result = (string) str_replace("\n".str_repeat(' ', $length), "\n", $match[2] ?? '');
 
             return '';
-        }, $source) ?: '');
+        }, $source);
 
         $source = trim($source, "\n");
 
@@ -198,7 +206,7 @@ abstract class SimpleCli
 
         foreach ($reflexion->getProperties() as $property) {
             $name = $property->getName();
-            $doc = $this->cleanPhpDocComment($property->getDocComment() ?: '');
+            $doc = $this->cleanPhpDocComment((string) $property->getDocComment());
             $argument = $this->extractAnnotation($doc, 'argument') !== null;
             $option = $this->extractAnnotation($doc, 'option');
             $values = $this->extractAnnotation($doc, 'values');

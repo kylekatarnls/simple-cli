@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SimpleCli\SimpleCliCommand;
 
@@ -23,9 +24,9 @@ class Create implements Command
     {
         $parts = explode('\\', $className);
 
-        return trim(preg_replace_callback('/[A-Z]/', function (array $match) {
+        return trim((string) preg_replace_callback('/[A-Z]/', function (array $match) {
             return '-'.strtolower($match[0]);
-        }, end($parts) ?: '') ?: '', '-');
+        }, (string) end($parts)), '-');
     }
 
     protected function copyBinTemplate(string $name, string $className): void
@@ -36,7 +37,7 @@ class Create implements Command
             if (substr($file, 0, 1) !== '.') {
                 file_put_contents(
                     'bin/'.str_replace('program', $name, $file),
-                    strtr(file_get_contents("$binTemplate/$file") ?: '', [
+                    strtr((string) file_get_contents("$binTemplate/$file"), [
                         '{name}'  => $name,
                         '{class}' => $className,
                     ])
