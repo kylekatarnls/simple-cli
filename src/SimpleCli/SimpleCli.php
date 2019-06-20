@@ -61,15 +61,6 @@ abstract class SimpleCli
         return $start.$this->colorize($this->getInstalledPackageVersion($packageName), 'brown').$this->getVersionDetails();
     }
 
-    private function cleanPhpDocComment(string $doc): string
-    {
-        $doc = (string) preg_replace('/^\s*\/\*+/', '', $doc);
-        $doc = (string) preg_replace('/\s*\*+\/$/', '', $doc);
-        $doc = (string) preg_replace('/^\s*\*\s?/m', '', $doc);
-
-        return rtrim($doc);
-    }
-
     private function parseParameters()
     {
         $this->options = [];
