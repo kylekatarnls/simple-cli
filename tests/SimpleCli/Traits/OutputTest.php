@@ -106,9 +106,9 @@ class OutputTest extends TestCase
     {
         $command = new DemoCli();
 
-//        static::assertOutput("Hello world\rBye\n", function () use ($command) {
-//            $command->writeLine('Hello world');
-//            $command->rewriteLine('Bye');
-//        });
+        static::assertOutput("Hello world\n\rBye", function () use ($command) {
+            $command->writeLine('Hello world');
+            $command->rewriteLine('Bye');
+        });
     }
 }
