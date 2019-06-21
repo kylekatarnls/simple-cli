@@ -7,6 +7,14 @@ use PHPUnit\Framework\TestCase as FrameworkTestCase;
 
 abstract class TestCase extends FrameworkTestCase
 {
+    protected function invoke($object, string $method, ...$arguments)
+    {
+        $reflection = (new \ReflectionClass(get_class($object)))->getMethod($method);
+        $reflection->setAccessible(true);
+
+        return $reflection->invokeArgs($object, $arguments);
+    }
+
     public function assertOutput(string $expectedOutput, Closure $action)
     {
         ob_start();

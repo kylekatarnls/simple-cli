@@ -1,10 +1,11 @@
 <?php
 
-namespace Tests\SimpleCli;
+namespace Tests\SimpleCli\Traits;
 
 use SimpleCli\Command\Usage;
 use SimpleCli\Command\Version;
 use Tests\SimpleCli\DemoApp\DummyCli;
+use Tests\SimpleCli\TestCase;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\Commands

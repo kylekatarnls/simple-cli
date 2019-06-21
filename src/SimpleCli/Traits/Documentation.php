@@ -21,9 +21,7 @@ trait Documentation
     public function extractClassNameDescription(string $className): string
     {
         try {
-            $reflexion = new ReflectionClass($className);
-
-            $doc = $reflexion->getDocComment();
+            $doc = (new ReflectionClass($className))->getDocComment();
         } catch (\ReflectionException $e) {
             $doc = null;
         }
@@ -74,9 +72,7 @@ trait Documentation
         $this->expectedArguments = [];
         $this->expectedOptions = [];
 
-        $reflexion = new ReflectionObject($command);
-
-        foreach ($reflexion->getProperties() as $property) {
+        foreach ((new ReflectionObject($command))->getProperties() as $property) {
             $name = $property->getName();
             $doc = $this->cleanPhpDocComment((string) $property->getDocComment());
             $argument = $this->extractAnnotation($doc, 'argument') !== null;
