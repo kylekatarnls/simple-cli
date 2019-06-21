@@ -7,6 +7,11 @@ namespace SimpleCli\Traits;
 trait Output
 {
     /**
+     * @var bool
+     */
+    protected $colorsSupported = true;
+
+    /**
      * @var array
      */
     protected $colors = [
@@ -53,6 +58,22 @@ trait Output
     protected $escapeCharacter = "\033";
 
     /**
+     * Enable colors support in command line.
+     */
+    public function enableColors(): void
+    {
+        $this->colorsSupported = true;
+    }
+
+    /**
+     * Disable colors support in command line.
+     */
+    public function disableColors(): void
+    {
+        $this->colorsSupported = false;
+    }
+
+    /**
      * Set a custom string for escape command in CLI strings.
      *
      * @param string $escapeCharacter
@@ -90,7 +111,7 @@ trait Output
      */
     public function colorize(string $text = '', string $color = null, string $background = null): string
     {
-        if (!$color && !$background) {
+        if (!$this->colorsSupported || (!$color && !$background)) {
             return $text;
         }
 

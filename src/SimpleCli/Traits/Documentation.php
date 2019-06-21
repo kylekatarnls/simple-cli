@@ -69,6 +69,7 @@ trait Documentation
 
     private function extractExpectations(Command $command): void
     {
+        $this->expectedRestArgument = null;
         $this->expectedArguments = [];
         $this->expectedOptions = [];
 
@@ -76,6 +77,7 @@ trait Documentation
             $name = $property->getName();
             $doc = $this->cleanPhpDocComment((string) $property->getDocComment());
             $argument = $this->extractAnnotation($doc, 'argument') !== null;
+            $rest = $this->extractAnnotation($doc, 'rest') !== null;
             $option = $this->extractAnnotation($doc, 'option');
             $values = $this->extractAnnotation($doc, 'values');
             $var = str_replace('boolean', 'bool', $this->extractAnnotation($doc, 'var') ?: 'string');
@@ -103,13 +105,24 @@ trait Documentation
                 continue;
             }
 
-            if ($argument) {
-                $this->expectedArguments[] = [
+            if ($argument || $rest) {
+                $definition = [
                     'property'    => $name,
                     'description' => $doc,
                     'values'      => $values,
                     'type'        => $var,
                 ];
+
+                if ($rest) {
+                    $definition['type'] = $definition['type'] === 'array'
+                        ? 'string'
+                        : preg_replace('/\[\]$/', '', $definition['type']);
+                    $this->expectedRestArgument = $definition;
+
+                    continue;
+                }
+
+                $this->expectedArguments[] = $definition;
             }
         }
     }

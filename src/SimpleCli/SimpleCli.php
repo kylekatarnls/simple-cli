@@ -65,6 +65,7 @@ abstract class SimpleCli
     {
         $this->options = [];
         $this->arguments = [];
+        $this->restArguments = [];
         $optionDefinition = null;
 
         foreach ($this->parameters as $parameter) {
@@ -78,6 +79,10 @@ abstract class SimpleCli
             substr($parameter, 0, 1) === '-'
                 ? $this->parseOption($parameter, $optionDefinition)
                 : $this->parseArgument($parameter);
+        }
+
+        if ($optionDefinition) {
+            $this->enableBooleanOption($optionDefinition, $parameter);
         }
     }
 
@@ -115,7 +120,13 @@ abstract class SimpleCli
             return false;
         }
 
-        foreach (array_merge($this->arguments, $this->options) as $property => $value) {
+        $properties = array_merge($this->arguments, $this->options);
+
+        if ($this->expectedRestArgument) {
+            $properties[$this->expectedRestArgument['property']] = $this->restArguments;
+        }
+
+        foreach ($properties as $property => $value) {
             $commander->$property = $value;
         }
 
