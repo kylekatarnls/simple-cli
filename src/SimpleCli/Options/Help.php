@@ -64,7 +64,7 @@ trait Help
         $cli->writeLine('Usage:', 'brown');
         $cli->writeLine('  '.$cli->getFile().' '.$cli->getCommand().' [options] '.implode(' ', array_map(function ($name) {
             return "[<$name>]";
-            }, $argumentsNames)));
+        }, $argumentsNames)));
         $cli->writeLine();
 
         $cli->writeLine('Arguments:', 'brown');
