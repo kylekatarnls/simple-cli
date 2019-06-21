@@ -12,12 +12,12 @@ trait Input
     protected $currentCompletion = null;
 
     /**
-     * @var string
+     * @var callable
      */
     protected $readlineFunction = 'readline';
 
     /**
-     * @var string
+     * @var callable
      */
     protected $readlineCompletionRegisterFunction = 'readline_completion_function';
 
