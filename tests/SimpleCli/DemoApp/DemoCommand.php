@@ -3,9 +3,9 @@
 namespace Tests\SimpleCli\DemoApp;
 
 use SimpleCli\Command;
-use SimpleCli\SimpleCli;
 use SimpleCli\Options\Help;
 use SimpleCli\Options\Verbose;
+use SimpleCli\SimpleCli;
 
 /**
  * This is a demo.

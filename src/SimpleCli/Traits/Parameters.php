@@ -43,7 +43,7 @@ trait Parameters
 
         if ($parameter !== '' && $parameterDefinition['values'] && !in_array($parameter, array_map('trim', explode(',', $parameterDefinition['values'])))) {
             throw new InvalidArgumentException(
-                "The parameter ".$parameterDefinition['property']." must be one of the following values: ".$parameterDefinition['values'].", '$parameter' given."
+                'The parameter '.$parameterDefinition['property'].' must be one of the following values: '.$parameterDefinition['values'].", '$parameter' given."
             );
         }
 
