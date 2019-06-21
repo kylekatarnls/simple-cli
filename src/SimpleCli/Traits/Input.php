@@ -11,10 +11,31 @@ trait Input
      */
     protected $currentCompletion = null;
 
+    /**
+     * @var string
+     */
+    protected $readlineFunction = 'readline';
+
+    /**
+     * @var string
+     */
+    protected $readlineCompletionRegisterFunction = 'readline_completion_function';
+
+    /**
+     * @var string[]
+     */
+    protected $readlineCompletionExtensions = ['readline'];
+
     protected function recordAutocomplete()
     {
-        if (extension_loaded('readline') && function_exists('readline_completion_function')) {
-            readline_completion_function([$this, 'autocomplete']);
+        foreach ($this->readlineCompletionExtensions as $extension) {
+            if (!extension_loaded($extension)) {
+                return;
+            }
+        }
+
+        if (is_callable($this->readlineCompletionRegisterFunction)) {
+            ($this->readlineCompletionRegisterFunction)([$this, 'autocomplete']);
         }
     }
 
@@ -30,9 +51,9 @@ trait Input
         if (is_array($this->currentCompletion)) {
             $length = strlen($start);
 
-            return array_filter($this->currentCompletion, function ($suggestion) use ($length, $start) {
+            return array_values(array_filter($this->currentCompletion, function ($suggestion) use ($length, $start) {
                 return substr($suggestion, 0, $length) === $start;
-            });
+            }));
         }
 
         return $this->currentCompletion ? ($this->currentCompletion)($start) : [];
@@ -50,6 +71,6 @@ trait Input
     {
         $this->currentCompletion = $completion;
 
-        return readline($prompt);
+        return ($this->readlineFunction)($prompt);
     }
 }

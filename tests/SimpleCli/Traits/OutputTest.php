@@ -1,8 +1,9 @@
 <?php
 
-namespace Tests\SimpleCli;
+namespace Tests\SimpleCli\Traits;
 
 use Tests\SimpleCli\DemoApp\DemoCli;
+use Tests\SimpleCli\TestCase;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\Output
