@@ -19,6 +19,16 @@ trait Arguments
     protected $expectedArguments;
 
     /**
+     * @var array
+     */
+    protected $restArguments;
+
+    /**
+     * @var array
+     */
+    protected $expectedRestArgument;
+
+    /**
      * Get list of current filtered arguments.
      *
      * @return array
@@ -38,11 +48,37 @@ trait Arguments
         return $this->expectedArguments;
     }
 
+    /**
+     * Get the rest of filtered arguments.
+     *
+     * @return array
+     */
+    public function getRestArguments(): array
+    {
+        return $this->restArguments;
+    }
+
+    /**
+     * Get definition for the rest argument if a @rest property given.
+     *
+     * @return array|null
+     */
+    public function getExpectedRestArgument(): ?array
+    {
+        return $this->expectedRestArgument;
+    }
+
     private function parseArgument(string $argument): void
     {
         $definition = $this->expectedArguments[count($this->arguments)] ?? null;
 
         if (!$definition) {
+            if ($restDefinition = $this->getExpectedRestArgument()) {
+                $this->restArguments[] = $this->getParameterValue($argument, $restDefinition);
+
+                return;
+            }
+
             $count = count($this->expectedArguments);
 
             throw new InvalidArgumentException(

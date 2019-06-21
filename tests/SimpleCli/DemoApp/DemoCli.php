@@ -21,6 +21,7 @@ class DemoCli extends SimpleCli
     public function getCommands(): array
     {
         return [
+            'rest'   => RestCommand::class,
             'foobar' => DemoCommand::class,
         ];
     }

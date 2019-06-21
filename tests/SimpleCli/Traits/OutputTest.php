@@ -42,6 +42,25 @@ class OutputTest extends TestCase
     }
 
     /**
+     * @covers ::enableColors
+     * @covers ::disableColors
+     */
+    public function testColorSupport()
+    {
+        $command = new DemoCli();
+
+        static::assertSame('[ESCAPE][0;34m[ESCAPE][43mHello world[ESCAPE][0m', $command->colorize('Hello world', 'blue', 'yellow'));
+
+        $command->disableColors();
+
+        static::assertSame('Hello world', $command->colorize('Hello world', 'blue', 'yellow'));
+
+        $command->enableColors();
+
+        static::assertSame('[ESCAPE][0;34m[ESCAPE][43mHello world[ESCAPE][0m', $command->colorize('Hello world', 'blue', 'yellow'));
+    }
+
+    /**
      * @covers ::setEscapeCharacter
      */
     public function testSetEscapeCharacter()

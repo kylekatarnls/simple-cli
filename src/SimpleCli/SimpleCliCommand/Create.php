@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace SimpleCli\SimpleCliCommand;
 
 use SimpleCli\Command;
+use SimpleCli\Options\Help;
+use SimpleCli\Options\Verbose;
 use SimpleCli\SimpleCli;
 
 /**
@@ -14,6 +16,14 @@ use SimpleCli\SimpleCli;
  */
 class Create implements Command
 {
+    /**
+     * @rest
+     * @var array
+     */
+    public $classNames;
+
+    use Help, Verbose;
+
     protected function error(SimpleCli $cli, $text): bool
     {
         $cli->writeLine($text, 'red');
@@ -30,30 +40,32 @@ class Create implements Command
         }, (string) end($parts)), '-');
     }
 
-    protected function copyBinTemplate(string $name, string $className): void
+    protected function copyBinTemplate(SimpleCli $cli, string $name, string $className): void
     {
         $binTemplate = __DIR__.'/../../bin-template';
 
         foreach (scandir($binTemplate) ?: [] as $file) {
             if (substr($file, 0, 1) !== '.') {
-                file_put_contents(
-                    'bin/'.str_replace('program', $name, $file),
-                    strtr((string) file_get_contents("$binTemplate/$file"), [
-                        '{name}'  => $name,
-                        '{class}' => $className,
-                    ])
-                );
+                $path = 'bin/'.str_replace('program', $name, $file);
+
+                if ($this->verbose) {
+                    $cli->writeLine("Creating $path");
+                }
+
+                file_put_contents($path, strtr((string) file_get_contents("$binTemplate/$file"), [
+                    '{name}'  => $name,
+                    '{class}' => $className,
+                ]));
             }
         }
     }
 
     /**
      * @param SimpleCli $cli
-     * @param string[]  ...$parameters
      *
      * @return bool
      */
-    public function run(SimpleCli $cli, ...$parameters): bool
+    public function run(SimpleCli $cli): bool
     {
         if (!is_dir('bin') && !@mkdir('bin')) {
             return $this->error($cli, 'Unable to create the bin directory');
@@ -61,7 +73,11 @@ class Create implements Command
 
         $count = 0;
 
-        foreach ($parameters as $className) {
+        foreach ($this->classNames as $className) {
+            if ($this->verbose) {
+                $cli->writeLine("Creating program for $className", 'light_cyan');
+            }
+
             if (!is_subclass_of($className, SimpleCli::class)) {
                 $this->error($cli, "$className needs to implement".SimpleCli::class);
 
@@ -69,6 +85,7 @@ class Create implements Command
             }
 
             $this->copyBinTemplate(
+                $cli,
                 $cli->getName() ?: $this->extractName($className),
                 '\\'.ltrim($className, '\\')
             );
