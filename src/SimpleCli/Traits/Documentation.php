@@ -67,6 +67,47 @@ trait Documentation
         return rtrim($doc);
     }
 
+    private function addExpectation($option, $argument, $rest, $name, $doc, $values, $var): void
+    {
+        if ($option) {
+            if ($argument) {
+                throw new InvalidArgumentException(
+                    'A property cannot be both @option and @argument'
+                );
+            }
+
+            $this->expectedOptions[] = [
+                'property'    => $name,
+                'names'       => array_map('trim', explode(',', $option)),
+                'description' => $doc,
+                'values'      => $values,
+                'type'        => $var,
+            ];
+
+            return;
+        }
+
+        if ($argument || $rest) {
+            $definition = [
+                'property'    => $name,
+                'description' => $doc,
+                'values'      => $values,
+                'type'        => $var,
+            ];
+
+            if ($rest) {
+                $definition['type'] = $definition['type'] === 'array'
+                    ? 'string'
+                    : preg_replace('/\[\]$/', '', $definition['type']);
+                $this->expectedRestArgument = $definition;
+
+                return;
+            }
+
+            $this->expectedArguments[] = $definition;
+        }
+    }
+
     private function extractExpectations(Command $command): void
     {
         $this->expectedRestArgument = null;
@@ -87,43 +128,7 @@ trait Documentation
                 $option = "$name, ".substr($name, 0, 1);
             }
 
-            if ($option) {
-                if ($argument) {
-                    throw new InvalidArgumentException(
-                        'A property cannot be both @option and @argument'
-                    );
-                }
-
-                $this->expectedOptions[] = [
-                    'property'    => $name,
-                    'names'       => array_map('trim', explode(',', $option)),
-                    'description' => $doc,
-                    'values'      => $values,
-                    'type'        => $var,
-                ];
-
-                continue;
-            }
-
-            if ($argument || $rest) {
-                $definition = [
-                    'property'    => $name,
-                    'description' => $doc,
-                    'values'      => $values,
-                    'type'        => $var,
-                ];
-
-                if ($rest) {
-                    $definition['type'] = $definition['type'] === 'array'
-                        ? 'string'
-                        : preg_replace('/\[\]$/', '', $definition['type']);
-                    $this->expectedRestArgument = $definition;
-
-                    continue;
-                }
-
-                $this->expectedArguments[] = $definition;
-            }
+            $this->addExpectation($option, $argument, $rest, $name, $doc, $values, $var);
         }
     }
 }

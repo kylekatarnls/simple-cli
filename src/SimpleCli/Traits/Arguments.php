@@ -24,7 +24,7 @@ trait Arguments
     protected $restArguments;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected $expectedRestArgument;
 

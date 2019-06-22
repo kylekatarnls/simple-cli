@@ -3,8 +3,6 @@
 namespace Tests\SimpleCli\DemoApp;
 
 use SimpleCli\Command;
-use SimpleCli\Options\Help;
-use SimpleCli\Options\Verbose;
 use SimpleCli\SimpleCli;
 
 /**
