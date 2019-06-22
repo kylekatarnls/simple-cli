@@ -67,6 +67,7 @@ abstract class SimpleCli
         $this->arguments = [];
         $this->restArguments = [];
         $optionDefinition = null;
+        $parameter = '';
 
         foreach ($this->parameters as $parameter) {
             if ($optionDefinition) {

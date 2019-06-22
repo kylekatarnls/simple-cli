@@ -18,7 +18,8 @@ class Create implements Command
 {
     /**
      * @rest
-     * @var array
+     *
+     * @var string[]
      */
     public $classNames;
 
