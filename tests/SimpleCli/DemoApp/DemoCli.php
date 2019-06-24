@@ -23,6 +23,7 @@ class DemoCli extends SimpleCli
     {
         return [
             'all'    => ArrayRestCommand::class,
+            'hall'   => HelpedArrayRestCommand::class,
             'bad'    => BadCommand::class,
             'create' => Create::class,
             'rest'   => RestCommand::class,
