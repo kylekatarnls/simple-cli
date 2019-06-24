@@ -18,24 +18,20 @@ class OptionsTest extends TestCase
     public function testGetOptions()
     {
         $command = new DummyCli();
+        $command->mute();
 
-        ob_start();
         $command('file');
-        ob_end_clean();
 
         static::assertSame([], $command->getOptions());
 
         $command = new DemoCli();
+        $command->mute();
 
-        ob_start();
         $command('file');
-        ob_end_clean();
 
         static::assertSame([], $command->getOptions());
 
-        ob_start();
         $command('file', 'foobar');
-        ob_end_clean();
 
         static::assertSame([], $command->getOptions());
     }
@@ -46,26 +42,23 @@ class OptionsTest extends TestCase
     public function testGetExpectedOptions()
     {
         $command = new DummyCli();
+        $command->mute();
 
-        ob_start();
         $command('file');
-        ob_end_clean();
 
         static::assertSame([], $command->getExpectedOptions());
 
         $command = new DemoCli();
+        $command->mute();
 
-        ob_start();
         $command('file');
-        ob_end_clean();
 
         static::assertSame([], $command->getExpectedOptions());
 
         $command = new DemoCli();
+        $command->mute();
 
-        ob_start();
         $command('file', 'foobar');
-        ob_end_clean();
 
         static::assertSame([
             [
@@ -107,10 +100,9 @@ class OptionsTest extends TestCase
     public function testGetOptionDefinition()
     {
         $command = new DemoCli();
+        $command->mute();
 
-        ob_start();
         $command('file', 'foobar');
-        ob_end_clean();
 
         static::assertSame([
             'property'    => 'prefix',
@@ -133,10 +125,9 @@ class OptionsTest extends TestCase
         static::expectExceptionMessage('Unknown --xyz option');
 
         $command = new DemoCli();
+        $command->mute();
 
-        ob_start();
         $command('file', 'foobar');
-        ob_end_clean();
 
         $command->getOptionDefinition('xyz');
     }
@@ -150,10 +141,9 @@ class OptionsTest extends TestCase
         static::expectExceptionMessage('Unknown -x option');
 
         $command = new DemoCli();
+        $command->mute();
 
-        ob_start();
         $command('file', 'foobar');
-        ob_end_clean();
 
         $command->getOptionDefinition('x');
     }
@@ -164,16 +154,13 @@ class OptionsTest extends TestCase
     public function testEnableBooleanOption()
     {
         $command = new DemoCli();
+        $command->mute();
 
-        ob_start();
         $command('file', 'foobar');
-        ob_end_clean();
 
         static::assertSame([], $command->getOptions());
 
-        ob_start();
         $command('file', 'foobar', '-h');
-        ob_end_clean();
 
         static::assertSame([
             'help' => true,
@@ -185,14 +172,11 @@ class OptionsTest extends TestCase
      */
     public function testEnableBooleanOptionOnNonBoolean()
     {
-        $command = new DemoCli();
+        static::assertOutput('[ESCAPE][0;31m-p option is not a boolean, so you can\'t use it in a aliases group[ESCAPE][0m', function () {
+            $command = new DemoCli();
 
-        ob_start();
-        $command('file', 'foobar', '-p');
-        $contents = ob_get_contents();
-        ob_end_clean();
-
-        static::assertSame('[ESCAPE][0;31m-p option is not a boolean, so you can\'t use it in a aliases group[ESCAPE][0m', $contents);
+            $command('file', 'foobar', '-p');
+        });
     }
 
     /**
@@ -200,14 +184,11 @@ class OptionsTest extends TestCase
      */
     public function testEnableBooleanOptionWithValue()
     {
-        $command = new DemoCli();
+        static::assertOutput('[ESCAPE][0;31m-h option is boolean and should not have value[ESCAPE][0m', function () {
+            $command = new DemoCli();
 
-        ob_start();
-        $command('file', 'foobar', '-h=yoh');
-        $contents = ob_get_contents();
-        ob_end_clean();
-
-        static::assertSame('[ESCAPE][0;31m-h option is boolean and should not have value[ESCAPE][0m', $contents);
+            $command('file', 'foobar', '-h=yoh');
+        });
     }
 
     /**
@@ -216,18 +197,15 @@ class OptionsTest extends TestCase
     public function testSetOption()
     {
         $command = new DemoCli();
+        $command->mute();
 
-        ob_start();
         $command('file', 'foobar', '-p=hello');
-        ob_end_clean();
 
         static::assertSame([
             'prefix' => 'hello',
         ], $command->getOptions());
 
-        ob_start();
         $command('file', 'foobar', '--help', '--prefix', 'hello');
-        ob_end_clean();
 
         static::assertSame([
             'help'   => true,
@@ -242,50 +220,39 @@ class OptionsTest extends TestCase
     {
         $command = new DemoCli();
 
-        ob_start();
-        $command('file', 'foobar', '-prefix=hello');
-        $contents = ob_get_contents();
-        ob_end_clean();
+        static::assertOutput('[ESCAPE][0;31mUnable to parse -prefix=hello, maybe you would mean --prefix=hello[ESCAPE][0m', function () use ($command) {
+            $command('file', 'foobar', '-prefix=hello');
+        });
 
-        static::assertSame('[ESCAPE][0;31mUnable to parse -prefix=hello, maybe you would mean --prefix=hello[ESCAPE][0m', $contents);
+        $command->mute();
 
-        ob_start();
         $command('file', 'foobar', '-vh');
-        ob_end_clean();
 
         static::assertSame([
             'verbose' => true,
             'help'    => true,
         ], $command->getOptions());
 
-        ob_start();
         $command('file', 'foobar', '-hv');
-        ob_end_clean();
 
         static::assertSame([
             'help'    => true,
             'verbose' => true,
         ], $command->getOptions());
 
-        ob_start();
         $command('file', 'foobar', '-p=hi');
-        ob_end_clean();
 
         static::assertSame([
             'prefix' => 'hi',
         ], $command->getOptions());
 
-        ob_start();
         $command('file', 'foobar', '--prefix=bye');
-        ob_end_clean();
 
         static::assertSame([
             'prefix' => 'bye',
         ], $command->getOptions());
 
-        ob_start();
         $command('file', 'foobar', '--prefix', 'bye');
-        ob_end_clean();
 
         static::assertSame([
             'prefix' => 'bye',

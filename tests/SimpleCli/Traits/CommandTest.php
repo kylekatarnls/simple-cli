@@ -16,10 +16,9 @@ class CommandTest extends TestCase
     public function testGetCommand()
     {
         $command = new DemoCli();
+        $command->mute();
 
-        ob_start();
         $command('foobar', 'hello');
-        ob_end_clean();
 
         static::assertSame('hello', $command->getCommand());
     }

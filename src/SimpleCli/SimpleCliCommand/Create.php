@@ -6,6 +6,7 @@ namespace SimpleCli\SimpleCliCommand;
 
 use SimpleCli\Command;
 use SimpleCli\Options\Help;
+use SimpleCli\Options\Quiet;
 use SimpleCli\Options\Verbose;
 use SimpleCli\SimpleCli;
 
@@ -16,14 +17,14 @@ use SimpleCli\SimpleCli;
  */
 class Create implements Command
 {
+    use Help, Quiet, Verbose;
+
     /**
      * @rest
      *
      * @var string[]
      */
     public $classNames;
-
-    use Help, Verbose;
 
     protected function error(SimpleCli $cli, $text): bool
     {

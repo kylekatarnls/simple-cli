@@ -3,6 +3,7 @@
 namespace Tests\SimpleCli\DemoApp;
 
 use SimpleCli\SimpleCli;
+use SimpleCli\SimpleCliCommand\Create;
 
 class DemoCli extends SimpleCli
 {
@@ -21,6 +22,9 @@ class DemoCli extends SimpleCli
     public function getCommands(): array
     {
         return [
+            'all'    => ArrayRestCommand::class,
+            'bad'    => BadCommand::class,
+            'create' => Create::class,
             'rest'   => RestCommand::class,
             'foobar' => DemoCommand::class,
         ];

@@ -21,7 +21,13 @@ class OutputTest extends TestCase
             $command->write('Hello world');
         });
 
+        static::assertOutput('', function () use ($command) {
+            $command->mute();
+            $command->write('Hello world');
+        });
+
         static::assertOutput('[ESCAPE][0;31mHello world[ESCAPE][0m', function () use ($command) {
+            $command->unmute();
             $command->write('Hello world', 'red');
         });
     }
@@ -104,6 +110,15 @@ class OutputTest extends TestCase
             $command->rewind();
             $command->rewind(3);
         });
+
+        $command = new DemoCli();
+
+        static::assertOutput('Hello world', function () use ($command) {
+            $command->write('Hello world');
+            $command->mute();
+            $command->rewind();
+            $command->rewind(3);
+        });
     }
 
     /**
@@ -130,5 +145,34 @@ class OutputTest extends TestCase
             $command->writeLine('Hello world');
             $command->rewriteLine('Bye');
         });
+    }
+
+    /**
+     * @covers ::isMuted
+     * @covers ::setMuted
+     * @covers ::mute
+     * @covers ::unmute
+     */
+    public function testSetMute()
+    {
+        $command = new DemoCli();
+
+        static::assertFalse($command->isMuted());
+
+        $command->setMuted(true);
+
+        static::assertTrue($command->isMuted());
+
+        $command->setMuted(false);
+
+        static::assertFalse($command->isMuted());
+
+        $command->mute();
+
+        static::assertTrue($command->isMuted());
+
+        $command->unmute();
+
+        static::assertFalse($command->isMuted());
     }
 }
