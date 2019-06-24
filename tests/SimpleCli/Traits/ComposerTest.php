@@ -50,7 +50,7 @@ class ComposerTest extends TestCase
     {
         $packages = [
             [
-                'name' => 'foo/bar',
+                'name'    => 'foo/bar',
                 'version' => '1.2.3',
             ],
         ];
@@ -70,12 +70,13 @@ class ComposerTest extends TestCase
 
     /**
      * @covers ::getInstalledPackage
+     * @covers \SimpleCli\Composer\InstalledPackage::__construct
      */
     public function testGetInstalledPackage()
     {
         $packages = [
             [
-                'name' => 'foo/bar',
+                'name'    => 'foo/bar',
                 'version' => '1.2.3',
             ],
         ];
@@ -104,7 +105,7 @@ class ComposerTest extends TestCase
     {
         $packages = [
             [
-                'name' => 'foo/bar',
+                'name'    => 'foo/bar',
                 'version' => '1.2.3',
             ],
         ];

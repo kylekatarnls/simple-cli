@@ -157,11 +157,11 @@ abstract class SimpleCli
             return false;
         }
 
-        if (is_a($commander, Quiet::class) && ($commander->quiet ?? false)) {
+        if (in_array(Quiet::class, class_uses($commander)) && ($commander->quiet ?? false)) {
             $this->mute();
         }
 
-        if (is_a($commander, Help::class) && ($commander->help ?? false)) {
+        if (in_array(Help::class, class_uses($commander)) && ($commander->help ?? false)) {
             $commander->displayHelp($this);
 
             return true;

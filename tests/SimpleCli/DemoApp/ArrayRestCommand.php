@@ -13,7 +13,7 @@ class ArrayRestCommand implements Command
     /**
      * @option bar, biz
      *
-     * @var integer
+     * @var int
      */
     public $foo = 9;
 
