@@ -12,6 +12,11 @@ trait Output
     protected $colorsSupported = true;
 
     /**
+     * @var bool
+     */
+    protected $muted = false;
+
+    /**
      * @var array
      */
     protected $colors = [
@@ -56,6 +61,42 @@ trait Output
      * @var string
      */
     protected $escapeCharacter = "\033";
+
+    /**
+     * Returns true if the CLI program is muted (quiet).
+     *
+     * @return bool
+     */
+    public function isMuted(): bool
+    {
+        return $this->muted;
+    }
+
+    /**
+     * Set the mute state.
+     *
+     * @param bool $muted
+     */
+    public function setMuted(bool $muted): void
+    {
+        $this->muted = $muted;
+    }
+
+    /**
+     * Mute the program (no more output).
+     */
+    public function mute(): void
+    {
+        $this->setMuted(true);
+    }
+
+    /**
+     * Unmute the program (enable output).
+     */
+    public function unmute(): void
+    {
+        $this->setMuted(false);
+    }
 
     /**
      * Enable colors support in command line.
@@ -128,6 +169,10 @@ trait Output
      */
     public function rewind(int $length = null): void
     {
+        if ($this->isMuted()) {
+            return;
+        }
+
         if ($length === null) {
             $length = strlen($this->lastText);
         }
@@ -144,6 +189,10 @@ trait Output
      */
     public function write(string $text = '', string $color = null, string $background = null): void
     {
+        if ($this->isMuted()) {
+            return;
+        }
+
         $this->lastText = $text;
 
         if ($color) {

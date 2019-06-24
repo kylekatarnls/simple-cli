@@ -16,10 +16,9 @@ class FileTest extends TestCase
     public function testGetFile()
     {
         $command = new DemoCli();
+        $command->mute();
 
-        ob_start();
         $command('foobar');
-        ob_end_clean();
 
         static::assertSame('foobar', $command->getFile());
     }

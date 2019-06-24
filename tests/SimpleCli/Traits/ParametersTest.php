@@ -17,16 +17,13 @@ class ParametersTest extends TestCase
     public function testGetParameters()
     {
         $command = new DemoCli();
+        $command->mute();
 
-        ob_start();
         $command('foobar');
-        ob_end_clean();
 
         static::assertSame([], $command->getParameters());
 
-        ob_start();
         $command('foobar', 'hello', 'A', 'B', 'C');
-        ob_end_clean();
 
         static::assertSame(['A', 'B', 'C'], $command->getParameters());
     }

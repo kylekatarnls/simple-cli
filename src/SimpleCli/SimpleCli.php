@@ -6,6 +6,7 @@ namespace SimpleCli;
 
 use InvalidArgumentException;
 use SimpleCli\Options\Help;
+use SimpleCli\Options\Quiet;
 use SimpleCli\Traits\Arguments;
 use SimpleCli\Traits\Command as CommandTrait;
 use SimpleCli\Traits\Commands;
@@ -87,29 +88,37 @@ abstract class SimpleCli
         }
     }
 
-    public function __invoke(string $file, string $command = 'list', ...$parameters): bool
+    private function getCommandClass(): ?string
     {
-        $this->file = $file;
-        $this->command = $command;
-        $this->parameters = $parameters;
-
+        $command = $this->command;
         $commands = $this->getAvailableCommands();
 
         if (!isset($commands[$command])) {
             $this->write("Command $command not found", 'red');
 
-            return false;
+            return null;
         }
 
+        /** @var string $commandClass */
         $commandClass = $commands[$command];
 
         if (!is_subclass_of($commandClass, Command::class)) {
             $this->write("$commandClass needs to implement ".Command::class, 'red');
 
-            return false;
+            return null;
         }
 
-        /** @var Command & Help $commander */
+        return $commandClass;
+    }
+
+    /**
+     * @param string $commandClass
+     *
+     * @return Command|null
+     */
+    private function createCommander(string $commandClass): ?Command
+    {
+        /** @var Command $commander */
         $commander = new $commandClass();
 
         try {
@@ -118,7 +127,7 @@ abstract class SimpleCli
         } catch (InvalidArgumentException $exception) {
             $this->write($exception->getMessage(), 'red');
 
-            return false;
+            return null;
         }
 
         $properties = array_merge($this->arguments, $this->options);
@@ -131,7 +140,28 @@ abstract class SimpleCli
             $commander->$property = $value;
         }
 
-        if (($commander->help ?? false) && method_exists($commander, 'displayHelp')) {
+        return $commander;
+    }
+
+    public function __invoke(string $file, string $command = 'list', ...$parameters): bool
+    {
+        $this->file = $file;
+        $this->command = $command;
+        $this->parameters = $parameters;
+
+        if (!(
+            $commandClass = $this->getCommandClass()
+        ) || !(
+            $commander = $this->createCommander($commandClass)
+        )) {
+            return false;
+        }
+
+        if (is_a($commander, Quiet::class) && ($commander->quiet ?? false)) {
+            $this->mute();
+        }
+
+        if (is_a($commander, Help::class) && ($commander->help ?? false)) {
             $commander->displayHelp($this);
 
             return true;

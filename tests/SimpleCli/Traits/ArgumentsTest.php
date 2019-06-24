@@ -16,16 +16,13 @@ class ArgumentsTest extends TestCase
     public function testGetArguments()
     {
         $command = new DemoCli();
+        $command->mute();
 
-        ob_start();
         $command('file', 'foobar');
-        ob_end_clean();
 
         static::assertSame([], $command->getArguments());
 
-        ob_start();
         $command('file', 'foobar', 'My sentence');
-        ob_end_clean();
 
         static::assertSame([
             'sentence' => 'My sentence',
@@ -38,16 +35,13 @@ class ArgumentsTest extends TestCase
     public function testGetExpectedArguments()
     {
         $command = new DemoCli();
+        $command->mute();
 
-        ob_start();
         $command('file', 'version');
-        ob_end_clean();
 
         static::assertSame([], $command->getExpectedArguments());
 
-        ob_start();
         $command('file', 'foobar');
-        ob_end_clean();
 
         static::assertSame([
             [
@@ -65,16 +59,13 @@ class ArgumentsTest extends TestCase
     public function testGetRestArguments()
     {
         $command = new DemoCli();
+        $command->mute();
 
-        ob_start();
         $command('file', 'foobar', 'My sentence', 'A', 'B');
-        ob_end_clean();
 
         static::assertSame([], $command->getRestArguments());
 
-        ob_start();
         $command('file', 'rest', 'My sentence', 'A', 'B');
-        ob_end_clean();
 
         static::assertSame(['A', 'B'], $command->getRestArguments());
     }
@@ -85,16 +76,13 @@ class ArgumentsTest extends TestCase
     public function testGetExpectedRestArgument()
     {
         $command = new DemoCli();
+        $command->mute();
 
-        ob_start();
         $command('file', 'version');
-        ob_end_clean();
 
         static::assertNull($command->getExpectedRestArgument());
 
-        ob_start();
         $command('file', 'rest');
-        ob_end_clean();
 
         static::assertSame([
             'property'    => 'suffixes',
@@ -112,18 +100,12 @@ class ArgumentsTest extends TestCase
         $command = new DemoCli();
         $command->disableColors();
 
-        ob_start();
-        $command('file', 'version', 'too-argument');
-        $contents = ob_get_contents();
-        ob_end_clean();
+        static::assertOutput('Expect only 0 arguments', function () use ($command) {
+            $command('file', 'version', 'too-argument');
+        });
 
-        static::assertSame('Expect only 0 arguments', $contents);
-
-        ob_start();
-        $command('file', 'rest', 'Hello', ' world', '!');
-        $contents = ob_get_contents();
-        ob_end_clean();
-
-        static::assertSame("Hello world!\n", $contents);
+        static::assertOutput("Hello world!\n", function () use ($command) {
+            $command('file', 'rest', 'Hello', ' world', '!');
+        });
     }
 }
