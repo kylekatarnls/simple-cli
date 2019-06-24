@@ -11,7 +11,7 @@ use SimpleCli\SimpleCli;
 class ArrayRestCommand implements Command
 {
     /**
-     * @option bar, biz
+     * @option bar, biz, X, Y
      *
      * @var int
      */
