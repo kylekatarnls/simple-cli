@@ -227,3 +227,161 @@ It outputs `5` :rocket:
 Note than `run()` must return a boolean:
  - `true` for successful command (exit code 0)
  - `false` for error (exit code 1)
+
+You can also allow unlimited number of arguments using the annotation `@rest`
+The *rest arguments* variable will be an array with all other arguments.
+
+So if you have 2 `@argument` and a `@rest` then if your user call your command
+with 5 arguments, the first one goes to the first `@argument`, the second one
+go to the second `@argument`, and the 3 other ones go as an array to the `@rest`
+argument.
+
+Of course you can also use `@rest` with any other argument so for our `add`
+command, it could be:
+
+```php
+<?php
+
+namespace MyVendorName\CliApp\Command;
+
+use SimpleCli\Command;
+use SimpleCli\Options\Help;
+use SimpleCli\SimpleCli;
+
+/**
+ * Sum arguments.
+ */
+class Add implements Command
+{
+    use Help;
+
+    /**
+     * @rest
+     *
+     * The numbers to sum
+     *
+     * @var float[]
+     */
+    public $numbers = [];
+
+    public function run(SimpleCli $cli): bool
+    {
+        $cli->write(array_sum($this->numbers));
+
+        return true;
+    }
+}
+```
+
+Now you can call with any number of arguments:
+
+```shell
+bin/easy-calc build 2 3 1.5
+```
+
+Outputs: `6.5`
+
+## Add options
+
+simple-cli provides 3 standard options. The `--help -h` you already know
+as `SimpleCli\Options\Help` trait you can simply `use` in your commands.
+
+But also `--quiet -q` as `SimpleCli\Options\Quiet` that allow your user
+to mute the output. If you use this trait in your command and if user
+pass the option `--quiet` or `-q` methods `$cli->write()` and
+`$cli->writeLine()` (and all output methods) will no longer output anything.
+
+You can also use `--verbose -v` using `SimpleCli\Options\Verbose`:
+```php
+<?php
+
+namespace MyVendorName\CliApp\Command;
+
+use SimpleCli\Command;
+use SimpleCli\Options\Verbose;
+use SimpleCli\SimpleCli;
+
+/**
+ * Sum arguments.
+ */
+class Add implements Command
+{
+    use Verbose;
+
+    public function run(SimpleCli $cli): bool
+    {
+        // ...
+
+        if ($this->verbose) {
+            $cli->writeLine('Log some additional info', 'light_cyan');
+        }
+
+        // ...
+    }
+}
+```
+
+And you can create your own option using the `@option` annotation:
+```php
+<?php
+
+namespace MyVendorName\CliApp\Command;
+
+use SimpleCli\Command;
+use SimpleCli\SimpleCli;
+
+/**
+ * Sum arguments.
+ */
+class Add implements Command
+{
+    /**
+     * @option
+     *
+     * Something the command can use.
+     *
+     * @var string 
+     */
+    public $foo = 'default';
+
+    /**
+     * @option show-foo
+     *
+     * Whether foo should be displayed or not.
+     *
+     * @var bool 
+     */
+    public $showFoo = false;
+
+    public function run(SimpleCli $cli): bool
+    {
+        if ($this->showFoo) {
+            $cli->write($this->foo, 'red');
+        }
+        
+        return true;
+    }
+}
+```
+
+```shell
+bin/easy-calc --show-foo --foo=bar
+```
+
+Outputs: `bar` (in red).
+
+Note than you can pass the name for the option and alias in the annotation:
+`@option some-name, other-name, s, o` this mean `--some-name`, `--other-name`
+`-s` and `-o` will all store the value in the same option variable.
+
+Also note than if options are boolean type and have aliases, they can be merged.
+If you have `@option show-foo, s` and `@option verbose, v` and pass `-vs` in
+the CLI, both options will be `true`.
+
+For non boolean options values can be set using `--foo bar` or `--foo=bar`,
+both are valid. And options can come anywhere (before, after or between
+arguments).
+
+Finally, if you don't set a name and use the `@option` annotation alone
+the option will have the same name as its variable and will have its
+first letter as alias if it's available.
