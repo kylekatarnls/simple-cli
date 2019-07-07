@@ -3,12 +3,11 @@
 namespace Tests\SimpleCli\Traits;
 
 use Tests\SimpleCli\DemoApp\DemoCli;
-use Tests\SimpleCli\TestCase;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\Input
  */
-class InputTest extends TestCase
+class InputTest extends TraitsTestCase
 {
     /**
      * @covers ::recordAutocomplete

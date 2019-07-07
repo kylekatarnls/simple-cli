@@ -14,7 +14,7 @@ class CreateTest extends TestCase
     /**
      * @var Filesystem
      */
-    protected $fs;
+    protected $fileSystem;
 
     /**
      * @var string
@@ -25,15 +25,15 @@ class CreateTest extends TestCase
     {
         parent::setUp();
 
-        $this->fs = new Filesystem();
+        $this->fileSystem = new Filesystem();
         $this->currentDirectory = sys_get_temp_dir().'/simple-cli-create-'.mt_rand(0, 9999999);
-        $this->fs->mkdir($this->currentDirectory);
+        $this->fileSystem->mkdir($this->currentDirectory);
         chdir($this->currentDirectory);
     }
 
     protected function tearDown()
     {
-        $this->fs->remove($this->currentDirectory);
+        $this->fileSystem->remove($this->currentDirectory);
 
         parent::tearDown();
     }
@@ -135,7 +135,7 @@ php "%BIN_TARGET%" %*
             $command('file', 'create', 'foobar');
         });
 
-        $this->fs->remove('bin');
+        $this->fileSystem->remove('bin');
         touch('bin');
 
         static::assertOutput('[ESCAPE][0;31mUnable to create the bin directory

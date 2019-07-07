@@ -4,12 +4,11 @@ namespace Tests\SimpleCli\Traits;
 
 use SimpleCli\Composer\InstalledPackage;
 use Tests\SimpleCli\DemoApp\DemoCli;
-use Tests\SimpleCli\TestCase;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\Composer
  */
-class ComposerTest extends TestCase
+class ComposerTest extends TraitsTestCase
 {
     /**
      * @covers ::getPackageName

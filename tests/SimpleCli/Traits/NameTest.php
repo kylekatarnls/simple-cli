@@ -4,12 +4,11 @@ namespace Tests\SimpleCli\Traits;
 
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\DemoApp\DummyCli;
-use Tests\SimpleCli\TestCase;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\Name
  */
-class NameTest extends TestCase
+class NameTest extends TraitsTestCase
 {
     /**
      * @covers ::getName

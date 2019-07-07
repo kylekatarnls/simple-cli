@@ -5,12 +5,11 @@ namespace Tests\SimpleCli\Traits;
 use stdClass;
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\DemoApp\DemoCommand;
-use Tests\SimpleCli\TestCase;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\Documentation
  */
-class DocumentationTest extends TestCase
+class DocumentationTest extends TraitsTestCase
 {
     /**
      * @covers ::extractClassNameDescription
