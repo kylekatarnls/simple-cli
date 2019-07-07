@@ -392,8 +392,8 @@ In the examples above, you could see your command `run(SimpleCli $cli)`
 method get a SimpleCli instance. `$cli` is your program object, an
 instance of the class that extends `SimpleCli` so in the example above,
 it's an instance of `EasyCalc` it means you can access from `$cli` all
-methods you define in your sub-class and all methods available from
-the `SimpleCli` inherited class:
+methods you define in your sub-class (or the ones override to customize
+your program) and all methods available from the `SimpleCli` inherited class:
 
 <i start-api-reference></i>
 
