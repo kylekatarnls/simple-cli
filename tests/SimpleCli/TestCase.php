@@ -29,6 +29,6 @@ abstract class TestCase extends FrameworkTestCase
     {
         $message = "$file content should mismatch.".($message ? "\n$message" : '');
 
-        static::assertSame($expected, str_replace("\r", '', file_get_contents($file)), $message);
+        static::assertSame($expected, str_replace("\r", '', file_get_contents($file) ?: ''), $message);
     }
 }
