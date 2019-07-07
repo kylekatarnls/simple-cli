@@ -27,6 +27,9 @@
             "Tests\\": "tests/"
         }
     },
+    "bin": [
+        "bin/simple-cli"
+    ],
     "scripts": {
         "unit": "phpunit --coverage-text --coverage-clover=coverage.xml",
         "md": "phpmd src,tests text ./phpmd.xml",
