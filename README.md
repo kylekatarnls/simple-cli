@@ -58,27 +58,12 @@ Now you can run from the console:
 vendor/bin/simple-cli create MyVendorName\CliApp\EasyCalc
 ```
 
-```php
-#!/usr/bin/env php
-<?php
+It will create `bin/easy-calc` for unix systems and `bin/easy-calc.bat` for Windows OS.
 
-$dir = __DIR__.'/..';
+You can add it to **composer.json** so users can call it via composer:
 
-if (!file_exists($dir.'/autoload.php')) {
-    $dir = __DIR__.'/../vendor';
-}
-
-if (!file_exists($dir.'/autoload.php')) {
-    $dir = __DIR__.'/../../..';
-}
-
-if (!file_exists($dir.'/autoload.php')) {
-    echo 'Autoload not found.';
-    exit(1);
-}
-
-include $dir.'/autoload.php';
-
-exit((new \Carbon\Cli\CarbonCommand())(...array_slice($argv, 1)) ? 0 : 1);
+```json
+"bin": [
+    "bin/easy-calc"
+],
 ```
-
