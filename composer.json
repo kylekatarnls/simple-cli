@@ -28,7 +28,7 @@
         }
     },
     "scripts": {
-        "unit": "phpunit --coverage-text",
+        "unit": "phpunit --coverage-text --coverage-clover=coverage.xml",
         "md": "phpmd src,tests text ./phpmd.xml",
         "stan": "phpstan analyse --autoload-file=vendor/autoload.php --level max src tests",
         "test": [
