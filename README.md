@@ -401,42 +401,25 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 Get details to be displayed with the version command.
 
-*return* string
-
 ### getVersion(): string
 
 Get the composer version of the package handling the CLI program.
-
-*return* string
 
 ### autocomplete(string start): array
 
 Get possible completions for a given start.
 
-*param* string $start
-
-*return* string[]
-
 ### read(promptcompletion): string
 
 Ask the user $prompt and return the CLI input.
-
-*param* string              $prompt
-*param* array|callable|null $completion
-
-*return* string
 
 ### isMuted(): bool
 
 Returns true if the CLI program is muted (quiet).
 
-*return* bool
-
 ### setMuted(bool muted): void
 
 Set the mute state.
-
-*param* bool $muted
 
 ### mute(): void
 
@@ -458,207 +441,120 @@ Disable colors support in command line.
 
 Set a custom string for escape command in CLI strings.
 
-*param* string $escapeCharacter
-
 ### setColors(array colorsarray backgrounds): void
 
 Set colors palette.
-
-*param* array|null $colors
-*param* array|null $backgrounds
 
 ### colorize(string textstring colorstring background): string
 
 Return $text with given color and background color.
 
-*param* string      $text
-*param* string|null $color
-*param* string|null $background
-
-*return* string
-
 ### rewind(int length): void
 
 Rewind CLI cursor $length characters behind, if $length is omitted, use the last written string length.
-
-*param* int|null $length
 
 ### write(string textstring colorstring background): void
 
 Output $text with given color and background color.
 
-*param* string      $text
-*param* string|null $color
-*param* string|null $background
-
 ### writeLine(string textstring colorstring background): void
 
 Output $text with given color and background color and add a new line.
-
-*param* string      $text
-*param* string|null $color
-*param* string|null $background
 
 ### rewrite(string textstring colorstring background): void
 
 Replace last written line with $text with given color and background color.
 
-*param* string      $text
-*param* string|null $color
-*param* string|null $background
-
 ### rewriteLine(string textstring colorstring background): void
 
 Replace last written line with $text with given color and background color and re-add the new line.
-
-*param* string      $text
-*param* string|null $color
-*param* string|null $background
 
 ### getName(): string
 
 Get the name of the CLI program.
 
-*return* string|null
-
 ### getFile(): string
 
 Get the current program file called from the CLI.
-
-*return* string
 
 ### getCommands(): array
 
 Get the list of commands expect those provided by SimpleCli.
 
-*return* array
-
 ### getAvailableCommands(): array
 
 Get the list of commands included those provided by SimpleCli.
-
-*return* array
 
 ### getCommand(): string
 
 Get the selected command.
 
-*return* string
-
 ### getParameters(): array
 
 Get raw parameters (options and arguments) not filtered.
-
-*return* string[]
 
 ### getParameterValue(string parameterarray parameterDefinition): 
 
 Cast argument/option according to type in the definition.
 
-*param* string $parameter
-*param* array  $parameterDefinition
-
-*return* string|int|float|bool|null
-
 ### getArguments(): array
 
 Get list of current filtered arguments.
-
-*return* array
 
 ### getExpectedArguments(): array
 
 Get definitions of expected arguments.
 
-*return* array[]
-
 ### getRestArguments(): array
 
 Get the rest of filtered arguments.
-
-*return* array
 
 ### getExpectedRestArgument(): array
 
 Get definition for the rest argument if a @rest property given.
 
-*return* array|null
-
 ### getOptions(): array
 
 Get list of current filtered options.
-
-*return* array
 
 ### getExpectedOptions(): array
 
 Get definition of expected options.
 
-*return* array[]
-
 ### getOptionDefinition(string name): array
 
 Get option definition and expected types/values of a given one identified by name or alias.
-
-*param* string $name
-
-*return* array
 
 ### getPackageName(): string
 
 Get the composer package name that handle the CLI program.
 
-*return* string
-
 ### setVendorDirectory(string vendorDirectory): void
 
 Set the vendor that should contains packages including composer/installed.json.
-
-*param* string $vendorDirectory
 
 ### getVendorDirectory(): string
 
 Get the vendor that should contains packages including composer/installed.json.
 
-*return* string
-
 ### getInstalledPackages(): 
 
 Get the list of packages installed with composer.
-
-*return* array
 
 ### getInstalledPackage(string name): SimpleCli\Composer\InstalledPackage
 
 Get data for a given installed package.
 
-*param* string $name
-
-*return* InstalledPackage|null
-
 ### getInstalledPackageVersion(string name): string
 
 Get the version of a given installed package.
-
-*param* string $name
-
-*return* string
 
 ### extractClassNameDescription(string className): string
 
 Get PHP comment doc block content of a given class.
 
-*param* string $className
-
-*return* string
-
 ### extractAnnotation(string sourcestring annotation): string
 
 Extract an annotation content from a PHP comment doc block.
-
-*param* string $source
-*param* string $annotation
-
-*return* string|null
 
 <i end-api-reference></i>

@@ -40,7 +40,7 @@ foreach (get_class_methods(SimpleCli::class) as $method) {
     $comment = trim(preg_replace('/^\/\*+([\s\S]*)\*\/$/', '$1', $comment));
     $comment = trim(preg_replace('/^\s*\* /m', '', $comment));
     $comment = trim(preg_replace('/^\s*\*/m', '', $comment));
-    $comment = trim(preg_replace('/^@(\w+)/m', '*$1*', $comment));
+    $comment = trim(preg_replace('/^@(\w+)(.*)$/m', '', $comment));
 
     $doc .= "$comment\n\n";
 }
