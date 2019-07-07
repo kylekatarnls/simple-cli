@@ -12,14 +12,14 @@ class HelpTest extends TestCase
 {
     /**
      * @covers ::displayHelp
+     * @covers ::displayOptions
+     * @covers ::displayArguments
      */
     public function testDisplayHelp()
     {
         static::assertOutput('[ESCAPE][0;33mUsage:
 [ESCAPE][0m  file create [options] 
 
-[ESCAPE][0;33mArguments:
-[ESCAPE][0m
 [ESCAPE][0;33mOptions:
 [ESCAPE][0m  [ESCAPE][0;32m-h, --help[ESCAPE][0m     Display documentation of the current command.
                  [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
@@ -56,8 +56,6 @@ class HelpTest extends TestCase
         static::assertOutput('[ESCAPE][0;33mUsage:
 [ESCAPE][0m  file hall [options] 
 
-[ESCAPE][0;33mArguments:
-[ESCAPE][0m
 [ESCAPE][0;33mOptions:
 [ESCAPE][0m  [ESCAPE][0;32m-X, -Y, --bar, --biz[ESCAPE][0m  
                         [ESCAPE][0;36mint             [ESCAPE][0m[ESCAPE][0;33mdefault: 9[ESCAPE][0m
