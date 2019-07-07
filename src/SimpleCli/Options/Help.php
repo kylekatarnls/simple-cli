@@ -67,8 +67,8 @@ trait Help
 
         $cli->writeLine('Usage:', 'brown');
         $cli->writeLine('  '.$cli->getFile().' '.$cli->getCommand().' [options] '.implode(' ', array_map(function ($name) {
-                return "[<$name>]";
-            }, $argumentsNames)));
+            return "[<$name>]";
+        }, $argumentsNames)));
 
         $this->displayArguments($cli, $arguments, $length, $defaultInstance);
         $this->displayOptions($cli, $options, $length, $defaultInstance);
