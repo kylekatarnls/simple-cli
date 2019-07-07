@@ -13,14 +13,16 @@ foreach (get_class_methods(SimpleCli::class) as $method) {
 
     $reflextionMethod = new ReflectionMethod(SimpleCli::class, $method);
 
-    $doc .= '### '.$method.'(';
+    $parameters = [];
 
     foreach ($reflextionMethod->getParameters() as $parameter) {
+        $param = '';
+
         if ($type = $parameter->getType()) {
-            $doc .= "$type ";
+            $param .= "$type ";
         }
 
-        $doc .= $parameter->getName();
+        $param .= '$'.$parameter->getName();
 
         try {
             if ($defaultValue = $parameter->getDefaultValue()) {
@@ -28,13 +30,15 @@ foreach (get_class_methods(SimpleCli::class) as $method) {
                 $defaultValue = (string) preg_replace('/^\s*array\s*\(([\s\S]*)\)\s*$/', '[$1]', $defaultValue);
                 $defaultValue = (string) preg_replace('/^\s*\[\s+\]$/', '[]', $defaultValue);
 
-                $doc .= " = $defaultValue";
+                $param .= " = $defaultValue";
             }
         } catch (ReflectionException $exception) {
         }
+
+        $parameters[] = $param;
     }
 
-    $doc .= '): '.$reflextionMethod->getReturnType()."\n\n";
+    $doc .= '### '.$method.'('.implode(', ', $parameters).'): '.$reflextionMethod->getReturnType()."\n\n";
 
     $comment = trim($reflextionMethod->getDocComment());
     $comment = trim(preg_replace('/^\/\*+([\s\S]*)\*\/$/', '$1', $comment));
