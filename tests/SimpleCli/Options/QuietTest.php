@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\SimpleCli\Traits;
+namespace Tests\SimpleCli\Options;
 
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\TestCase;
@@ -8,12 +8,9 @@ use Tests\SimpleCli\TestCase;
 /**
  * @coversDefaultClass \SimpleCli\Options\Quiet
  */
-class HelpTest extends TestCase
+class QuietTest extends TestCase
 {
-    /**
-     * @covers ::isQuiet
-     */
-    public function testDisplayHelp()
+    public function testIsQuiet()
     {
         static::assertOutput('', function () {
             $command = new DemoCli();
