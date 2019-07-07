@@ -124,6 +124,8 @@ class SimpleCliTest extends TestCase
 
     /**
      * @covers ::__invoke
+     * @covers \SimpleCli\Options\Help::needsHelp
+     * @covers \SimpleCli\Options\Quiet::isQuiet
      */
     public function testInvoke()
     {
