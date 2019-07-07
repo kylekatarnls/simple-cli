@@ -63,8 +63,8 @@ trait Help
 
         $cli->writeLine('Usage:', 'brown');
         $cli->writeLine('  '.$cli->getFile().' '.$cli->getCommand().' [options] '.implode(' ', array_map(function ($name) {
-                return "[<$name>]";
-            }, $argumentsNames)));
+            return "[<$name>]";
+        }, $argumentsNames)));
 
         $this->displayArguments($cli, $arguments, $length, $defaultInstance);
         $this->displayOptions($cli, $options, $length, $defaultInstance);
@@ -74,9 +74,9 @@ trait Help
 
     /**
      * @param SimpleCli $cli
-     * @param array $arguments
-     * @param int $length
-     * @param self $defaultInstance
+     * @param array     $arguments
+     * @param int       $length
+     * @param self      $defaultInstance
      */
     protected function displayArguments(SimpleCli $cli, array $arguments, int $length, self $defaultInstance): void
     {
@@ -102,9 +102,9 @@ trait Help
 
     /**
      * @param SimpleCli $cli
-     * @param array $options
-     * @param int $length
-     * @param self $defaultInstance
+     * @param array     $options
+     * @param int       $length
+     * @param self      $defaultInstance
      */
     protected function displayOptions(SimpleCli $cli, array $options, int $length, self $defaultInstance): void
     {
