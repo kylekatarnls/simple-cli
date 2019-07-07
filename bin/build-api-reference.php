@@ -41,6 +41,7 @@ foreach (get_class_methods(SimpleCli::class) as $method) {
     $comment = trim(preg_replace('/^\s*\* /m', '', $comment));
     $comment = trim(preg_replace('/^\s*\*/m', '', $comment));
     $comment = trim(preg_replace('/^@(\w+)(.*)$/m', '', $comment));
+    $comment = trim(preg_replace('/^(.*)$/m', '> $1', $comment));
 
     $doc .= "$comment\n\n";
 }

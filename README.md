@@ -399,162 +399,162 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 ### getVersionDetails(): string
 
-Get details to be displayed with the version command.
+> Get details to be displayed with the version command.
 
 ### getVersion(): string
 
-Get the composer version of the package handling the CLI program.
+> Get the composer version of the package handling the CLI program.
 
 ### autocomplete(string start): array
 
-Get possible completions for a given start.
+> Get possible completions for a given start.
 
 ### read(promptcompletion): string
 
-Ask the user $prompt and return the CLI input.
+> Ask the user $prompt and return the CLI input.
 
 ### isMuted(): bool
 
-Returns true if the CLI program is muted (quiet).
+> Returns true if the CLI program is muted (quiet).
 
 ### setMuted(bool muted): void
 
-Set the mute state.
+> Set the mute state.
 
 ### mute(): void
 
-Mute the program (no more output).
+> Mute the program (no more output).
 
 ### unmute(): void
 
-Unmute the program (enable output).
+> Unmute the program (enable output).
 
 ### enableColors(): void
 
-Enable colors support in command line.
+> Enable colors support in command line.
 
 ### disableColors(): void
 
-Disable colors support in command line.
+> Disable colors support in command line.
 
 ### setEscapeCharacter(string escapeCharacter): void
 
-Set a custom string for escape command in CLI strings.
+> Set a custom string for escape command in CLI strings.
 
 ### setColors(array colorsarray backgrounds): void
 
-Set colors palette.
+> Set colors palette.
 
 ### colorize(string textstring colorstring background): string
 
-Return $text with given color and background color.
+> Return $text with given color and background color.
 
 ### rewind(int length): void
 
-Rewind CLI cursor $length characters behind, if $length is omitted, use the last written string length.
+> Rewind CLI cursor $length characters behind, if $length is omitted, use the last written string length.
 
 ### write(string textstring colorstring background): void
 
-Output $text with given color and background color.
+> Output $text with given color and background color.
 
 ### writeLine(string textstring colorstring background): void
 
-Output $text with given color and background color and add a new line.
+> Output $text with given color and background color and add a new line.
 
 ### rewrite(string textstring colorstring background): void
 
-Replace last written line with $text with given color and background color.
+> Replace last written line with $text with given color and background color.
 
 ### rewriteLine(string textstring colorstring background): void
 
-Replace last written line with $text with given color and background color and re-add the new line.
+> Replace last written line with $text with given color and background color and re-add the new line.
 
 ### getName(): string
 
-Get the name of the CLI program.
+> Get the name of the CLI program.
 
 ### getFile(): string
 
-Get the current program file called from the CLI.
+> Get the current program file called from the CLI.
 
 ### getCommands(): array
 
-Get the list of commands expect those provided by SimpleCli.
+> Get the list of commands expect those provided by SimpleCli.
 
 ### getAvailableCommands(): array
 
-Get the list of commands included those provided by SimpleCli.
+> Get the list of commands included those provided by SimpleCli.
 
 ### getCommand(): string
 
-Get the selected command.
+> Get the selected command.
 
 ### getParameters(): array
 
-Get raw parameters (options and arguments) not filtered.
+> Get raw parameters (options and arguments) not filtered.
 
 ### getParameterValue(string parameterarray parameterDefinition): 
 
-Cast argument/option according to type in the definition.
+> Cast argument/option according to type in the definition.
 
 ### getArguments(): array
 
-Get list of current filtered arguments.
+> Get list of current filtered arguments.
 
 ### getExpectedArguments(): array
 
-Get definitions of expected arguments.
+> Get definitions of expected arguments.
 
 ### getRestArguments(): array
 
-Get the rest of filtered arguments.
+> Get the rest of filtered arguments.
 
 ### getExpectedRestArgument(): array
 
-Get definition for the rest argument if a @rest property given.
+> Get definition for the rest argument if a @rest property given.
 
 ### getOptions(): array
 
-Get list of current filtered options.
+> Get list of current filtered options.
 
 ### getExpectedOptions(): array
 
-Get definition of expected options.
+> Get definition of expected options.
 
 ### getOptionDefinition(string name): array
 
-Get option definition and expected types/values of a given one identified by name or alias.
+> Get option definition and expected types/values of a given one identified by name or alias.
 
 ### getPackageName(): string
 
-Get the composer package name that handle the CLI program.
+> Get the composer package name that handle the CLI program.
 
 ### setVendorDirectory(string vendorDirectory): void
 
-Set the vendor that should contains packages including composer/installed.json.
+> Set the vendor that should contains packages including composer/installed.json.
 
 ### getVendorDirectory(): string
 
-Get the vendor that should contains packages including composer/installed.json.
+> Get the vendor that should contains packages including composer/installed.json.
 
 ### getInstalledPackages(): 
 
-Get the list of packages installed with composer.
+> Get the list of packages installed with composer.
 
 ### getInstalledPackage(string name): SimpleCli\Composer\InstalledPackage
 
-Get data for a given installed package.
+> Get data for a given installed package.
 
 ### getInstalledPackageVersion(string name): string
 
-Get the version of a given installed package.
+> Get the version of a given installed package.
 
 ### extractClassNameDescription(string className): string
 
-Get PHP comment doc block content of a given class.
+> Get PHP comment doc block content of a given class.
 
 ### extractAnnotation(string sourcestring annotation): string
 
-Extract an annotation content from a PHP comment doc block.
+> Extract an annotation content from a PHP comment doc block.
 
 <i end-api-reference></i>
