@@ -103,4 +103,16 @@ trait Help
 
         return true;
     }
+
+    /**
+     * @internal
+     *
+     * @param self|\SimpleCli\Command $commander
+     *
+     * @return bool
+     */
+    public static function needsHelp($commander): bool
+    {
+        return in_array(self::class, class_uses($commander)) && $commander->help ?? false;
+    }
 }

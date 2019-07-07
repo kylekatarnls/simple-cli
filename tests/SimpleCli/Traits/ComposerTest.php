@@ -35,6 +35,7 @@ class ComposerTest extends TraitsTestCase
      */
     public function testSetVendorDirectory()
     {
+        /** @var string $path */
         $path = realpath(__DIR__);
         $command = new DemoCli();
         $command->setVendorDirectory($path);
@@ -87,6 +88,7 @@ class ComposerTest extends TraitsTestCase
         @mkdir($vendorDirectory.'/composer');
         file_put_contents($vendorDirectory.'/composer/installed.json', json_encode($packages));
 
+        /** @var InstalledPackage $installedPackage */
         $installedPackage = $command->getInstalledPackage('foo/bar');
         static::assertInstanceOf(InstalledPackage::class, $installedPackage);
         static::assertSame('foo/bar', $installedPackage->name);

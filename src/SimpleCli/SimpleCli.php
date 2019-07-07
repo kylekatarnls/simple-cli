@@ -143,6 +143,17 @@ abstract class SimpleCli
         return $commander;
     }
 
+    /**
+     * Execute the command.
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     *
+     * @param string $file
+     * @param string $command
+     * @param mixed  ...$parameters
+     *
+     * @return bool
+     */
     public function __invoke(string $file, string $command = 'list', ...$parameters): bool
     {
         $this->file = $file;
@@ -157,13 +168,12 @@ abstract class SimpleCli
             return false;
         }
 
-        if (in_array(Quiet::class, class_uses($commander)) && ($commander->quiet ?? false)) {
+        if (Quiet::isQuiet(/* @var Quiet $commander */ $commander)) {
             $this->mute();
         }
 
-        if (in_array(Help::class, class_uses($commander)) && ($commander->help ?? false)) {
-            /* @var Help $commander */
-            $commander->displayHelp($this);
+        if (Help::needsHelp(/** @var Help $helper */ $helper = $commander)) {
+            $helper->displayHelp($this);
 
             return true;
         }

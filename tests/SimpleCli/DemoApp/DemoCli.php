@@ -5,6 +5,9 @@ namespace Tests\SimpleCli\DemoApp;
 use SimpleCli\SimpleCli;
 use SimpleCli\SimpleCliCommand\Create;
 
+/**
+ * @SuppressWarnings(PHPMD.LongVariable)
+ */
 class DemoCli extends SimpleCli
 {
     protected $escapeCharacter = '[ESCAPE]';
