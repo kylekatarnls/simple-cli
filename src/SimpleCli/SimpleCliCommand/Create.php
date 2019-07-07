@@ -86,9 +86,12 @@ class Create implements Command
                 continue;
             }
 
+            /** @var SimpleCli $createdCli */
+            $createdCli = new $className();
+
             $this->copyBinTemplate(
                 $cli,
-                $cli->getName() ?: $this->extractName($className),
+                $createdCli->getName() ?: $this->extractName($className),
                 '\\'.ltrim($className, '\\')
             );
 
