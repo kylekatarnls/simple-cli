@@ -30,6 +30,10 @@ trait Help
             $arguments[$argument['property']] = $argument;
         }
 
+        if ($restArgument = $cli->getExpectedRestArgument()) {
+            $arguments['...'.$restArgument['property']] = $restArgument;
+        }
+
         $options = [];
 
         foreach ($cli->getExpectedOptions() as $option) {
@@ -63,8 +67,8 @@ trait Help
 
         $cli->writeLine('Usage:', 'brown');
         $cli->writeLine('  '.$cli->getFile().' '.$cli->getCommand().' [options] '.implode(' ', array_map(function ($name) {
-            return "[<$name>]";
-        }, $argumentsNames)));
+                return "[<$name>]";
+            }, $argumentsNames)));
 
         $this->displayArguments($cli, $arguments, $length, $defaultInstance);
         $this->displayOptions($cli, $options, $length, $defaultInstance);
@@ -94,7 +98,7 @@ trait Help
                     "\n".str_repeat(' ', $length + 2),
                     $definition['description']."\n".
                     $cli->colorize(str_pad($definition['values'] ?: $definition['type'], 16, ' ', STR_PAD_RIGHT), 'cyan').
-                    $cli->colorize('default: '.var_export($defaultInstance->$property, true), 'brown')
+                    $cli->colorize('default: '.$this->getValueExport($defaultInstance->$property), 'brown')
                 ));
             }
         }
@@ -123,9 +127,25 @@ trait Help
                     "\n".str_repeat(' ', $length + 2),
                     $definition['description']."\n".
                     $cli->colorize(str_pad($definition['values'] ?: $definition['type'], 16, ' ', STR_PAD_RIGHT), 'cyan').
-                    $cli->colorize('default: '.var_export($defaultInstance->$property, true), 'brown')
+                    $cli->colorize('default: '.$this->getValueExport($defaultInstance->$property), 'brown')
                 ));
             }
         }
+    }
+
+    /**
+     * Get value export for a given value.
+     *
+     * @param mixed $value
+     *
+     * @return string
+     */
+    protected function getValueExport($value): string
+    {
+        $value = (string) var_export($value, true);
+        $value = (string) preg_replace('/^\s*array\s*\(([\s\S]*)\)\s*$/', '[$1]', $value);
+        $value = (string) preg_replace('/^\s*\[\s+\]$/', '[]', $value);
+
+        return $value;
     }
 }

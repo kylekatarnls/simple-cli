@@ -119,10 +119,111 @@ Now it's time for your CLI to get actual commands. To create an `add`
 command for example, you can create a `MyVendorName\CliApp\Command\Add` class:
 
 ```php
+<?php
+
+namespace MyVendorName\CliApp\Command;
+
+use SimpleCli\Command;
+use SimpleCli\Options\Help;
+use SimpleCli\SimpleCli;
+
 /**
- * Create a program in the bin directory that call the class given as argument.
- * Argument should be a class name (with namespace) that extends SimpleCli\SimpleCli.
- * Note that you must escape it, e.g. MyNamespace\\MyClass.
+ * Sum arguments.
  */
 class Add implements Command
+{
+    use Help;
+
+    public function run(SimpleCli $cli): bool
+    {
+    }
+}
 ```
+
+Then add this command with a name in your CLI:
+
+```php
+class EasyCalc extends SimpleCli
+{
+    public function getCommands() : array
+    {
+        return [
+            'add' => \MyVendorName\CliApp\Command\Add::class,
+        ];
+    }
+}
+```
+
+If you run `bin/easy-calc` (or `bin/easy-calc list`) again, you will now
+see `add` as an available command. And the comment you put in `/** */`
+appears in the description. 
+
+If you run `bin/easy-calc add --help` (or `bin/easy-calc add -h`) you will
+the documentation of your command based on the options and arguments defined.
+As you see, there is only `--help` option (or `-h` alias) provided by the
+trait `SimpleCli\Options\Help` (we highly recommend to always use this trait
+in your commands).
+
+## Add arguments
+
+Now let's add some argument so your command would actually do something.
+
+```php
+<?php
+
+namespace MyVendorName\CliApp\Command;
+
+use SimpleCli\Command;
+use SimpleCli\Options\Help;
+use SimpleCli\SimpleCli;
+
+/**
+ * Sum arguments.
+ */
+class Add implements Command
+{
+    use Help;
+
+    /**
+     * @argument
+     *
+     * The first number
+     *
+     * @var float
+     */
+    public $number1 = 0;
+
+    /**
+     * @argument
+     *
+     * The second number
+     *
+     * @var float
+     */
+    public $number2 = 0;
+
+    public function run(SimpleCli $cli): bool
+    {
+        $cli->write($this->number1 + $this->number2);
+
+        return true;
+    }
+}
+```
+
+The `@argument` annotation allows simple-cli to know it's an argument.
+
+If you run `bin/easy-calc add --help` you will see they appear in the
+help with their description, type and default value.
+
+Now's time to execute your command:
+
+```shell
+bin/easy-calc add 2 3
+```
+
+It outputs `5` :rocket:
+
+Note than `run()` must return a boolean:
+ - `true` for successful command (exit code 0)
+ - `false` for error (exit code 1)

@@ -50,7 +50,11 @@ class SimpleCliTest extends TestCase
     public function testParseParameters()
     {
         static::assertOutput('[ESCAPE][0;33mUsage:
-[ESCAPE][0m  file create [options] 
+[ESCAPE][0m  file create [options] [<...classNames>]
+
+[ESCAPE][0;33mArguments:
+[ESCAPE][0m  [ESCAPE][0;32mclassNames[ESCAPE][0m     
+                 [ESCAPE][0;36mstring          [ESCAPE][0m[ESCAPE][0;33mdefault: NULL[ESCAPE][0m
 
 [ESCAPE][0;33mOptions:
 [ESCAPE][0m  [ESCAPE][0;32m-h, --help[ESCAPE][0m     Display documentation of the current command.
@@ -127,7 +131,11 @@ class SimpleCliTest extends TestCase
     public function testInvoke()
     {
         static::assertOutput('[ESCAPE][0;33mUsage:
-[ESCAPE][0m  file create [options] 
+[ESCAPE][0m  file create [options] [<...classNames>]
+
+[ESCAPE][0;33mArguments:
+[ESCAPE][0m  [ESCAPE][0;32mclassNames[ESCAPE][0m     
+                 [ESCAPE][0;36mstring          [ESCAPE][0m[ESCAPE][0;33mdefault: NULL[ESCAPE][0m
 
 [ESCAPE][0;33mOptions:
 [ESCAPE][0m  [ESCAPE][0;32m-h, --help[ESCAPE][0m     Display documentation of the current command.
