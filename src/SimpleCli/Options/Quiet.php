@@ -18,7 +18,7 @@ trait Quiet
     /**
      * @internal
      *
-     * @param self|\SimpleCli\Command $commander
+     * @param self|Quiet|\SimpleCli\Command $commander
      *
      * @return bool
      */
