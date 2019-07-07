@@ -58,49 +58,74 @@ trait Help
 
         $argumentsNames = array_keys($arguments);
         $optionsNames = array_keys($options);
-        $length = (int) max(...array_map('strlen', $argumentsNames), ...array_map('strlen', $optionsNames)) + 2;
+        $length = (int) max(array_merge(array_map('strlen', $argumentsNames), array_map('strlen', $optionsNames))) + 2;
         $defaultInstance = new static();
 
         $cli->writeLine('Usage:', 'brown');
         $cli->writeLine('  '.$cli->getFile().' '.$cli->getCommand().' [options] '.implode(' ', array_map(function ($name) {
-            return "[<$name>]";
-        }, $argumentsNames)));
-        $cli->writeLine();
+                return "[<$name>]";
+            }, $argumentsNames)));
 
-        $cli->writeLine('Arguments:', 'brown');
-
-        foreach ($arguments as $definition) {
-            $property = $definition['property'];
-            $cli->write('  ');
-            $cli->write($property, 'green');
-            $cli->write(str_repeat(' ', $length - strlen($property)));
-            $cli->writeLine(str_replace(
-                "\n",
-                "\n".str_repeat(' ', $length + 2),
-                $definition['description']."\n".
-                $cli->colorize(str_pad($definition['values'] ?: $definition['type'], 16, ' ', STR_PAD_RIGHT), 'cyan').
-                $cli->colorize('default: '.var_export($defaultInstance->$property, true), 'brown')
-            ));
-        }
-
-        $cli->writeLine();
-
-        $cli->writeLine('Options:', 'brown');
-
-        foreach ($options as $name => $definition) {
-            $property = $definition['property'];
-            $cli->write('  ');
-            $cli->write($name, 'green');
-            $cli->write(str_repeat(' ', $length - strlen($name)));
-            $cli->writeLine(str_replace(
-                "\n",
-                "\n".str_repeat(' ', $length + 2),
-                $definition['description']."\n".
-                $cli->colorize(str_pad($definition['values'] ?: $definition['type'], 16, ' ', STR_PAD_RIGHT), 'cyan').
-                $cli->colorize('default: '.var_export($defaultInstance->$property, true), 'brown')
-            ));
-        }
+        $this->displayArguments($cli, $arguments, $length, $defaultInstance);
+        $this->displayOptions($cli, $options, $length, $defaultInstance);
 
         return true;
+    }
+
+    /**
+     * @param SimpleCli $cli
+     * @param array $arguments
+     * @param int $length
+     * @param self $defaultInstance
+     */
+    protected function displayArguments(SimpleCli $cli, array $arguments, int $length, self $defaultInstance): void
+    {
+        if (count($arguments)) {
+            $cli->writeLine();
+            $cli->writeLine('Arguments:', 'brown');
+
+            foreach ($arguments as $definition) {
+                $property = (string) $definition['property'];
+                $cli->write('  ');
+                $cli->write($property, 'green');
+                $cli->write(str_repeat(' ', $length - strlen($property)));
+                $cli->writeLine(str_replace(
+                    "\n",
+                    "\n".str_repeat(' ', $length + 2),
+                    $definition['description']."\n".
+                    $cli->colorize(str_pad($definition['values'] ?: $definition['type'], 16, ' ', STR_PAD_RIGHT), 'cyan').
+                    $cli->colorize('default: '.var_export($defaultInstance->$property, true), 'brown')
+                ));
+            }
+        }
+    }
+
+    /**
+     * @param SimpleCli $cli
+     * @param array $options
+     * @param int $length
+     * @param self $defaultInstance
+     */
+    protected function displayOptions(SimpleCli $cli, array $options, int $length, self $defaultInstance): void
+    {
+        if (count($options)) {
+            $cli->writeLine();
+            $cli->writeLine('Options:', 'brown');
+
+            foreach ($options as $name => $definition) {
+                $name = (string) $name;
+                $property = (string) $definition['property'];
+                $cli->write('  ');
+                $cli->write($name, 'green');
+                $cli->write(str_repeat(' ', $length - strlen($name)));
+                $cli->writeLine(str_replace(
+                    "\n",
+                    "\n".str_repeat(' ', $length + 2),
+                    $definition['description']."\n".
+                    $cli->colorize(str_pad($definition['values'] ?: $definition['type'], 16, ' ', STR_PAD_RIGHT), 'cyan').
+                    $cli->colorize('default: '.var_export($defaultInstance->$property, true), 'brown')
+                ));
+            }
+        }
     }
 }

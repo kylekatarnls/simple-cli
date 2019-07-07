@@ -30,6 +30,8 @@ So first check you have a PSR autoload set in your **composer.json**:
 },
 ```
 
+(You may need to run `composer update` or `composer dump-autoload` to get the autoload in effect.)
+
 Then create the class so it can be autoloaded, so with the example above, we can create the file
 `src/MyVendorName/CliApp/EasyCalc.php`:
 
@@ -66,4 +68,61 @@ You can add it to **composer.json** so users can call it via composer:
 "bin": [
     "bin/easy-calc"
 ],
+```
+
+Let's test your CLI program now:
+
+```shell
+bin/easy-calc
+```
+
+![Usage](https://raw.githubusercontent.com/kylekatarnls/simple-cli/master/doc/img/usage.jpg)
+
+As you can see, by default, simple-cli provide 2 commands: `list` (that is also the default when the user did not
+choose a command) that list the commands available and `version` (that will show the version of your composer package
+and version details you may add if you publish it).
+
+Note that if you don't want to publish it, you can either customize what version should display:
+
+```php
+class EasyCalc extends SimpleCli
+{
+    public function getCommands() : array
+    {
+        return [];
+    }
+
+    public function getVersion(): string
+    {
+        return '1.0.0';
+    }
+}
+```
+
+Or you can disable any of the default commands:
+
+```php
+class EasyCalc extends SimpleCli
+{
+    public function getCommands() : array
+    {
+        return [
+            'version' => false,
+        ];
+    }
+}
+```
+
+## Add commands
+
+Now it's time for your CLI to get actual commands. To create an `add`
+command for example, you can create a `MyVendorName\CliApp\Command\Add` class:
+
+```php
+/**
+ * Create a program in the bin directory that call the class given as argument.
+ * Argument should be a class name (with namespace) that extends SimpleCli\SimpleCli.
+ * Note that you must escape it, e.g. MyNamespace\\MyClass.
+ */
+class Add implements Command
 ```

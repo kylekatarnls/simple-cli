@@ -15,7 +15,7 @@ class Usage implements Command
     public function run(SimpleCli $cli): bool
     {
         $commands = $cli->getAvailableCommands();
-        $length = max(...array_map('strlen', array_keys($commands))) + 2;
+        $length = max(array_map('strlen', array_keys($commands))) + 2;
 
         $cli->writeLine('Usage:', 'brown');
         $cli->writeLine('  '.$cli->getFile().' [command] [options] [arguments]');

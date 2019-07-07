@@ -54,7 +54,7 @@ abstract class SimpleCli
      *
      * @return string
      */
-    public function getVersion()
+    public function getVersion(): string
     {
         $packageName = $this->getPackageName();
         $start = $packageName === '' ? '' : $this->colorize($packageName, 'green').' version ';
