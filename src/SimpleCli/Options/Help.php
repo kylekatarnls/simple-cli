@@ -107,7 +107,7 @@ trait Help
     /**
      * @internal
      *
-     * @param self|\SimpleCli\Command $commander
+     * @param self|Help|\SimpleCli\Command $commander
      *
      * @return bool
      */
