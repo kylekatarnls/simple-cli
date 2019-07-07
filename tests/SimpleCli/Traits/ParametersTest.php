@@ -4,12 +4,11 @@ namespace Tests\SimpleCli\Traits;
 
 use InvalidArgumentException;
 use Tests\SimpleCli\DemoApp\DemoCli;
-use Tests\SimpleCli\TestCase;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\Parameters
  */
-class ParametersTest extends TestCase
+class ParametersTest extends TraitsTestCase
 {
     /**
      * @covers ::getParameters

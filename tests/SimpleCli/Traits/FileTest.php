@@ -3,12 +3,11 @@
 namespace Tests\SimpleCli\Traits;
 
 use Tests\SimpleCli\DemoApp\DemoCli;
-use Tests\SimpleCli\TestCase;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\File
  */
-class FileTest extends TestCase
+class FileTest extends TraitsTestCase
 {
     /**
      * @covers ::getFile

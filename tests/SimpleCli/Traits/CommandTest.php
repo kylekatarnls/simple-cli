@@ -3,12 +3,11 @@
 namespace Tests\SimpleCli\Traits;
 
 use Tests\SimpleCli\DemoApp\DemoCli;
-use Tests\SimpleCli\TestCase;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\Command
  */
-class CommandTest extends TestCase
+class CommandTest extends TraitsTestCase
 {
     /**
      * @covers ::getCommand

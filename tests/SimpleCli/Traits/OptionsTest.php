@@ -5,12 +5,11 @@ namespace Tests\SimpleCli\Traits;
 use InvalidArgumentException;
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\DemoApp\DummyCli;
-use Tests\SimpleCli\TestCase;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\Options
  */
-class OptionsTest extends TestCase
+class OptionsTest extends TraitsTestCase
 {
     /**
      * @covers ::getOptions

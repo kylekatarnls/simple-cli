@@ -3,12 +3,11 @@
 namespace Tests\SimpleCli\Traits;
 
 use Tests\SimpleCli\DemoApp\DemoCli;
-use Tests\SimpleCli\TestCase;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\Arguments
  */
-class ArgumentsTest extends TestCase
+class ArgumentsTest extends TraitsTestCase
 {
     /**
      * @covers ::getArguments

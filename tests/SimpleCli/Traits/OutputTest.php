@@ -3,12 +3,11 @@
 namespace Tests\SimpleCli\Traits;
 
 use Tests\SimpleCli\DemoApp\DemoCli;
-use Tests\SimpleCli\TestCase;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\Output
  */
-class OutputTest extends TestCase
+class OutputTest extends TraitsTestCase
 {
     /**
      * @covers ::write
