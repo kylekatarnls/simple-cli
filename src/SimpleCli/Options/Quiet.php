@@ -18,12 +18,14 @@ trait Quiet
     /**
      * @internal
      *
-     * @param self|Quiet|\SimpleCli\Command $commander
+     * @param \SimpleCli\Command $commander
      *
      * @return bool
      */
     public static function isQuiet($commander): bool
     {
-        return in_array(self::class, class_uses($commander)) && $commander->quiet ?? false;
+        return in_array(self::class, class_uses($commander)) &&
+            (/** @var self $quieter */ $quieter = $commander) &&
+            $quieter->quiet ?? false;
     }
 }
