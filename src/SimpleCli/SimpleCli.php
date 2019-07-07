@@ -162,6 +162,7 @@ abstract class SimpleCli
         }
 
         if (in_array(Help::class, class_uses($commander)) && ($commander->help ?? false)) {
+            /* @var Help $commander */
             $commander->displayHelp($this);
 
             return true;

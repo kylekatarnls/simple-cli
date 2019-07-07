@@ -33,6 +33,28 @@ class OutputTest extends TestCase
     }
 
     /**
+     * @covers ::writeLine
+     */
+    public function testWriteLine()
+    {
+        $command = new DemoCli();
+
+        static::assertOutput("Hello world\n", function () use ($command) {
+            $command->writeLine('Hello world');
+        });
+
+        static::assertOutput('', function () use ($command) {
+            $command->mute();
+            $command->writeLine('Hello world');
+        });
+
+        static::assertOutput("[ESCAPE][0;31mHello world\n[ESCAPE][0m", function () use ($command) {
+            $command->unmute();
+            $command->writeLine('Hello world', 'red');
+        });
+    }
+
+    /**
      * @covers ::colorize
      * @covers ::getColorCode
      */

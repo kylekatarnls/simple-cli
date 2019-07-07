@@ -14,14 +14,4 @@ trait Quiet
      * @var bool
      */
     public $quiet = false;
-
-    /**
-     * Return true if quiet option is enabled.
-     *
-     * @return bool
-     */
-    public function isQuiet(): bool
-    {
-        return $this->quiet;
-    }
 }
