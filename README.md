@@ -405,11 +405,11 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 > Get the composer version of the package handling the CLI program.
 
-### autocomplete(string start): array
+### autocomplete(string $start): array
 
 > Get possible completions for a given start.
 
-### read(promptcompletion): string
+### read($prompt, $completion): string
 
 > Ask the user $prompt and return the CLI input.
 
@@ -417,7 +417,7 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 > Returns true if the CLI program is muted (quiet).
 
-### setMuted(bool muted): void
+### setMuted(bool $muted): void
 
 > Set the mute state.
 
@@ -437,35 +437,35 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 > Disable colors support in command line.
 
-### setEscapeCharacter(string escapeCharacter): void
+### setEscapeCharacter(string $escapeCharacter): void
 
 > Set a custom string for escape command in CLI strings.
 
-### setColors(array colorsarray backgrounds): void
+### setColors(array $colors, array $backgrounds): void
 
 > Set colors palette.
 
-### colorize(string textstring colorstring background): string
+### colorize(string $text, string $color, string $background): string
 
 > Return $text with given color and background color.
 
-### rewind(int length): void
+### rewind(int $length): void
 
 > Rewind CLI cursor $length characters behind, if $length is omitted, use the last written string length.
 
-### write(string textstring colorstring background): void
+### write(string $text, string $color, string $background): void
 
 > Output $text with given color and background color.
 
-### writeLine(string textstring colorstring background): void
+### writeLine(string $text, string $color, string $background): void
 
 > Output $text with given color and background color and add a new line.
 
-### rewrite(string textstring colorstring background): void
+### rewrite(string $text, string $color, string $background): void
 
 > Replace last written line with $text with given color and background color.
 
-### rewriteLine(string textstring colorstring background): void
+### rewriteLine(string $text, string $color, string $background): void
 
 > Replace last written line with $text with given color and background color and re-add the new line.
 
@@ -493,7 +493,7 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 > Get raw parameters (options and arguments) not filtered.
 
-### getParameterValue(string parameterarray parameterDefinition): 
+### getParameterValue(string $parameter, array $parameterDefinition): 
 
 > Cast argument/option according to type in the definition.
 
@@ -521,7 +521,7 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 > Get definition of expected options.
 
-### getOptionDefinition(string name): array
+### getOptionDefinition(string $name): array
 
 > Get option definition and expected types/values of a given one identified by name or alias.
 
@@ -529,7 +529,7 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 > Get the composer package name that handle the CLI program.
 
-### setVendorDirectory(string vendorDirectory): void
+### setVendorDirectory(string $vendorDirectory): void
 
 > Set the vendor that should contains packages including composer/installed.json.
 
@@ -541,19 +541,19 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 > Get the list of packages installed with composer.
 
-### getInstalledPackage(string name): SimpleCli\Composer\InstalledPackage
+### getInstalledPackage(string $name): SimpleCli\Composer\InstalledPackage
 
 > Get data for a given installed package.
 
-### getInstalledPackageVersion(string name): string
+### getInstalledPackageVersion(string $name): string
 
 > Get the version of a given installed package.
 
-### extractClassNameDescription(string className): string
+### extractClassNameDescription(string $className): string
 
 > Get PHP comment doc block content of a given class.
 
-### extractAnnotation(string sourcestring annotation): string
+### extractAnnotation(string $source, string $annotation): string
 
 > Extract an annotation content from a PHP comment doc block.
 
