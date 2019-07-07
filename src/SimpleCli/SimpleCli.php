@@ -143,10 +143,13 @@ abstract class SimpleCli
         return $commander;
     }
 
+    protected function hasTraitFeatureEnabled(Command $commander = null, string $trait = '', string $property = '')
+    {
+        return $commander && in_array($trait, class_uses($commander)) && $commander->$property ?? false;
+    }
+
     /**
      * Execute the command.
-     *
-     * @SuppressWarnings(PHPMD.StaticAccess)
      *
      * @param string $file
      * @param string $command
@@ -168,11 +171,11 @@ abstract class SimpleCli
             return false;
         }
 
-        if (Quiet::isQuiet(/* @var Quiet $commander */ $commander)) {
+        if ($this->hasTraitFeatureEnabled(/* @var Quiet $commander */ $commander, Quiet::class, 'quiet')) {
             $this->mute();
         }
 
-        if (Help::needsHelp(/** @var Help $helper */ $helper = $commander)) {
+        if ($this->hasTraitFeatureEnabled(/** @var Help $helper */ $helper = $commander, Help::class, 'help')) {
             $helper->displayHelp($this);
 
             return true;
