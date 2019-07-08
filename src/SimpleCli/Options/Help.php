@@ -66,7 +66,7 @@ trait Help
         $defaultInstance = new static();
 
         $cli->writeLine('Usage:', 'brown');
-        $cli->writeLine('  '.$cli->getFile().' '.$cli->getCommand().' [options] '.implode(' ', array_map(function ($name) {
+        $cli->writeLine('  '.basename($cli->getFile()).' '.$cli->getCommand().' [options] '.implode(' ', array_map(function ($name) {
             return "[<$name>]";
         }, $argumentsNames)));
 
