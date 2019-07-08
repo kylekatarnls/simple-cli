@@ -18,7 +18,7 @@ class Usage implements Command
         $length = max(array_map('strlen', array_keys($commands))) + 2;
 
         $cli->writeLine('Usage:', 'brown');
-        $cli->writeLine('  '.$cli->getFile().' [command] [options] [arguments]');
+        $cli->writeLine('  '.basename($cli->getFile()).' [command] [options] [arguments]');
         $cli->writeLine();
 
         $cli->writeLine('Available commands:', 'brown');
