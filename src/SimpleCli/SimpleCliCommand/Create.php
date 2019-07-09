@@ -80,6 +80,13 @@ class Create implements Command
                 $cli->writeLine("Creating program for $className", 'light_cyan');
             }
 
+            if (!class_exists($className)) {
+                $this->error($cli, "$className class not found");
+                $cli->writeLine('Please check your composer autoload is up to date and allow to load this class.');
+
+                continue;
+            }
+
             if (!is_subclass_of($className, SimpleCli::class)) {
                 $this->error($cli, "$className needs to implement ".SimpleCli::class);
 

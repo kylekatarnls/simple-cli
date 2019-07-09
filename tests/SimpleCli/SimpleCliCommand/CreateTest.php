@@ -127,12 +127,23 @@ php "%BIN_TARGET%" %*
      */
     public function testRun()
     {
-        static::assertOutput('[ESCAPE][0;31mfoobar needs to implementSimpleCli\SimpleCli
-[ESCAPE][0m[ESCAPE][0;36m0 programs created.
+        static::assertOutput('[ESCAPE][0;31mfoobar class not found
+[ESCAPE][0mPlease check your composer autoload is up to date and allow to load this class.
+[ESCAPE][0;36m0 programs created.
 [ESCAPE][0m', function () {
             $command = new DemoCli();
 
             $command('file', 'create', 'foobar');
+        });
+
+        $this->fileSystem->remove('bin');
+
+        static::assertOutput('[ESCAPE][0;31mstdClass needs to implement SimpleCli\SimpleCli
+[ESCAPE][0m[ESCAPE][0;36m0 programs created.
+[ESCAPE][0m', function () {
+            $command = new DemoCli();
+
+            $command('file', 'create', 'stdClass');
         });
 
         $this->fileSystem->remove('bin');
