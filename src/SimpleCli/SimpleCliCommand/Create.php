@@ -81,7 +81,7 @@ class Create implements Command
             }
 
             if (!is_subclass_of($className, SimpleCli::class)) {
-                $this->error($cli, "$className needs to implement".SimpleCli::class);
+                $this->error($cli, "$className needs to implement ".SimpleCli::class);
 
                 continue;
             }
