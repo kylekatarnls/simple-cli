@@ -26,6 +26,9 @@ script:
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 
+after_script:
+  - ./cc-test-reporter after-build --coverage-input-type clover --exit-code $TRAVIS_TEST_RESULT
+
 env:
   global:
     - CC_TEST_REPORTER_ID=b4c0fd2741b7cd363d1d0dac87a95b3aff1d0faaa54ec76886e1a358f6e5b86e
