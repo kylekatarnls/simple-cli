@@ -34,5 +34,5 @@ after_script:
 
 env:
   global:
-    - CODACY_API_BASE_URL=0a129ff74aca479ba21a16d8a316de07
+    - CODACY_PROJECT_TOKEN=0a129ff74aca479ba21a16d8a316de07
     - CC_TEST_REPORTER_ID=b4c0fd2741b7cd363d1d0dac87a95b3aff1d0faaa54ec76886e1a358f6e5b86e
