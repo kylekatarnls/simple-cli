@@ -54,8 +54,8 @@ class SimpleCliTest extends TestCase
 [ESCAPE][0m  file create [options] [<...classNames>]
 
 [ESCAPE][0;33mArguments:
-[ESCAPE][0m  [ESCAPE][0;32mclassNames[ESCAPE][0m     
-                 [ESCAPE][0;36mstring          [ESCAPE][0m[ESCAPE][0;33mdefault: NULL[ESCAPE][0m
+[ESCAPE][0m  [ESCAPE][0;32mclassNames[ESCAPE][0m     List of program classes to convert into executable CLI programs.
+                 [ESCAPE][0;36mstring          [ESCAPE][0m[ESCAPE][0;33mdefault: [][ESCAPE][0m
 
 [ESCAPE][0;33mOptions:
 [ESCAPE][0m  [ESCAPE][0;32m-h, --help[ESCAPE][0m     Display documentation of the current command.
@@ -180,8 +180,8 @@ class SimpleCliTest extends TestCase
 [ESCAPE][0m  file create [options] [<...classNames>]
 
 [ESCAPE][0;33mArguments:
-[ESCAPE][0m  [ESCAPE][0;32mclassNames[ESCAPE][0m     
-                 [ESCAPE][0;36mstring          [ESCAPE][0m[ESCAPE][0;33mdefault: NULL[ESCAPE][0m
+[ESCAPE][0m  [ESCAPE][0;32mclassNames[ESCAPE][0m     List of program classes to convert into executable CLI programs.
+                 [ESCAPE][0;36mstring          [ESCAPE][0m[ESCAPE][0;33mdefault: [][ESCAPE][0m
 
 [ESCAPE][0;33mOptions:
 [ESCAPE][0m  [ESCAPE][0;32m-h, --help[ESCAPE][0m     Display documentation of the current command.
