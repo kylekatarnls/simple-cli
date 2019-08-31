@@ -2,7 +2,9 @@
 
 use SimpleCli\SimpleCli;
 
+//@codingStandardsIgnoreStart
 include __DIR__.'/../vendor/autoload.php';
+//@codingStandardsIgnoreEnd
 
 $doc = '';
 
@@ -38,7 +40,14 @@ foreach (get_class_methods(SimpleCli::class) as $method) {
         $parameters[] = $param;
     }
 
-    $doc .= '### '.$method.'('.implode(', ', $parameters).'): '.$reflextionMethod->getReturnType()."\n\n";
+    $comment = trim($reflextionMethod->getDocComment());
+    $return = $reflextionMethod->getReturnType();
+
+    if (!$return && preg_match('/@return\s+(\S+)/', $comment, $match)) {
+        $return = $match[1];
+    }
+
+    $doc .= '### '.$method.'('.implode(', ', $parameters).'): '.($return ?: 'mixed')."\n\n";
 
     $comment = trim($reflextionMethod->getDocComment());
     $comment = trim(preg_replace('/^\/\*+([\s\S]*)\*\/$/', '$1', $comment));

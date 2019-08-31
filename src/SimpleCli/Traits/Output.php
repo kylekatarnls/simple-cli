@@ -177,7 +177,9 @@ trait Output
             $length = strlen($this->lastText);
         }
 
+        //@codingStandardsIgnoreStart
         echo $this->escapeCharacter.'['.$length.'D';
+        //@codingStandardsIgnoreEnd
     }
 
     /**

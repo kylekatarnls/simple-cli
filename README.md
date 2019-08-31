@@ -11,14 +11,14 @@ A simple CLI framework oriented object and dependencies-free.
 ![Example](https://raw.githubusercontent.com/kylekatarnls/simple-cli/master/doc/img/example.jpg)
 
 Features:
-  - Auto-documentation. `--help` is auto-generated using available commands, arguments and options.
-  - Detection of probable mistype and auto-suggestion.
-  - Based on documentation annotations to preserve ultra-clean code.
-  - Supports colors.
-  - Supports interactive commands and auto-completion for CLI input.
-  - Provides predefined commands: `usage` and `version`.
-  - Provides predefined options: `--help`, `--quiet` and `--verbose`.
-  - Provides a CLI to create programs and commands bootstraps.
+- Auto-documentation. `--help` is auto-generated using available commands, arguments and options.
+- Detection of probable mistype and auto-suggestion.
+- Based on documentation annotations to preserve ultra-clean code.
+- Supports colors.
+- Supports interactive commands and auto-completion for CLI input.
+- Provides predefined commands: `usage` and `version`.
+- Provides predefined options: `--help`, `--quiet` and `--verbose`.
+- Provides a CLI to create programs and commands bootstraps.
 
 # Create a command line program
 
@@ -398,7 +398,7 @@ Finally, if you don't set a name and use the `@option` annotation alone
 the option will have the same name as its variable and will have its
 first letter as alias if it's available.
 
-# API reference
+## API reference
 
 In the examples above, you could see your command `run(SimpleCli $cli)`
 method get a SimpleCli instance. `$cli` is your program object, an
@@ -416,6 +416,10 @@ your program) and all methods available from the `SimpleCli` inherited class:
 ### getVersion(): string
 
 > Get the composer version of the package handling the CLI program.
+
+### displayVariable(int $length, string $variable, array $definition, $defaultValue): void
+
+> Output standard command variable (argument or option).
 
 ### autocomplete(string $start): array
 
@@ -505,7 +509,7 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 > Get raw parameters (options and arguments) not filtered.
 
-### getParameterValue(string $parameter, array $parameterDefinition): 
+### getParameterValue(string $parameter, array $parameterDefinition): string|int|float|bool|null
 
 > Cast argument/option according to type in the definition.
 
@@ -549,7 +553,7 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 > Get the vendor that should contains packages including composer/installed.json.
 
-### getInstalledPackages(): 
+### getInstalledPackages(): array
 
 > Get the list of packages installed with composer.
 
