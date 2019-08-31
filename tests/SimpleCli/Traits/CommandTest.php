@@ -17,8 +17,8 @@ class CommandTest extends TraitsTestCase
         $command = new DemoCli();
         $command->mute();
 
-        $command('foobar', 'hello');
+        $command('foobar', 'foobar');
 
-        static::assertSame('hello', $command->getCommand());
+        static::assertSame('foobar', $command->getCommand());
     }
 }

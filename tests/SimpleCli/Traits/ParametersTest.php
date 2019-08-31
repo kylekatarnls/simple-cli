@@ -18,11 +18,11 @@ class ParametersTest extends TraitsTestCase
         $command = new DemoCli();
         $command->mute();
 
-        $command('foobar');
+        $command('hello');
 
         static::assertSame([], $command->getParameters());
 
-        $command('foobar', 'hello', 'A', 'B', 'C');
+        $command('hello', 'foobar', 'A', 'B', 'C');
 
         static::assertSame(['A', 'B', 'C'], $command->getParameters());
     }
