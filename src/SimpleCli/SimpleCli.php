@@ -163,11 +163,15 @@ abstract class SimpleCli
         $this->command = $command;
         $this->parameters = $parameters;
 
-        if (!(
-            $commandClass = $this->getCommandClass()
-        ) || !(
-            $commander = $this->createCommander($commandClass)
-        )) {
+        $commandClass = $this->getCommandClass();
+
+        if (!$commandClass) {
+            return false;
+        }
+
+        $commander = $this->createCommander($commandClass);
+
+        if (!$commander) {
             return false;
         }
 
@@ -175,7 +179,10 @@ abstract class SimpleCli
             $this->mute();
         }
 
-        if ($this->hasTraitFeatureEnabled(/** @var Help $helper */ $helper = $commander, Help::class, 'help')) {
+        /** @var Help $helper */
+        $helper = $commander;
+
+        if ($this->hasTraitFeatureEnabled($helper, Help::class, 'help')) {
             $helper->displayHelp($this);
 
             return true;
