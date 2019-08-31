@@ -68,11 +68,9 @@ trait Help
         $defaultInstance = new static();
 
         $cli->writeLine('Usage:', 'brown');
-        //@codingStandardsIgnoreStart
         $cli->writeLine('  '.basename($cli->getFile()).' '.$cli->getCommand().' [options] '.implode(' ', array_map(function ($name) {
             return "[<$name>]";
         }, $argumentsNames)));
-        //@codingStandardsIgnoreEnd
 
         $this->displayArguments($cli, $arguments, $length, $defaultInstance);
         $this->displayOptions($cli, $options, $length, $defaultInstance);
