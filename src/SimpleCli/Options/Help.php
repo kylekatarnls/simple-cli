@@ -92,16 +92,7 @@ trait Help
 
             foreach ($arguments as $definition) {
                 $property = (string) $definition['property'];
-                $cli->write('  ');
-                $cli->write($property, 'green');
-                $cli->write(str_repeat(' ', $length - strlen($property)));
-                $cli->writeLine(str_replace(
-                    "\n",
-                    "\n".str_repeat(' ', $length + 2),
-                    $definition['description']."\n".
-                    $cli->colorize(str_pad($definition['values'] ?: $definition['type'], 16, ' ', STR_PAD_RIGHT), 'cyan').
-                    $cli->colorize('default: '.$this->getValueExport($defaultInstance->$property), 'brown')
-                ));
+                $cli->displayVariable($length, (string) $property, $definition, $defaultInstance->$property);
             }
         }
     }
@@ -121,33 +112,8 @@ trait Help
             foreach ($options as $name => $definition) {
                 $name = (string) $name;
                 $property = (string) $definition['property'];
-                $cli->write('  ');
-                $cli->write($name, 'green');
-                $cli->write(str_repeat(' ', $length - strlen($name)));
-                $cli->writeLine(str_replace(
-                    "\n",
-                    "\n".str_repeat(' ', $length + 2),
-                    $definition['description']."\n".
-                    $cli->colorize(str_pad($definition['values'] ?: $definition['type'], 16, ' ', STR_PAD_RIGHT), 'cyan').
-                    $cli->colorize('default: '.$this->getValueExport($defaultInstance->$property), 'brown')
-                ));
+                $cli->displayVariable($length, (string) $name, $definition, $defaultInstance->$property);
             }
         }
-    }
-
-    /**
-     * Get value export for a given value.
-     *
-     * @param mixed $value
-     *
-     * @return string
-     */
-    protected function getValueExport($value): string
-    {
-        $value = (string) var_export($value, true);
-        $value = (string) preg_replace('/^\s*array\s*\(([\s\S]*)\)\s*$/', '[$1]', $value);
-        $value = (string) preg_replace('/^\s*\[\s+\]$/', '[]', $value);
-
-        return $value;
     }
 }

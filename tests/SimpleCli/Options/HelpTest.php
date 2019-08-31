@@ -14,7 +14,8 @@ class HelpTest extends TestCase
      * @covers ::displayHelp
      * @covers ::displayOptions
      * @covers ::displayArguments
-     * @covers ::getValueExport
+     * @covers \SimpleCli\SimpleCli::getValueExport
+     * @covers \SimpleCli\SimpleCli::displayVariable
      */
     public function testDisplayHelp()
     {

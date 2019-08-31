@@ -62,6 +62,114 @@ abstract class SimpleCli
         return $start.$this->colorize($this->getInstalledPackageVersion($packageName), 'brown').$this->getVersionDetails();
     }
 
+    /**
+     * Output standard command variable (argument or option).
+     *
+     * @param int    $length       Length of the left column.
+     * @param string $variable     Argument/option name.
+     * @param array  $definition   Definition infos. Should contain description, and either values or type.
+     * @param mixed  $defaultValue Default value.
+     */
+    public function displayVariable(int $length, string $variable, array $definition, $defaultValue): void
+    {
+        $this->write('  ');
+        $this->write($variable, 'green');
+        $this->write(str_repeat(' ', $length - strlen($variable)));
+        $this->writeLine(str_replace(
+            "\n",
+            "\n".str_repeat(' ', $length + 2),
+            $definition['description']."\n".
+            $this->colorize(str_pad($definition['values'] ?: $definition['type'], 16, ' ', STR_PAD_RIGHT), 'cyan').
+            $this->colorize('default: '.$this->getValueExport($defaultValue), 'brown')
+        ));
+    }
+
+    /**
+     * Execute the command.
+     *
+     * @param string $file
+     * @param string $command
+     * @param mixed  ...$parameters
+     *
+     * @return bool
+     */
+    public function __invoke(string $file, string $command = 'list', ...$parameters): bool
+    {
+        $commands = $this->getAvailableCommands();
+        $this->file = $file;
+        $command = $this->getCommandName($commands, $command);
+
+        if (!$command) {
+            return false;
+        }
+
+        $this->command = $command;
+        $this->parameters = $parameters;
+
+        $commandClass = $this->getCommandClassFromName($commands, $command);
+
+        if (!$commandClass) {
+            return false;
+        }
+
+        $commander = $this->createCommander($commandClass);
+
+        if (!$commander) {
+            return false;
+        }
+
+        if ($this->hasTraitFeatureEnabled(/* @var Quiet $commander */ $commander, Quiet::class, 'quiet')) {
+            $this->mute();
+        }
+
+        /** @var Help $helper */
+        $helper = $commander;
+
+        if ($this->hasTraitFeatureEnabled($commander, Help::class, 'help')) {
+            $helper->displayHelp($this);
+
+            return true;
+        }
+
+        array_unshift($parameters, $this);
+
+        return $commander->run(...$parameters);
+    }
+
+    /**
+     * Determines if a Command instance has a given feature (detected by a trait or a property).
+     *
+     * @param Command|null $commander
+     * @param string       $trait
+     * @param string       $property
+     *
+     * @return bool
+     */
+    protected function hasTraitFeatureEnabled(Command $commander = null, string $trait = '', string $property = ''): bool
+    {
+        return $commander && in_array($trait, class_uses($commander)) && $commander->$property ?? false;
+    }
+
+    /**
+     * Get value export for a given value.
+     *
+     * @param mixed $value
+     *
+     * @return string
+     */
+    protected function getValueExport($value): string
+    {
+        $value = (string) var_export($value, true);
+        $value = (string) preg_replace('/^\s*array\s*\(([\s\S]*)\)\s*$/', '[$1]', $value);
+        $value = (string) preg_replace('/^\s*\[\s+]$/', '[]', $value);
+
+        return strtr($value, [
+            'NULL'  => 'null',
+            'FALSE' => 'false',
+            'TRUE'  => 'true',
+        ]);
+    }
+
     private function parseParameters()
     {
         $this->options = [];
@@ -169,62 +277,5 @@ abstract class SimpleCli
         }
 
         return $commander;
-    }
-
-    protected function hasTraitFeatureEnabled(Command $commander = null, string $trait = '', string $property = '')
-    {
-        return $commander && in_array($trait, class_uses($commander)) && $commander->$property ?? false;
-    }
-
-    /**
-     * Execute the command.
-     *
-     * @param string $file
-     * @param string $command
-     * @param mixed  ...$parameters
-     *
-     * @return bool
-     */
-    public function __invoke(string $file, string $command = 'list', ...$parameters): bool
-    {
-        $commands = $this->getAvailableCommands();
-        $this->file = $file;
-        $command = $this->getCommandName($commands, $command);
-
-        if (!$command) {
-            return false;
-        }
-
-        $this->command = $command;
-        $this->parameters = $parameters;
-
-        $commandClass = $this->getCommandClassFromName($commands, $command);
-
-        if (!$commandClass) {
-            return false;
-        }
-
-        $commander = $this->createCommander($commandClass);
-
-        if (!$commander) {
-            return false;
-        }
-
-        if ($this->hasTraitFeatureEnabled(/* @var Quiet $commander */ $commander, Quiet::class, 'quiet')) {
-            $this->mute();
-        }
-
-        /** @var Help $helper */
-        $helper = $commander;
-
-        if ($this->hasTraitFeatureEnabled($commander, Help::class, 'help')) {
-            $helper->displayHelp($this);
-
-            return true;
-        }
-
-        array_unshift($parameters, $this);
-
-        return $commander->run(...$parameters);
     }
 }
