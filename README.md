@@ -5,6 +5,7 @@
 [![StyleCI](https://styleci.io/repos/192176915/shield?style=flat-square)](https://styleci.io/repos/192176915)
 [![codecov.io](https://img.shields.io/codecov/c/github/kylekatarnls/simple-cli.svg?style=flat-square)](https://codecov.io/github/kylekatarnls/simple-cli?branch=master)
 [![PHPStan](https://img.shields.io/badge/PHPStan-enabled-44CC11.svg?longCache=true&style=flat-square)](https://github.com/simple-cli/simple-cli)
+![Codacy grade](https://img.shields.io/codacy/grade/0a129ff74aca479ba21a16d8a316de07?style=flat-square)
 
 A simple CLI framework oriented object and dependencies-free.
 
