@@ -29,7 +29,7 @@ after_success:
 after_script:
   - cp coverage.xml clover.xml
   - ./cc-test-reporter after-build --coverage-input-type clover --exit-code $TRAVIS_TEST_RESULT
-  - composer update codacy/coverage --dev
+  - composer require codacy/coverage
   - vendor/bin/codacycoverage clover coverage.xml
 
 env:
