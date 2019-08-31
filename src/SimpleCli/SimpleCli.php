@@ -88,17 +88,31 @@ abstract class SimpleCli
         }
     }
 
-    private function getCommandClass(): ?string
+    private function findClosestCommand(array $commands, string $command): ?string
     {
-        $command = $this->command;
-        $commands = $this->getAvailableCommands();
+        $words = new WordsList(array_keys($commands));
+        $closestCommand = $words->findClosestWord($command);
 
-        if (!isset($commands[$command])) {
-            $this->write("Command $command not found", 'red');
+        if ($closestCommand) {
+            $this->writeLine();
+            $this->write("Do you mean $closestCommand?", 'light_cyan');
 
-            return null;
+            do {
+                $answer = strtolower(substr($this->read(' [y/n]: '), 0, 1));
+            } while($answer !== 'n' && $answer !== 'y');
+
+            if ($answer === 'y') {
+                $this->writeLine();
+
+                return $this->getCommandClassFromName($commands, $closestCommand);
+            }
         }
 
+        return null;
+    }
+
+    private function getCommandClassFromName(array $commands, string $command): ?string
+    {
         /** @var string $commandClass */
         $commandClass = $commands[$command];
 
@@ -109,6 +123,20 @@ abstract class SimpleCli
         }
 
         return $commandClass;
+    }
+
+    private function getCommandClass(): ?string
+    {
+        $command = $this->command;
+        $commands = $this->getAvailableCommands();
+
+        if (!isset($commands[$command])) {
+            $this->write("Command $command not found", 'red');
+
+            return $this->findClosestCommand($commands, $command);
+        }
+
+        return $this->getCommandClassFromName($commands, $command);
     }
 
     /**
