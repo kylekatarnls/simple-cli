@@ -118,7 +118,7 @@ class WordsList implements IteratorAggregate
             $couple = substr($sourceWord, $i, 2);
 
             if (stripos($otherWord, $couple) !== false) {
-                $score++;
+                $score += $i === 0 ? 2 : 1;
             }
         }
 
