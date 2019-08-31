@@ -11,14 +11,15 @@ A simple CLI framework oriented object and dependencies-free.
 ![Example](https://raw.githubusercontent.com/kylekatarnls/simple-cli/master/doc/img/example.jpg)
 
 Features:
-- Auto-documentation. `--help` is auto-generated using available commands, arguments and options.
-- Detection of probable mistype and auto-suggestion.
-- Based on documentation annotations to preserve ultra-clean code.
-- Supports colors.
-- Supports interactive commands and auto-completion for CLI input.
-- Provides predefined commands: `usage` and `version`.
-- Provides predefined options: `--help`, `--quiet` and `--verbose`.
-- Provides a CLI to create programs and commands bootstraps.
+
+  - Auto-documentation. `--help` is auto-generated using available commands, arguments and options.
+  - Detection of probable mistype and auto-suggestion.
+  - Based on documentation annotations to preserve ultra-clean code.
+  - Supports colors.
+  - Supports interactive commands and auto-completion for CLI input.
+  - Provides predefined commands: `usage` and `version`.
+  - Provides predefined options: `--help`, `--quiet` and `--verbose`.
+  - Provides a CLI to create programs and commands bootstraps.
 
 # Create a command line program
 
@@ -237,8 +238,8 @@ bin/easy-calc add 2 3
 It outputs `5` :rocket:
 
 Note than `run()` must return a boolean:
- - `true` for successful command (exit code 0)
- - `false` for error (exit code 1)
+  - `true` for successful command (exit code 0)
+  - `false` for error (exit code 1)
 
 You can also allow unlimited number of arguments using the annotation `@rest`
 The *rest arguments* variable will be an array with all other arguments.
