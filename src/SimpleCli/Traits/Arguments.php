@@ -73,7 +73,9 @@ trait Arguments
         $definition = $this->expectedArguments[count($this->arguments)] ?? null;
 
         if (!$definition) {
-            if ($restDefinition = $this->getExpectedRestArgument()) {
+            $restDefinition = $this->getExpectedRestArgument();
+
+            if ($restDefinition) {
                 $this->restArguments[] = $this->getParameterValue($argument, $restDefinition);
 
                 return;
