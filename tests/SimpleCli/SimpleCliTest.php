@@ -4,6 +4,7 @@ namespace Tests\SimpleCli;
 
 use Tests\SimpleCli\DemoApp\BadCli;
 use Tests\SimpleCli\DemoApp\DemoCli;
+use Tests\SimpleCli\DemoApp\InteractiveCli;
 
 /**
  * @coversDefaultClass \SimpleCli\SimpleCli
@@ -84,6 +85,7 @@ class SimpleCliTest extends TestCase
 
     /**
      * @covers ::getCommandClass
+     * @covers ::getCommandClassFromName
      */
     public function testGetCommandClass()
     {
@@ -103,6 +105,50 @@ class SimpleCliTest extends TestCase
             $command = new DemoCli();
 
             $command('file', 'all', '--biz', '9');
+        });
+    }
+
+    /**
+     * @covers ::findClosestCommand
+     * @covers ::getCommandClassFromName
+     * @covers ::__invoke
+     */
+    public function testFindClosestCommand()
+    {
+        static::assertOutput(implode("\n", [
+            '[ESCAPE][0;31mCommand ball not found[ESCAPE][0m',
+            'Do you mean [ESCAPE][1;34mall[ESCAPE][0m?',
+            '9',
+            '',
+            '',
+        ]), function () {
+            $command = new InteractiveCli();
+            $command->setAnswers(['y']);
+
+            $command('file', 'ball', '--biz', '9');
+        });
+
+        static::assertOutput(implode("\n", [
+            '[ESCAPE][0;31mCommand ball not found[ESCAPE][0m',
+            'Do you mean [ESCAPE][1;34mall[ESCAPE][0m?',
+        ]), function () {
+            $command = new InteractiveCli();
+            $command->setAnswers(['n']);
+
+            $command('file', 'ball', '--biz', '9');
+        });
+
+        static::assertOutput(implode("\n", [
+            '[ESCAPE][0;31mCommand ball not found[ESCAPE][0m',
+            str_repeat('Do you mean [ESCAPE][1;34mall[ESCAPE][0m?', 2),
+            '9',
+            '',
+            '',
+        ]), function () {
+            $command = new InteractiveCli();
+            $command->setAnswers(['o', 'y']);
+
+            $command('file', 'ball', '--biz', '9');
         });
     }
 
