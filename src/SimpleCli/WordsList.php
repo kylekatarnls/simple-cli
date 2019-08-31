@@ -38,6 +38,16 @@ class WordsList implements IteratorAggregate
     }
 
     /**
+     * Get the words list as an ArrayIterator instance.
+     *
+     * @return ArrayIterator
+     */
+    public function getArrayIterator(): ArrayIterator
+    {
+        return new ArrayIterator($this->getWords());
+    }
+
+    /**
      * Retrieve an external iterator.
      *
      * @link https://php.net/manual/en/iteratoraggregate.getiterator.php
@@ -45,9 +55,9 @@ class WordsList implements IteratorAggregate
      * @return Traversable An instance of an object implementing <b>Iterator</b> or
      * <b>Traversable</b>
      */
-    public function getIterator(): ArrayIterator
+    public function getIterator(): Traversable
     {
-        return new ArrayIterator($this->getWords());
+        return $this->getArrayIterator();
     }
 
     /**
