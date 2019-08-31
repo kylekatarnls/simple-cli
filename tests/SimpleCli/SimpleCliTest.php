@@ -84,8 +84,9 @@ class SimpleCliTest extends TestCase
     }
 
     /**
-     * @covers ::getCommandClass
+     * @covers ::getCommandName
      * @covers ::getCommandClassFromName
+     * @covers ::__invoke
      */
     public function testGetCommandClass()
     {
@@ -110,6 +111,7 @@ class SimpleCliTest extends TestCase
 
     /**
      * @covers ::findClosestCommand
+     * @covers ::getCommandName
      * @covers ::getCommandClassFromName
      * @covers ::__invoke
      */

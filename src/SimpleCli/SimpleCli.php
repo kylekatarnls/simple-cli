@@ -107,11 +107,22 @@ abstract class SimpleCli
             if ($answer === 'y') {
                 $this->writeLine();
 
-                return $this->getCommandClassFromName($commands, $closestCommand);
+                return $closestCommand;
             }
         }
 
         return null;
+    }
+
+    private function getCommandName(array $commands, string $command): ?string
+    {
+        if (!isset($commands[$command])) {
+            $this->write("Command $command not found", 'red');
+
+            return $this->findClosestCommand($commands, $command);
+        }
+
+        return $command;
     }
 
     private function getCommandClassFromName(array $commands, string $command): ?string
@@ -126,20 +137,6 @@ abstract class SimpleCli
         }
 
         return $commandClass;
-    }
-
-    private function getCommandClass(): ?string
-    {
-        $command = $this->command;
-        $commands = $this->getAvailableCommands();
-
-        if (!isset($commands[$command])) {
-            $this->write("Command $command not found", 'red');
-
-            return $this->findClosestCommand($commands, $command);
-        }
-
-        return $this->getCommandClassFromName($commands, $command);
     }
 
     /**
@@ -190,11 +187,18 @@ abstract class SimpleCli
      */
     public function __invoke(string $file, string $command = 'list', ...$parameters): bool
     {
+        $commands = $this->getAvailableCommands();
         $this->file = $file;
+        $command = $this->getCommandName($commands, $command);
+
+        if (!$command) {
+            return false;
+        }
+
         $this->command = $command;
         $this->parameters = $parameters;
 
-        $commandClass = $this->getCommandClass();
+        $commandClass = $this->getCommandClassFromName($commands, $command);
 
         if (!$commandClass) {
             return false;
