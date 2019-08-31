@@ -182,7 +182,7 @@ abstract class SimpleCli
         /** @var Help $helper */
         $helper = $commander;
 
-        if ($this->hasTraitFeatureEnabled($helper, Help::class, 'help')) {
+        if ($this->hasTraitFeatureEnabled($commander, Help::class, 'help')) {
             $helper->displayHelp($this);
 
             return true;
