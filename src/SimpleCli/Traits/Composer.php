@@ -51,9 +51,11 @@ trait Composer
     public function getInstalledPackages()
     {
         $installedJson = $this->getVendorDirectory().'/composer/installed.json';
+        //@codingStandardsIgnoreStart
         $installedData = file_exists($installedJson)
             ? @json_decode((string) file_get_contents($installedJson), true)
             : null;
+        //@codingStandardsIgnoreEnd
 
         return $installedData ?: [];
     }
