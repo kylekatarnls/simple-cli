@@ -20,11 +20,13 @@ class Create implements Command
     use Help, Quiet, Verbose;
 
     /**
+     * List of program classes to convert into executable CLI programs.
+     *
      * @rest
      *
      * @var string[]
      */
-    public $classNames;
+    public $classNames = [];
 
     protected function error(SimpleCli $cli, $text): bool
     {
