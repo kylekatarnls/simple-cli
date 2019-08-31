@@ -1,7 +1,7 @@
 # simple-cli
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/simple-cli/simple-cli.svg?style=flat-square)](https://packagist.org/packages/simple-cli/simple-cli)
-[![Build Status](https://img.shields.io/travis/kylekatarnls/simple-cli/master.svg?style=flat-square)](https://travis-ci.org/kylekatarnls/simple-cli)
+[![Latest stable version](https://img.shields.io/packagist/v/simple-cli/simple-cli.svg?style=flat-square)](https://packagist.org/packages/simple-cli/simple-cli)
+[![Build status](https://img.shields.io/travis/kylekatarnls/simple-cli/master.svg?style=flat-square)](https://travis-ci.org/kylekatarnls/simple-cli)
 [![StyleCI](https://styleci.io/repos/192176915/shield?style=flat-square)](https://styleci.io/repos/192176915)
 [![codecov.io](https://img.shields.io/codecov/c/github/kylekatarnls/simple-cli.svg?style=flat-square)](https://codecov.io/github/kylekatarnls/simple-cli?branch=master)
 [![PHPStan](https://img.shields.io/badge/PHPStan-enabled-44CC11.svg?longCache=true&style=flat-square)](https://github.com/simple-cli/simple-cli)
@@ -21,7 +21,7 @@ Features:
   - Provides predefined options: `--help`, `--quiet` and `--verbose`.
   - Provides a CLI to create programs and commands bootstraps.
 
-# Create a command line program
+## Create a command line program
 
 You can add your command line program in any existing composer app, or create a new one using `composer init`.
 
