@@ -2,9 +2,7 @@
 
 use SimpleCli\SimpleCli;
 
-//@codingStandardsIgnoreStart
 include __DIR__.'/../vendor/autoload.php';
-//@codingStandardsIgnoreEnd
 
 $doc = '';
 
