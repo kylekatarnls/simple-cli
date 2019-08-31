@@ -30,7 +30,9 @@ trait Help
             $arguments[$argument['property']] = $argument;
         }
 
-        if ($restArgument = $cli->getExpectedRestArgument()) {
+        $restArgument = $cli->getExpectedRestArgument();
+
+        if ($restArgument) {
             $arguments['...'.$restArgument['property']] = $restArgument;
         }
 
