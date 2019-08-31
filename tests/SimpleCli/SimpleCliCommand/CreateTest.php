@@ -39,6 +39,7 @@ class CreateTest extends TestCase
     }
 
     /**
+     * @covers \SimpleCli\SimpleCli::parseParameters
      * @covers ::copyBinTemplate
      * @covers ::extractName
      * @covers ::run

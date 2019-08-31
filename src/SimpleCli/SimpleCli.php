@@ -95,11 +95,14 @@ abstract class SimpleCli
 
         if ($closestCommand) {
             $this->writeLine();
-            $this->write("Do you mean $closestCommand?", 'light_cyan');
 
             do {
+                $this->write('Do you mean ');
+                $this->write($closestCommand, 'light_blue');
+                $this->write('?');
+
                 $answer = strtolower(substr($this->read(' [y/n]: '), 0, 1));
-            } while($answer !== 'n' && $answer !== 'y');
+            } while ($answer !== 'n' && $answer !== 'y');
 
             if ($answer === 'y') {
                 $this->writeLine();
