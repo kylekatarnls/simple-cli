@@ -4,12 +4,13 @@ namespace Tests\SimpleCli;
 
 use Closure;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
+use ReflectionClass;
 
 abstract class TestCase extends FrameworkTestCase
 {
     protected function invoke($object, string $method, ...$arguments)
     {
-        $reflection = (new \ReflectionClass(get_class($object)))->getMethod($method);
+        $reflection = (new ReflectionClass(get_class($object)))->getMethod($method);
         $reflection->setAccessible(true);
 
         return $reflection->invokeArgs($object, $arguments);
