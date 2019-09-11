@@ -26,9 +26,20 @@ trait Commands
      */
     public function getAvailableCommands(): array
     {
-        return array_filter(array_merge([
+        $commands = [
             'list'    => Usage::class,
             'version' => Version::class,
-        ], $this->getCommands()), 'boolval');
+        ];
+
+        foreach ($this->getCommands() as $index => $command) {
+            if (is_int($index)) {
+                $index = preg_replace('/^.*\\\\([^\\\\]+)$/', '$1', $command);
+                $index = strtolower(preg_replace('/[A-Z]/', '-$0', lcfirst($index)));
+            }
+
+            $commands[$index] = $command;
+        }
+
+        return array_filter($commands, 'boolval');
     }
 }
