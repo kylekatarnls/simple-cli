@@ -33,8 +33,8 @@ trait Commands
 
         foreach ($this->getCommands() as $index => $command) {
             if (is_int($index)) {
-                $index = preg_replace('/^.*\\\\([^\\\\]+)$/', '$1', $command);
-                $index = strtolower(preg_replace('/[A-Z]/', '-$0', lcfirst($index)));
+                $index = (string) preg_replace('/^.*\\\\([^\\\\]+)$/', '$1', $command);
+                $index = strtolower((string) preg_replace('/[A-Z]/', '-$0', lcfirst($index)));
             }
 
             $commands[$index] = $command;
