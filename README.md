@@ -170,7 +170,7 @@ class EasyCalc extends SimpleCli
 
 If you run `bin/easy-calc` (or `bin/easy-calc list`) again, you will now
 see `add` as an available command. And the comment you put in `/** */`
-appears in the description. 
+appears in the description.
 
 If you run `bin/easy-calc add --help` (or `bin/easy-calc add -h`) you will
 the documentation of your command based on the options and arguments defined.
@@ -354,7 +354,7 @@ class Add implements Command
      *
      * Something the command can use.
      *
-     * @var string 
+     * @var string
      */
     public $foo = 'default';
 
@@ -363,7 +363,7 @@ class Add implements Command
      *
      * Whether foo should be displayed or not.
      *
-     * @var bool 
+     * @var bool
      */
     public $showFoo = false;
 
@@ -372,7 +372,7 @@ class Add implements Command
         if ($this->showFoo) {
             $cli->write($this->foo, 'red');
         }
-        
+
         return true;
     }
 }
