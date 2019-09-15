@@ -147,7 +147,12 @@ abstract class SimpleCli
      */
     protected function hasTraitFeatureEnabled(Command $commander = null, string $trait = '', string $property = ''): bool
     {
-        return $commander && in_array($trait, class_uses($commander)) && $commander->$property ?? false;
+        $traits = $commander ? array_merge(
+            class_uses($commander),
+            ...array_map('class_uses', array_values(class_parents($commander)))
+        ) : [];
+
+        return isset($traits[$trait]) && $commander->$property ?? false;
     }
 
     /**
