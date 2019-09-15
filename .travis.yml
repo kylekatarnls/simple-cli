@@ -15,7 +15,8 @@ cache:
 sudo: false
 
 install:
-  - travis_retry composer update --prefer-dist --no-interaction --no-suggest --prefer-stable
+  - if [[ $TRAVIS_PHP_VERSION = "nightly" ]]; then travis_retry composer update --prefer-dist --no-interaction --no-suggest --prefer-stable --ignore-platform-reqs; fi;
+  - if [[ $TRAVIS_PHP_VERSION != "nightly" ]]; then travis_retry composer update --prefer-dist --no-interaction --no-suggest --prefer-stable; fi;
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
