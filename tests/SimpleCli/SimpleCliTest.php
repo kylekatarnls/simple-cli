@@ -18,15 +18,21 @@ class SimpleCliTest extends TestCase
     {
         $command = new DemoCli();
 
-        static::assertOutput('[ESCAPE][0;31mHello world[ESCAPE][0m', function () use ($command) {
-            $command->write('Hello world', 'red');
-        });
+        static::assertOutput(
+            '[ESCAPE][0;31mHello world[ESCAPE][0m',
+            function () use ($command) {
+                $command->write('Hello world', 'red');
+            }
+        );
 
         $command = new DemoCli(['red' => 'foobar']);
 
-        static::assertOutput('[ESCAPE][foobarmHello world[ESCAPE][0m', function () use ($command) {
-            $command->write('Hello world', 'red');
-        });
+        static::assertOutput(
+            '[ESCAPE][foobarmHello world[ESCAPE][0m',
+            function () use ($command) {
+                $command->write('Hello world', 'red');
+            }
+        );
     }
 
     /**
@@ -50,7 +56,8 @@ class SimpleCliTest extends TestCase
      */
     public function testParseParameters()
     {
-        static::assertOutput('[ESCAPE][0;33mUsage:
+        static::assertOutput(
+            '[ESCAPE][0;33mUsage:
 [ESCAPE][0m  file create [options] [<...classNames>]
 
 [ESCAPE][0;33mArguments:
@@ -64,23 +71,31 @@ class SimpleCliTest extends TestCase
                  [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
   [ESCAPE][0;32m-v, --verbose[ESCAPE][0m  If this option is set, extra debug information will be displayed.
                  [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
-', function () {
-            $command = new DemoCli();
+',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'create', '--help');
-        });
+                $command('file', 'create', '--help');
+            }
+        );
 
-        static::assertOutput("9\n\n", function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            "9\n\n",
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'all', '--biz', '9');
-        });
+                $command('file', 'all', '--biz', '9');
+            }
+        );
 
-        static::assertOutput("[ESCAPE][0;31m--biz option is not a boolean, so you can't use it in a aliases group[ESCAPE][0m", function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            "[ESCAPE][0;31m--biz option is not a boolean, so you can't use it in a aliases group[ESCAPE][0m",
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'all', '--biz');
-        });
+                $command('file', 'all', '--biz');
+            }
+        );
     }
 
     /**
@@ -90,23 +105,32 @@ class SimpleCliTest extends TestCase
      */
     public function testGetCommandClass()
     {
-        static::assertOutput('[ESCAPE][0;31mstdClass needs to implement SimpleCli\Command[ESCAPE][0m', function () {
-            $command = new BadCli();
+        static::assertOutput(
+            '[ESCAPE][0;31mstdClass needs to implement SimpleCli\Command[ESCAPE][0m',
+            function () {
+                $command = new BadCli();
 
-            $command('file', 'bad');
-        });
+                $command('file', 'bad');
+            }
+        );
 
-        static::assertOutput('[ESCAPE][0;31mCommand ghost not found[ESCAPE][0m', function () {
-            $command = new BadCli();
+        static::assertOutput(
+            '[ESCAPE][0;31mCommand ghost not found[ESCAPE][0m',
+            function () {
+                $command = new BadCli();
 
-            $command('file', 'ghost');
-        });
+                $command('file', 'ghost');
+            }
+        );
 
-        static::assertOutput("9\n\n", function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            "9\n\n",
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'all', '--biz', '9');
-        });
+                $command('file', 'all', '--biz', '9');
+            }
+        );
     }
 
     /**
@@ -117,41 +141,59 @@ class SimpleCliTest extends TestCase
      */
     public function testFindClosestCommand()
     {
-        static::assertOutput(implode("\n", [
-            '[ESCAPE][0;31mCommand ball not found[ESCAPE][0m',
-            'Do you mean [ESCAPE][1;34mall[ESCAPE][0m?',
-            '9',
-            '',
-            '',
-        ]), function () {
-            $command = new InteractiveCli();
-            $command->setAnswers(['y']);
+        static::assertOutput(
+            implode(
+                "\n",
+                [
+                    '[ESCAPE][0;31mCommand ball not found[ESCAPE][0m',
+                    'Do you mean [ESCAPE][1;34mall[ESCAPE][0m?',
+                    '9',
+                    '',
+                    '',
+                ]
+            ),
+            function () {
+                $command = new InteractiveCli();
+                $command->setAnswers(['y']);
 
-            $command('file', 'ball', '--biz', '9');
-        });
+                $command('file', 'ball', '--biz', '9');
+            }
+        );
 
-        static::assertOutput(implode("\n", [
-            '[ESCAPE][0;31mCommand ball not found[ESCAPE][0m',
-            'Do you mean [ESCAPE][1;34mall[ESCAPE][0m?',
-        ]), function () {
-            $command = new InteractiveCli();
-            $command->setAnswers(['n']);
+        static::assertOutput(
+            implode(
+                "\n",
+                [
+                    '[ESCAPE][0;31mCommand ball not found[ESCAPE][0m',
+                    'Do you mean [ESCAPE][1;34mall[ESCAPE][0m?',
+                ]
+            ),
+            function () {
+                $command = new InteractiveCli();
+                $command->setAnswers(['n']);
 
-            $command('file', 'ball', '--biz', '9');
-        });
+                $command('file', 'ball', '--biz', '9');
+            }
+        );
 
-        static::assertOutput(implode("\n", [
-            '[ESCAPE][0;31mCommand ball not found[ESCAPE][0m',
-            str_repeat('Do you mean [ESCAPE][1;34mall[ESCAPE][0m?', 2),
-            '9',
-            '',
-            '',
-        ]), function () {
-            $command = new InteractiveCli();
-            $command->setAnswers(['o', 'y']);
+        static::assertOutput(
+            implode(
+                "\n",
+                [
+                    '[ESCAPE][0;31mCommand ball not found[ESCAPE][0m',
+                    str_repeat('Do you mean [ESCAPE][1;34mall[ESCAPE][0m?', 2),
+                    '9',
+                    '',
+                    '',
+                ]
+            ),
+            function () {
+                $command = new InteractiveCli();
+                $command->setAnswers(['o', 'y']);
 
-            $command('file', 'ball', '--biz', '9');
-        });
+                $command('file', 'ball', '--biz', '9');
+            }
+        );
     }
 
     /**
@@ -159,17 +201,23 @@ class SimpleCliTest extends TestCase
      */
     public function testCreateCommander()
     {
-        static::assertOutput("9\n\n", function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            "9\n\n",
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'all', '--biz', '9');
-        });
+                $command('file', 'all', '--biz', '9');
+            }
+        );
 
-        static::assertOutput("[ESCAPE][0;31m--biz option is not a boolean, so you can't use it in a aliases group[ESCAPE][0m", function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            "[ESCAPE][0;31m--biz option is not a boolean, so you can't use it in a aliases group[ESCAPE][0m",
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'all', '--biz');
-        });
+                $command('file', 'all', '--biz');
+            }
+        );
     }
 
     /**
@@ -178,7 +226,8 @@ class SimpleCliTest extends TestCase
      */
     public function testInvoke()
     {
-        static::assertOutput('[ESCAPE][0;33mUsage:
+        static::assertOutput(
+            '[ESCAPE][0;33mUsage:
 [ESCAPE][0m  file create [options] [<...classNames>]
 
 [ESCAPE][0;33mArguments:
@@ -192,28 +241,39 @@ class SimpleCliTest extends TestCase
                  [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
   [ESCAPE][0;32m-v, --verbose[ESCAPE][0m  If this option is set, extra debug information will be displayed.
                  [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
-', function () {
-            $command = new DemoCli();
+',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'create', '--help');
-        });
+                $command('file', 'create', '--help');
+            }
+        );
 
-        static::assertOutput("9\n\n", function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            "9\n\n",
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'all', '--biz', '9');
-        });
+                $command('file', 'all', '--biz', '9');
+            }
+        );
 
-        static::assertOutput("[ESCAPE][0;31m--biz option is not a boolean, so you can't use it in a aliases group[ESCAPE][0m", function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            "[ESCAPE][0;31m--biz option is not a boolean, so you can't use it in a aliases group[ESCAPE][0m",
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'all', '--biz');
-        });
+                $command('file', 'all', '--biz');
+            }
+        );
 
-        static::assertOutput('', function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            '',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'create', '--quiet');
-        });
+                $command('file', 'create', '--quiet');
+            }
+        );
     }
 }

@@ -47,11 +47,15 @@ trait Documentation
         $length = strlen($code) + 1;
         $result = null;
 
-        $source = (string) preg_replace_callback('/^'.preg_quote($code).'( ([^\n]*(\n+'.str_repeat(' ', $length).'[^\n]*)*))?/m', function ($match) use (&$result, $length) {
-            $result = (string) str_replace("\n".str_repeat(' ', $length), "\n", $match[2] ?? '');
+        $source = (string) preg_replace_callback(
+            '/^'.preg_quote($code).'( ([^\n]*(\n+'.str_repeat(' ', $length).'[^\n]*)*))?/m',
+            function ($match) use (&$result, $length) {
+                $result = (string) str_replace("\n".str_repeat(' ', $length), "\n", $match[2] ?? '');
 
-            return '';
-        }, $source);
+                return '';
+            },
+            $source
+        );
 
         $source = trim($source, "\n");
 

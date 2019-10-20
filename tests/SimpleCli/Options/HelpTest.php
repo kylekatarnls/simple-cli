@@ -19,7 +19,8 @@ class HelpTest extends TestCase
      */
     public function testDisplayHelp()
     {
-        static::assertOutput('[ESCAPE][0;33mUsage:
+        static::assertOutput(
+            '[ESCAPE][0;33mUsage:
 [ESCAPE][0m  file create [options] [<...classNames>]
 
 [ESCAPE][0;33mArguments:
@@ -33,13 +34,16 @@ class HelpTest extends TestCase
                  [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
   [ESCAPE][0;32m-v, --verbose[ESCAPE][0m  If this option is set, extra debug information will be displayed.
                  [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
-', function () {
-            $command = new DemoCli();
+',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'create', '--help');
-        });
+                $command('file', 'create', '--help');
+            }
+        );
 
-        static::assertOutput('[ESCAPE][0;33mUsage:
+        static::assertOutput(
+            '[ESCAPE][0;33mUsage:
 [ESCAPE][0m  file foobar [options] [<sentence>]
 
 [ESCAPE][0;33mArguments:
@@ -53,13 +57,16 @@ class HelpTest extends TestCase
                  [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
   [ESCAPE][0;32m-h, --help[ESCAPE][0m     Display documentation of the current command.
                  [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
-', function () {
-            $command = new DemoCli();
+',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'foobar', '--help');
-        });
+                $command('file', 'foobar', '--help');
+            }
+        );
 
-        static::assertOutput('[ESCAPE][0;33mUsage:
+        static::assertOutput(
+            '[ESCAPE][0;33mUsage:
 [ESCAPE][0m  file hall [options] [<...all>]
 
 [ESCAPE][0;33mArguments:
@@ -71,10 +78,12 @@ class HelpTest extends TestCase
                         [ESCAPE][0;36mint             [ESCAPE][0m[ESCAPE][0;33mdefault: 9[ESCAPE][0m
   [ESCAPE][0;32m-h, --help[ESCAPE][0m            Display documentation of the current command.
                         [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
-', function () {
-            $command = new DemoCli();
+',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'hall', '--help');
-        });
+                $command('file', 'hall', '--help');
+            }
+        );
     }
 }

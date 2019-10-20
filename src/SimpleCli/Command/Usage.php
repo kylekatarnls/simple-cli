@@ -27,11 +27,13 @@ class Usage implements Command
             $cli->write('  ');
             $cli->write($command, 'green');
             $cli->write(str_repeat(' ', $length - strlen($command)));
-            $cli->writeLine(str_replace(
-                "\n",
-                "\n".str_repeat(' ', $length + 2),
-                $cli->extractClassNameDescription($className)
-            ));
+            $cli->writeLine(
+                str_replace(
+                    "\n",
+                    "\n".str_repeat(' ', $length + 2),
+                    $cli->extractClassNameDescription($className)
+                )
+            );
         }
 
         return true;

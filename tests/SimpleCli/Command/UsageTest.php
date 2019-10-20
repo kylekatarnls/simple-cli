@@ -15,7 +15,8 @@ class UsageTest extends TestCase
      */
     public function testRun()
     {
-        static::assertOutput('[ESCAPE][0;33mUsage:
+        static::assertOutput(
+            '[ESCAPE][0;33mUsage:
 [ESCAPE][0m  file [command] [options] [arguments]
 
 [ESCAPE][0;33mAvailable commands:
@@ -29,10 +30,12 @@ class UsageTest extends TestCase
            Note that you must escape it, e.g. MyNamespace\\\\MyClass.
   [ESCAPE][0;32mrest[ESCAPE][0m     This is a demo.
   [ESCAPE][0;32mfoobar[ESCAPE][0m   This is a demo.
-', function () {
-            $command = new DemoCli();
+',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'list');
-        });
+                $command('file', 'list');
+            }
+        );
     }
 }

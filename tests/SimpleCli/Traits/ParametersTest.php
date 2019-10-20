@@ -34,20 +34,38 @@ class ParametersTest extends TraitsTestCase
     {
         $command = new DemoCli();
 
-        static::assertSame(42, $command->getParameterValue('42', [
-            'type'   => 'int',
-            'values' => '42',
-        ]));
+        static::assertSame(
+            42,
+            $command->getParameterValue(
+                '42',
+                [
+                    'type'   => 'int',
+                    'values' => '42',
+                ]
+            )
+        );
 
-        static::assertSame(42, $command->getParameterValue('42.5', [
-            'type'   => 'int',
-            'values' => null,
-        ]));
+        static::assertSame(
+            42,
+            $command->getParameterValue(
+                '42.5',
+                [
+                    'type'   => 'int',
+                    'values' => null,
+                ]
+            )
+        );
 
-        static::assertSame(42.5, $command->getParameterValue('42.5', [
-            'type'   => 'float',
-            'values' => '42.5, 1',
-        ]));
+        static::assertSame(
+            42.5,
+            $command->getParameterValue(
+                '42.5',
+                [
+                    'type'   => 'float',
+                    'values' => '42.5, 1',
+                ]
+            )
+        );
     }
 
     /**
@@ -60,10 +78,13 @@ class ParametersTest extends TraitsTestCase
 
         $command = new DemoCli();
 
-        $command->getParameterValue('arrrg', [
-            'type'   => 'special',
-            'values' => null,
-        ]);
+        $command->getParameterValue(
+            'arrrg',
+            [
+                'type'   => 'special',
+                'values' => null,
+            ]
+        );
     }
 
     /**
@@ -76,10 +97,13 @@ class ParametersTest extends TraitsTestCase
 
         $command = new DemoCli();
 
-        $command->getParameterValue('42', [
-            'property' => 'myProp',
-            'type'     => 'float',
-            'values'   => '42.5, 1',
-        ]);
+        $command->getParameterValue(
+            '42',
+            [
+                'property' => 'myProp',
+                'type'     => 'float',
+                'values'   => '42.5, 1',
+            ]
+        );
     }
 }

@@ -39,9 +39,16 @@ class Create implements Command
     {
         $parts = explode('\\', $className);
 
-        return trim((string) preg_replace_callback('/[A-Z]/', function (array $match) {
-            return '-'.strtolower($match[0]);
-        }, (string) end($parts)), '-');
+        return trim(
+            (string) preg_replace_callback(
+                '/[A-Z]/',
+                function (array $match) {
+                    return '-'.strtolower($match[0]);
+                },
+                (string) end($parts)
+            ),
+            '-'
+        );
     }
 
     protected function copyBinTemplate(SimpleCli $cli, string $name, string $className): void
@@ -56,10 +63,16 @@ class Create implements Command
                     $cli->writeLine("Creating $path");
                 }
 
-                file_put_contents($path, strtr((string) file_get_contents("$binTemplate/$file"), [
-                    '{name}'  => $name,
-                    '{class}' => $className,
-                ]));
+                file_put_contents(
+                    $path,
+                    strtr(
+                        (string) file_get_contents("$binTemplate/$file"),
+                        [
+                        '{name}'  => $name,
+                        '{class}' => $className,
+                        ]
+                    )
+                );
             }
         }
     }
@@ -95,7 +108,9 @@ class Create implements Command
                 continue;
             }
 
-            /** @var SimpleCli $createdCli */
+            /**
+             * @var SimpleCli $createdCli
+             */
             $createdCli = new $className();
 
             $this->copyBinTemplate(

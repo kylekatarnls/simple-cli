@@ -39,23 +39,35 @@ trait Help
         $options = [];
 
         foreach ($cli->getExpectedOptions() as $option) {
-            $aliases = array_filter($option['names'], function ($name) {
-                return strlen($name) === 1;
-            });
+            $aliases = array_filter(
+                $option['names'],
+                function ($name) {
+                    return strlen($name) === 1;
+                }
+            );
             $firstAlias = array_shift($aliases);
             $start = '    ';
 
             if ($firstAlias) {
                 $start = "-$firstAlias, ";
                 $option['names'] = array_merge(
-                    array_map(function ($alias) {
-                        return "-$alias";
-                    }, $aliases),
-                    array_map(function ($name) {
-                        return "--$name";
-                    }, array_filter($option['names'], function ($name) {
-                        return strlen($name) !== 1;
-                    }))
+                    array_map(
+                        function ($alias) {
+                            return "-$alias";
+                        },
+                        $aliases
+                    ),
+                    array_map(
+                        function ($name) {
+                            return "--$name";
+                        },
+                        array_filter(
+                            $option['names'],
+                            function ($name) {
+                                return strlen($name) !== 1;
+                            }
+                        )
+                    )
                 );
             }
 
@@ -68,9 +80,17 @@ trait Help
         $defaultInstance = new static();
 
         $cli->writeLine('Usage:', 'brown');
-        $cli->writeLine('  '.basename($cli->getFile()).' '.$cli->getCommand().' [options] '.implode(' ', array_map(function ($name) {
-            return "[<$name>]";
-        }, $argumentsNames)));
+        $cli->writeLine(
+            '  '.basename($cli->getFile()).' '.$cli->getCommand().' [options] '.implode(
+                ' ',
+                array_map(
+                    function ($name) {
+                        return "[<$name>]";
+                    },
+                    $argumentsNames
+                )
+            )
+        );
 
         $this->displayArguments($cli, $arguments, $length, $defaultInstance);
         $this->displayOptions($cli, $options, $length, $defaultInstance);

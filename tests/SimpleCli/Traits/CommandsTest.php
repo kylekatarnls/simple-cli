@@ -30,10 +30,13 @@ class CommandsTest extends TraitsTestCase
     {
         $command = new DummyCli();
 
-        static::assertSame([
-            'list'    => Usage::class,
-            'version' => Version::class,
-        ], $command->getAvailableCommands());
+        static::assertSame(
+            [
+                'list'    => Usage::class,
+                'version' => Version::class,
+            ],
+            $command->getAvailableCommands()
+        );
     }
 
     /**
@@ -43,10 +46,13 @@ class CommandsTest extends TraitsTestCase
     {
         $command = new AutoNamingCli();
 
-        static::assertSame([
-            'list'    => Usage::class,
-            'version' => Version::class,
-            'quiet'   => Quiet::class,
-        ], $command->getAvailableCommands());
+        static::assertSame(
+            [
+                'list'    => Usage::class,
+                'version' => Version::class,
+                'quiet'   => Quiet::class,
+            ],
+            $command->getAvailableCommands()
+        );
     }
 }

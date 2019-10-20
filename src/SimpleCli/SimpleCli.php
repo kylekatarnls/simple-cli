@@ -75,13 +75,15 @@ abstract class SimpleCli
         $this->write('  ');
         $this->write($variable, 'green');
         $this->write(str_repeat(' ', $length - strlen($variable)));
-        $this->writeLine(str_replace(
-            "\n",
-            "\n".str_repeat(' ', $length + 2),
-            $definition['description']."\n".
-            $this->colorize(str_pad($definition['values'] ?: $definition['type'], 16, ' ', STR_PAD_RIGHT), 'cyan').
-            $this->colorize('default: '.$this->getValueExport($defaultValue), 'brown')
-        ));
+        $this->writeLine(
+            str_replace(
+                "\n",
+                "\n".str_repeat(' ', $length + 2),
+                $definition['description']."\n".
+                $this->colorize(str_pad($definition['values'] ?: $definition['type'], 16, ' ', STR_PAD_RIGHT), 'cyan').
+                $this->colorize('default: '.$this->getValueExport($defaultValue), 'brown')
+            )
+        );
     }
 
     /**
@@ -122,7 +124,9 @@ abstract class SimpleCli
             $this->mute();
         }
 
-        /** @var Help $helper */
+        /**
+         * @var Help $helper
+         */
         $helper = $commander;
 
         if ($this->hasTraitFeatureEnabled($commander, Help::class, 'help')) {
@@ -168,11 +172,14 @@ abstract class SimpleCli
         $value = (string) preg_replace('/^\s*array\s*\(([\s\S]*)\)\s*$/', '[$1]', $value);
         $value = (string) preg_replace('/^\s*\[\s+]$/', '[]', $value);
 
-        return strtr($value, [
-            'NULL'  => 'null',
-            'FALSE' => 'false',
-            'TRUE'  => 'true',
-        ]);
+        return strtr(
+            $value,
+            [
+                'NULL'  => 'null',
+                'FALSE' => 'false',
+                'TRUE'  => 'true',
+            ]
+        );
     }
 
     private function parseParameters()
@@ -240,7 +247,9 @@ abstract class SimpleCli
 
     private function getCommandClassFromName(array $commands, string $command): ?string
     {
-        /** @var string $commandClass */
+        /**
+         * @var string $commandClass
+         */
         $commandClass = $commands[$command];
 
         if (!is_subclass_of($commandClass, Command::class)) {
@@ -259,7 +268,9 @@ abstract class SimpleCli
      */
     private function createCommander(string $commandClass): ?Command
     {
-        /** @var Command $commander */
+        /**
+         * @var Command $commander
+         */
         $commander = new $commandClass();
 
         try {
