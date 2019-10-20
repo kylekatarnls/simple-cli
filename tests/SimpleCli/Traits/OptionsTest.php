@@ -59,38 +59,41 @@ class OptionsTest extends TraitsTestCase
 
         $command('file', 'foobar');
 
-        static::assertSame([
+        static::assertSame(
             [
-                'property'    => 'prefix',
-                'names'       => [
-                    'prefix',
-                    'p',
+                [
+                    'property'    => 'prefix',
+                    'names'       => [
+                        'prefix',
+                        'p',
+                    ],
+                    'description' => 'Append a prefix to $sentence.',
+                    'values'      => 'hello, hi, bye',
+                    'type'        => 'string',
                 ],
-                'description' => 'Append a prefix to $sentence.',
-                'values'      => 'hello, hi, bye',
-                'type'        => 'string',
-            ],
-            [
-                'property'    => 'verbose',
-                'names'       => [
-                    'verbose',
-                    'v',
+                [
+                    'property'    => 'verbose',
+                    'names'       => [
+                        'verbose',
+                        'v',
+                    ],
+                    'description' => 'If this option is set, extra debug information will be displayed.',
+                    'values'      => null,
+                    'type'        => 'bool',
                 ],
-                'description' => 'If this option is set, extra debug information will be displayed.',
-                'values'      => null,
-                'type'        => 'bool',
-            ],
-            [
-                'property'    => 'help',
-                'names'       => [
-                    'help',
-                    'h',
+                [
+                    'property'    => 'help',
+                    'names'       => [
+                        'help',
+                        'h',
+                    ],
+                    'description' => 'Display documentation of the current command.',
+                    'values'      => null,
+                    'type'        => 'bool',
                 ],
-                'description' => 'Display documentation of the current command.',
-                'values'      => null,
-                'type'        => 'bool',
             ],
-        ], $command->getExpectedOptions());
+            $command->getExpectedOptions()
+        );
     }
 
     /**
@@ -103,16 +106,19 @@ class OptionsTest extends TraitsTestCase
 
         $command('file', 'foobar');
 
-        static::assertSame([
-            'property'    => 'prefix',
-            'names'       => [
-                'prefix',
-                'p',
+        static::assertSame(
+            [
+                'property'    => 'prefix',
+                'names'       => [
+                    'prefix',
+                    'p',
+                ],
+                'description' => 'Append a prefix to $sentence.',
+                'values'      => 'hello, hi, bye',
+                'type'        => 'string',
             ],
-            'description' => 'Append a prefix to $sentence.',
-            'values'      => 'hello, hi, bye',
-            'type'        => 'string',
-        ], $command->getOptionDefinition('prefix'));
+            $command->getOptionDefinition('prefix')
+        );
     }
 
     /**
@@ -161,9 +167,12 @@ class OptionsTest extends TraitsTestCase
 
         $command('file', 'foobar', '-h');
 
-        static::assertSame([
-            'help' => true,
-        ], $command->getOptions());
+        static::assertSame(
+            [
+                'help' => true,
+            ],
+            $command->getOptions()
+        );
     }
 
     /**
@@ -171,11 +180,14 @@ class OptionsTest extends TraitsTestCase
      */
     public function testEnableBooleanOptionOnNonBoolean()
     {
-        static::assertOutput('[ESCAPE][0;31m-p option is not a boolean, so you can\'t use it in a aliases group[ESCAPE][0m', function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            '[ESCAPE][0;31m-p option is not a boolean, so you can\'t use it in a aliases group[ESCAPE][0m',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'foobar', '-p');
-        });
+                $command('file', 'foobar', '-p');
+            }
+        );
     }
 
     /**
@@ -183,11 +195,14 @@ class OptionsTest extends TraitsTestCase
      */
     public function testEnableBooleanOptionWithValue()
     {
-        static::assertOutput('[ESCAPE][0;31m-h option is boolean and should not have value[ESCAPE][0m', function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            '[ESCAPE][0;31m-h option is boolean and should not have value[ESCAPE][0m',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'foobar', '-h=yoh');
-        });
+                $command('file', 'foobar', '-h=yoh');
+            }
+        );
     }
 
     /**
@@ -200,16 +215,22 @@ class OptionsTest extends TraitsTestCase
 
         $command('file', 'foobar', '-p=hello');
 
-        static::assertSame([
-            'prefix' => 'hello',
-        ], $command->getOptions());
+        static::assertSame(
+            [
+                'prefix' => 'hello',
+            ],
+            $command->getOptions()
+        );
 
         $command('file', 'foobar', '--help', '--prefix', 'hello');
 
-        static::assertSame([
-            'help'   => true,
-            'prefix' => 'hello',
-        ], $command->getOptions());
+        static::assertSame(
+            [
+                'help'   => true,
+                'prefix' => 'hello',
+            ],
+            $command->getOptions()
+        );
     }
 
     /**
@@ -219,42 +240,60 @@ class OptionsTest extends TraitsTestCase
     {
         $command = new DemoCli();
 
-        static::assertOutput('[ESCAPE][0;31mUnable to parse -prefix=hello, maybe you would mean --prefix=hello[ESCAPE][0m', function () use ($command) {
-            $command('file', 'foobar', '-prefix=hello');
-        });
+        static::assertOutput(
+            '[ESCAPE][0;31mUnable to parse -prefix=hello, maybe you would mean --prefix=hello[ESCAPE][0m',
+            function () use ($command) {
+                $command('file', 'foobar', '-prefix=hello');
+            }
+        );
 
         $command->mute();
 
         $command('file', 'foobar', '-vh');
 
-        static::assertSame([
-            'verbose' => true,
-            'help'    => true,
-        ], $command->getOptions());
+        static::assertSame(
+            [
+                'verbose' => true,
+                'help'    => true,
+            ],
+            $command->getOptions()
+        );
 
         $command('file', 'foobar', '-hv');
 
-        static::assertSame([
-            'help'    => true,
-            'verbose' => true,
-        ], $command->getOptions());
+        static::assertSame(
+            [
+                'help'    => true,
+                'verbose' => true,
+            ],
+            $command->getOptions()
+        );
 
         $command('file', 'foobar', '-p=hi');
 
-        static::assertSame([
-            'prefix' => 'hi',
-        ], $command->getOptions());
+        static::assertSame(
+            [
+                'prefix' => 'hi',
+            ],
+            $command->getOptions()
+        );
 
         $command('file', 'foobar', '--prefix=bye');
 
-        static::assertSame([
-            'prefix' => 'bye',
-        ], $command->getOptions());
+        static::assertSame(
+            [
+                'prefix' => 'bye',
+            ],
+            $command->getOptions()
+        );
 
         $command('file', 'foobar', '--prefix', 'bye');
 
-        static::assertSame([
-            'prefix' => 'bye',
-        ], $command->getOptions());
+        static::assertSame(
+            [
+                'prefix' => 'bye',
+            ],
+            $command->getOptions()
+        );
     }
 }

@@ -12,17 +12,23 @@ class QuietTest extends TestCase
 {
     public function testIsQuiet()
     {
-        static::assertOutput('', function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            '',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'create', '--quiet');
-        });
+                $command('file', 'create', '--quiet');
+            }
+        );
 
-        static::assertOutput('[ESCAPE][0;36m0 programs created.
-[ESCAPE][0m', function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            '[ESCAPE][0;36m0 programs created.
+[ESCAPE][0m',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'create');
-        });
+                $command('file', 'create');
+            }
+        );
     }
 }

@@ -33,9 +33,16 @@ class DocumentationTest extends TraitsTestCase
 
         $command('file', 'foobar');
 
-        static::assertSame('hello, hi, bye', array_values(array_filter($command->getExpectedOptions(), function ($option) {
-            return $option['property'] === 'prefix';
-        }))[0]['values']);
+        static::assertSame(
+            'hello, hi, bye',
+            array_values(
+                array_filter(
+                    $command->getExpectedOptions(), function ($option) {
+                        return $option['property'] === 'prefix';
+                    }
+                )
+            )[0]['values']
+        );
     }
 
     /**
@@ -48,9 +55,16 @@ class DocumentationTest extends TraitsTestCase
 
         $command('file', 'foobar');
 
-        static::assertSame('Append a prefix to $sentence.', array_values(array_filter($command->getExpectedOptions(), function ($option) {
-            return $option['property'] === 'prefix';
-        }))[0]['description']);
+        static::assertSame(
+            'Append a prefix to $sentence.',
+            array_values(
+                array_filter(
+                    $command->getExpectedOptions(), function ($option) {
+                        return $option['property'] === 'prefix';
+                    }
+                )
+            )[0]['description']
+        );
     }
 
     /**
@@ -63,13 +77,27 @@ class DocumentationTest extends TraitsTestCase
 
         $command('file', 'foobar');
 
-        static::assertSame(['prefix', 'p'], array_values(array_filter($command->getExpectedOptions(), function ($option) {
-            return $option['property'] === 'prefix';
-        }))[0]['names']);
+        static::assertSame(
+            ['prefix', 'p'],
+            array_values(
+                array_filter(
+                    $command->getExpectedOptions(), function ($option) {
+                        return $option['property'] === 'prefix';
+                    }
+                )
+            )[0]['names']
+        );
 
-        static::assertSame('Sentence to display.', array_values(array_filter($command->getExpectedArguments(), function ($argument) {
-            return $argument['property'] === 'sentence';
-        }))[0]['description']);
+        static::assertSame(
+            'Sentence to display.',
+            array_values(
+                array_filter(
+                    $command->getExpectedArguments(), function ($argument) {
+                        return $argument['property'] === 'sentence';
+                    }
+                )
+            )[0]['description']
+        );
 
         $command('file', 'create');
 
@@ -81,13 +109,16 @@ class DocumentationTest extends TraitsTestCase
      */
     public function testAddExpectationCast()
     {
-        static::assertOutput("9\nA|B|C\n", function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            "9\nA|B|C\n",
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'all', 'A', 'B', 'C');
+                $command('file', 'all', 'A', 'B', 'C');
 
-            static::assertSame('string', $command->getExpectedRestArgument()['type']);
-        });
+                static::assertSame('string', $command->getExpectedRestArgument()['type']);
+            }
+        );
     }
 
     /**
@@ -95,12 +126,15 @@ class DocumentationTest extends TraitsTestCase
      */
     public function testAddExpectationInvalidKind()
     {
-        static::assertOutput('A property cannot be both @option and @argument', function () {
-            $command = new DemoCli();
-            $command->disableColors();
+        static::assertOutput(
+            'A property cannot be both @option and @argument',
+            function () {
+                $command = new DemoCli();
+                $command->disableColors();
 
-            $command('file', 'bad');
-        });
+                $command('file', 'bad');
+            }
+        );
     }
 
     /**
@@ -108,28 +142,40 @@ class DocumentationTest extends TraitsTestCase
      */
     public function testExtractExpectations()
     {
-        static::assertOutput('[ESCAPE][0;31mUnknown --foo option[ESCAPE][0m', function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            '[ESCAPE][0;31mUnknown --foo option[ESCAPE][0m',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'all', '--foo=12');
-        });
+                $command('file', 'all', '--foo=12');
+            }
+        );
 
-        static::assertOutput("12\n\n", function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            "12\n\n",
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'all', '--bar=12');
-        });
+                $command('file', 'all', '--bar=12');
+            }
+        );
 
-        static::assertOutput("12\n\n", function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            "12\n\n",
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'all', '--biz=12');
-        });
+                $command('file', 'all', '--biz=12');
+            }
+        );
 
-        static::assertOutput("hi\n", function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            "hi\n",
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'foobar', '--prefix=hi');
-        });
+                $command('file', 'foobar', '--prefix=hi');
+            }
+        );
     }
 }

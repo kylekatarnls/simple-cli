@@ -46,13 +46,17 @@ class CreateTest extends TestCase
      */
     public function testCopyBinTemplate()
     {
-        static::assertOutput("[ESCAPE][0;36m1 program created.\n[ESCAPE][0m", function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            "[ESCAPE][0;36m1 program created.\n[ESCAPE][0m",
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'create', 'Tests\\SimpleCli\\DemoApp\\DemoCli');
-        });
+                $command('file', 'create', 'Tests\\SimpleCli\\DemoApp\\DemoCli');
+            }
+        );
 
-        static::assertFileContentEquals("#!/usr/bin/env php
+        static::assertFileContentEquals(
+            "#!/usr/bin/env php
 <?php
 
 \$dir = __DIR__.'/..';
@@ -73,27 +77,36 @@ if (!file_exists(\$dir.'/autoload.php')) {
 include \$dir.'/autoload.php';
 
 exit((new \Tests\SimpleCli\DemoApp\DemoCli())(...\$argv) ? 0 : 1);
-", 'bin/demo-cli');
-        static::assertFileContentEquals('@ECHO OFF
+",
+            'bin/demo-cli'
+        );
+        static::assertFileContentEquals(
+            '@ECHO OFF
 setlocal DISABLEDELAYEDEXPANSION
 SET BIN_TARGET=%~dp0/demo-cli
 php "%BIN_TARGET%" %*
-', 'bin/demo-cli.bat');
+',
+            'bin/demo-cli.bat'
+        );
 
         unlink('bin/demo-cli');
         unlink('bin/demo-cli.bat');
 
-        static::assertOutput('[ESCAPE][1;36mCreating program for Tests\SimpleCli\DemoApp\DemoCli
+        static::assertOutput(
+            '[ESCAPE][1;36mCreating program for Tests\SimpleCli\DemoApp\DemoCli
 [ESCAPE][0mCreating bin/demo-cli
 Creating bin/demo-cli.bat
 [ESCAPE][0;36m1 program created.
-[ESCAPE][0m', function () {
-            $command = new DemoCli();
+[ESCAPE][0m',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'create', 'Tests\\SimpleCli\\DemoApp\\DemoCli', '--verbose');
-        });
+                $command('file', 'create', 'Tests\\SimpleCli\\DemoApp\\DemoCli', '--verbose');
+            }
+        );
 
-        static::assertFileContentEquals("#!/usr/bin/env php
+        static::assertFileContentEquals(
+            "#!/usr/bin/env php
 <?php
 
 \$dir = __DIR__.'/..';
@@ -114,12 +127,17 @@ if (!file_exists(\$dir.'/autoload.php')) {
 include \$dir.'/autoload.php';
 
 exit((new \Tests\SimpleCli\DemoApp\DemoCli())(...\$argv) ? 0 : 1);
-", 'bin/demo-cli');
-        static::assertFileContentEquals('@ECHO OFF
+",
+            'bin/demo-cli'
+        );
+        static::assertFileContentEquals(
+            '@ECHO OFF
 setlocal DISABLEDELAYEDEXPANSION
 SET BIN_TARGET=%~dp0/demo-cli
 php "%BIN_TARGET%" %*
-', 'bin/demo-cli.bat');
+',
+            'bin/demo-cli.bat'
+        );
     }
 
     /**
@@ -128,33 +146,42 @@ php "%BIN_TARGET%" %*
      */
     public function testRun()
     {
-        static::assertOutput('[ESCAPE][0;31mfoobar class not found
+        static::assertOutput(
+            '[ESCAPE][0;31mfoobar class not found
 [ESCAPE][0mPlease check your composer autoload is up to date and allow to load this class.
 [ESCAPE][0;36m0 programs created.
-[ESCAPE][0m', function () {
-            $command = new DemoCli();
+[ESCAPE][0m',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'create', 'foobar');
-        });
+                $command('file', 'create', 'foobar');
+            }
+        );
 
         $this->fileSystem->remove('bin');
 
-        static::assertOutput('[ESCAPE][0;31mstdClass needs to implement SimpleCli\SimpleCli
+        static::assertOutput(
+            '[ESCAPE][0;31mstdClass needs to implement SimpleCli\SimpleCli
 [ESCAPE][0m[ESCAPE][0;36m0 programs created.
-[ESCAPE][0m', function () {
-            $command = new DemoCli();
+[ESCAPE][0m',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'create', 'stdClass');
-        });
+                $command('file', 'create', 'stdClass');
+            }
+        );
 
         $this->fileSystem->remove('bin');
         touch('bin');
 
-        static::assertOutput('[ESCAPE][0;31mUnable to create the bin directory
-[ESCAPE][0m', function () {
-            $command = new DemoCli();
+        static::assertOutput(
+            '[ESCAPE][0;31mUnable to create the bin directory
+[ESCAPE][0m',
+            function () {
+                $command = new DemoCli();
 
-            $command('file', 'create', 'foobar');
-        });
+                $command('file', 'create', 'foobar');
+            }
+        );
     }
 }

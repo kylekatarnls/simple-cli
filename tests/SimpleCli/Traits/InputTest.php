@@ -42,24 +42,28 @@ class InputTest extends TraitsTestCase
     {
         $command = new DemoCli();
 
-        $command->setAnswerer(function ($question) {
-            if ($question === 'Are you mad?') {
-                return 'yes';
-            }
+        $command->setAnswerer(
+            function ($question) {
+                if ($question === 'Are you mad?') {
+                    return 'yes';
+                }
 
-            return '42';
-        });
+                return '42';
+            }
+        );
 
         $command->read('Answer to the Ultimate Question of Life, the Universe, and Everything', ['foo', 'bar', 'biz']);
 
         static::assertSame(['bar', 'biz'], $command->autocomplete('b'));
 
-        $command->read('Are you mad?', function ($start) {
-            return [
-                "$start??",
-                '42',
-            ];
-        });
+        $command->read(
+            'Are you mad?', function ($start) {
+                return [
+                    "$start??",
+                    '42',
+                ];
+            }
+        );
 
         static::assertSame(['b??', '42'], $command->autocomplete('b'));
     }
@@ -71,13 +75,15 @@ class InputTest extends TraitsTestCase
     {
         $command = new DemoCli();
 
-        $command->setAnswerer(function ($question) {
-            if ($question === 'Are you mad?') {
-                return 'yes';
-            }
+        $command->setAnswerer(
+            function ($question) {
+                if ($question === 'Are you mad?') {
+                    return 'yes';
+                }
 
-            return '42';
-        });
+                return '42';
+            }
+        );
 
         $answer = $command->read('Answer to the Ultimate Question of Life, the Universe, and Everything');
 

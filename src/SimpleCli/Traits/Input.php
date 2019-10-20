@@ -51,9 +51,14 @@ trait Input
         if (is_array($this->currentCompletion)) {
             $length = strlen($start);
 
-            return array_values(array_filter($this->currentCompletion, function ($suggestion) use ($length, $start) {
-                return substr($suggestion, 0, $length) === $start;
-            }));
+            return array_values(
+                array_filter(
+                    $this->currentCompletion,
+                    function ($suggestion) use ($length, $start) {
+                        return substr($suggestion, 0, $length) === $start;
+                    }
+                )
+            );
         }
 
         return $this->currentCompletion ? ($this->currentCompletion)($start) : [];
