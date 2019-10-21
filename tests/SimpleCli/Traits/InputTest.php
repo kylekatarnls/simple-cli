@@ -57,7 +57,8 @@ class InputTest extends TraitsTestCase
         static::assertSame(['bar', 'biz'], $command->autocomplete('b'));
 
         $command->read(
-            'Are you mad?', function ($start) {
+            'Are you mad?',
+            function ($start) {
                 return [
                     "$start??",
                     '42',

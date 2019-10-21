@@ -36,13 +36,14 @@
     ],
     "scripts": {
         "unit": "phpunit --coverage-text --coverage-clover=coverage.xml",
-        "cs": "phpcs src tests",
+        "cs": "phpcs",
         "csf": "php-cs-fixer fix -v --diff --dry-run",
         "md": "phpmd src,tests text ./phpmd.xml",
         "stan": "phpstan analyse --autoload-file=vendor/autoload.php --level max src tests",
         "phan": "phan",
         "psalm": "psalm",
         "style": [
+            "@cs",
             "@md",
             "@stan",
             "@csf"

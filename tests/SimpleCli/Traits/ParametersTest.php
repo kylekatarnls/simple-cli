@@ -93,7 +93,9 @@ class ParametersTest extends TraitsTestCase
     public function testGetParameterValueWrongValue()
     {
         static::expectException(InvalidArgumentException::class);
-        static::expectExceptionMessage("The parameter myProp must be one of the following values: [42.5, 1]; '42' given.");
+        static::expectExceptionMessage(
+            "The parameter myProp must be one of the following values: [42.5, 1]; '42' given."
+        );
 
         $command = new DemoCli();
 
