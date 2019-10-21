@@ -132,7 +132,7 @@ abstract class SimpleCli
         $helper = $commander;
 
         if ($this->hasTraitFeatureEnabled($commander, Help::class, 'help')) {
-            $helper->displayHelp($this);
+            $helper->displayHelp($this); // @phan-suppress-current-line PhanUndeclaredMethod
 
             return true;
         }

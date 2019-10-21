@@ -16,7 +16,7 @@
         "friendsofphp/php-cs-fixer": "^2.15.0",
         "phan/phan": "^2.3",
         "phpunit/phpunit": "^7",
-        "phpmd/phpmd": "^2",
+        "phpmd/phpmd": "dev-php-7.1-compatibility",
         "phpstan/phpstan": "^0.11",
         "squizlabs/php_codesniffer": "^3.0",
         "vimeo/psalm": "^3.6"
@@ -43,6 +43,7 @@
         "phan": "phan",
         "psalm": "psalm",
         "style": [
+            "@phan",
             "@cs",
             "@md",
             "@stan",

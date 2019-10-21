@@ -9,6 +9,13 @@ use ReflectionClass;
 use ReflectionObject;
 use SimpleCli\Command;
 
+/**
+ * Trait Documentation.
+ *
+ * @property ?array[] $expectedOptions
+ * @property ?array[] $expectedArguments
+ * @property ?array   $expectedRestArgument
+ */
 trait Documentation
 {
     /**
