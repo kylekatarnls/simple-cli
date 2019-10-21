@@ -12,9 +12,9 @@ use SimpleCli\Command;
 /**
  * Trait Documentation.
  *
- * @property ?array[] $expectedOptions
- * @property ?array[] $expectedArguments
- * @property ?array   $expectedRestArgument
+ * @property array[]|null $expectedOptions
+ * @property array[]|null $expectedArguments
+ * @property array|null   $expectedRestArgument
  */
 trait Documentation
 {
@@ -28,6 +28,7 @@ trait Documentation
     public function extractClassNameDescription(string $className): string
     {
         try {
+            /** @psalm-var class-string $className */
             $doc = (new ReflectionClass($className))->getDocComment();
         } catch (\ReflectionException $e) {
             $doc = null;
@@ -56,7 +57,7 @@ trait Documentation
 
         $source = (string) preg_replace_callback(
             '/^'.preg_quote($code).'( ([^\n]*(\n+'.str_repeat(' ', $length).'[^\n]*)*))?/m',
-            function ($match) use (&$result, $length) {
+            function (array $match) use (&$result, $length) {
                 $result = (string) str_replace("\n".str_repeat(' ', $length), "\n", $match[2] ?? '');
 
                 return '';
@@ -78,6 +79,15 @@ trait Documentation
         return rtrim($doc);
     }
 
+    /**
+     * @param ?string $option
+     * @param bool    $argument
+     * @param bool    $rest
+     * @param ?string $name
+     * @param ?string $doc
+     * @param ?string $values
+     * @param ?string $var
+     */
     private function addExpectation($option, $argument, $rest, $name, $doc, $values, $var): void
     {
         if ($option) {
@@ -109,7 +119,7 @@ trait Documentation
             if ($rest) {
                 $definition['type'] = $definition['type'] === 'array'
                     ? 'string'
-                    : preg_replace('/\[\]$/', '', $definition['type']);
+                    : preg_replace('/\[]$/', '', $definition['type'] ?: '');
                 $this->expectedRestArgument = $definition;
 
                 return;

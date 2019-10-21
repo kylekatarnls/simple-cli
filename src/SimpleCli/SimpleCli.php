@@ -19,6 +19,17 @@ use SimpleCli\Traits\Options;
 use SimpleCli\Traits\Output;
 use SimpleCli\Traits\Parameters;
 
+/**
+ * Class SimpleCli.
+ *
+ * @property string   $command
+ * @property string[] $parameters
+ * @property array[]  $arguments
+ * @property array[]  $expectedArguments
+ * @property array[]  $restArguments
+ * @property array    $options
+ * @property array[]  $expectedOptions
+ */
 abstract class SimpleCli
 {
     use Input,
@@ -128,10 +139,12 @@ abstract class SimpleCli
 
         /**
          * @var Help $helper
+         * @psalm-suppress UndefinedDocblockClass
          */
         $helper = $commander;
 
         if ($this->hasTraitFeatureEnabled($commander, Help::class, 'help')) {
+            /** @psalm-suppress UndefinedDocblockClass */
             $helper->displayHelp($this); // @phan-suppress-current-line PhanUndeclaredMethod
 
             return true;
@@ -140,6 +153,18 @@ abstract class SimpleCli
         array_unshift($parameters, $this);
 
         return $commander->run(...$parameters);
+    }
+
+    /**
+     * Return a array of traits directly in use by the given class.
+     *
+     * @param Command|string $commander
+     *
+     * @return string[]
+     */
+    protected function getCommandTraits($commander): array
+    {
+        return class_uses($commander) ?: [];
     }
 
     /**
@@ -157,11 +182,11 @@ abstract class SimpleCli
         string $property = ''
     ): bool {
         $traits = $commander ? array_merge(
-            class_uses($commander),
-            ...array_map('class_uses', array_values(class_parents($commander)))
+            $this->getCommandTraits($commander),
+            ...array_map([$this, 'getCommandTraits'], array_values(class_parents($commander) ?: []))
         ) : [];
 
-        return isset($traits[$trait]) && $commander->$property ?? false;
+        return isset($traits[$trait]) && $commander && ($commander->$property ?? false);
     }
 
     /**
@@ -187,7 +212,7 @@ abstract class SimpleCli
         );
     }
 
-    private function parseParameters()
+    private function parseParameters(): void
     {
         $this->options = [];
         $this->arguments = [];
@@ -250,6 +275,14 @@ abstract class SimpleCli
         return $command;
     }
 
+    /**
+     * @param array  $commands
+     * @param string $command
+     *
+     * @psalm-return class-string|null
+     *
+     * @return string|null
+     */
     private function getCommandClassFromName(array $commands, string $command): ?string
     {
         /**
@@ -268,6 +301,7 @@ abstract class SimpleCli
 
     /**
      * @param string $commandClass
+     * @psalm-param class-string $commandClass
      *
      * @return Command|null
      */
@@ -275,6 +309,7 @@ abstract class SimpleCli
     {
         /**
          * @var Command $commander
+         * @psalm-var Command $commander
          */
         $commander = new $commandClass();
 

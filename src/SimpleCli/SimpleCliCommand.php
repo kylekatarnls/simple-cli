@@ -6,6 +6,16 @@ namespace SimpleCli;
 
 use SimpleCli\SimpleCliCommand\Create;
 
+/**
+ * Class SimpleCliCommand.
+ *
+ * @property string[] $parameters
+ * @property array[]  $arguments
+ * @property array[]  $expectedArguments
+ * @property array[]  $restArguments
+ * @property array    $options
+ * @property array[]  $expectedOptions
+ */
 class SimpleCliCommand extends SimpleCli
 {
     protected $name = 'simple-cli';
