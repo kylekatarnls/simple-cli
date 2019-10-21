@@ -37,7 +37,8 @@ class DocumentationTest extends TraitsTestCase
             'hello, hi, bye',
             array_values(
                 array_filter(
-                    $command->getExpectedOptions(), function ($option) {
+                    $command->getExpectedOptions(),
+                    function ($option) {
                         return $option['property'] === 'prefix';
                     }
                 )
@@ -59,7 +60,8 @@ class DocumentationTest extends TraitsTestCase
             'Append a prefix to $sentence.',
             array_values(
                 array_filter(
-                    $command->getExpectedOptions(), function ($option) {
+                    $command->getExpectedOptions(),
+                    function ($option) {
                         return $option['property'] === 'prefix';
                     }
                 )
@@ -81,7 +83,8 @@ class DocumentationTest extends TraitsTestCase
             ['prefix', 'p'],
             array_values(
                 array_filter(
-                    $command->getExpectedOptions(), function ($option) {
+                    $command->getExpectedOptions(),
+                    function ($option) {
                         return $option['property'] === 'prefix';
                     }
                 )
@@ -92,7 +95,8 @@ class DocumentationTest extends TraitsTestCase
             'Sentence to display.',
             array_values(
                 array_filter(
-                    $command->getExpectedArguments(), function ($argument) {
+                    $command->getExpectedArguments(),
+                    function ($argument) {
                         return $argument['property'] === 'sentence';
                     }
                 )

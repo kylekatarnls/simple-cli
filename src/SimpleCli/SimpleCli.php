@@ -59,7 +59,9 @@ abstract class SimpleCli
         $packageName = $this->getPackageName();
         $start = $packageName === '' ? '' : $this->colorize($packageName, 'green').' version ';
 
-        return $start.$this->colorize($this->getInstalledPackageVersion($packageName), 'brown').$this->getVersionDetails();
+        return $start.
+            $this->colorize($this->getInstalledPackageVersion($packageName), 'brown').
+            $this->getVersionDetails();
     }
 
     /**
@@ -149,8 +151,11 @@ abstract class SimpleCli
      *
      * @return bool
      */
-    protected function hasTraitFeatureEnabled(Command $commander = null, string $trait = '', string $property = ''): bool
-    {
+    protected function hasTraitFeatureEnabled(
+        Command $commander = null,
+        string $trait = '',
+        string $property = ''
+    ): bool {
         $traits = $commander ? array_merge(
             class_uses($commander),
             ...array_map('class_uses', array_values(class_parents($commander)))
