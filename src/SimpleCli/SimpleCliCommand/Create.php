@@ -28,6 +28,12 @@ class Create implements Command
      */
     public $classNames = [];
 
+    /**
+     * @param SimpleCli $cli
+     * @param string    $text
+     *
+     * @return bool
+     */
     protected function error(SimpleCli $cli, $text): bool
     {
         $cli->writeLine($text, 'red');
@@ -35,6 +41,11 @@ class Create implements Command
         return false;
     }
 
+    /**
+     * @param string $className
+     *
+     * @return string
+     */
     protected function extractName($className): string
     {
         $parts = explode('\\', $className);
@@ -68,8 +79,8 @@ class Create implements Command
                     strtr(
                         (string) file_get_contents("$binTemplate/$file"),
                         [
-                        '{name}'  => $name,
-                        '{class}' => $className,
+                            '{name}'  => $name,
+                            '{class}' => $className,
                         ]
                     )
                 );

@@ -21,6 +21,8 @@ trait Help
      * Display help for the current command.
      *
      * @param SimpleCli $cli
+     *
+     * @return bool
      */
     public function displayHelp(SimpleCli $cli)
     {
@@ -41,7 +43,7 @@ trait Help
         foreach ($cli->getExpectedOptions() as $option) {
             $aliases = array_filter(
                 $option['names'],
-                function ($name) {
+                function (string $name) {
                     return strlen($name) === 1;
                 }
             );
@@ -52,18 +54,18 @@ trait Help
                 $start = "-$firstAlias, ";
                 $option['names'] = array_merge(
                     array_map(
-                        function ($alias) {
+                        function (string $alias) {
                             return "-$alias";
                         },
                         $aliases
                     ),
                     array_map(
-                        function ($name) {
+                        function (string $name) {
                             return "--$name";
                         },
                         array_filter(
                             $option['names'],
-                            function ($name) {
+                            function (string $name) {
                                 return strlen($name) !== 1;
                             }
                         )
@@ -85,7 +87,7 @@ trait Help
             '  '.basename($cli->getFile()).' '.$cli->getCommand().' [options] '.implode(
                 ' ',
                 array_map(
-                    function ($name) {
+                    function (string $name) {
                         return "[<$name>]";
                     },
                     $argumentsNames
@@ -100,6 +102,7 @@ trait Help
     }
 
     /**
+     * Display definitions of the arguments list.
      *
      * @param SimpleCli $cli
      * @param array     $arguments

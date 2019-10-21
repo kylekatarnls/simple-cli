@@ -60,7 +60,7 @@ trait Options
         );
     }
 
-    private function enableBooleanOption(array $definition, string $name, string $value = null)
+    private function enableBooleanOption(array $definition, string $name, string $value = null): void
     {
         if ($definition['type'] !== 'bool') {
             throw new InvalidArgumentException(
@@ -77,7 +77,7 @@ trait Options
         $this->options[$definition['property']] = true;
     }
 
-    private function setOption(string $name, string $value = null, array &$optionDefinition = null)
+    private function setOption(string $name, string $value = null, array &$optionDefinition = null): void
     {
         $definition = $this->getOptionDefinition($name);
         $name = strlen($name) === 1 ? "-$name" : "--$name";

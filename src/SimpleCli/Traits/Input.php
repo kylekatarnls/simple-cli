@@ -17,7 +17,7 @@ trait Input
     protected $readlineFunction = 'readline';
 
     /**
-     * @var callable
+     * @var callable|string
      */
     protected $readlineCompletionRegisterFunction = 'readline_completion_function';
 
@@ -26,7 +26,7 @@ trait Input
      */
     protected $readlineCompletionExtensions = ['readline'];
 
-    protected function recordAutocomplete()
+    protected function recordAutocomplete(): void
     {
         foreach ($this->readlineCompletionExtensions as $extension) {
             if (!extension_loaded($extension)) {
