@@ -89,6 +89,7 @@ trait Options
         }
 
         if ($value) {
+            // @phan-suppress-next-line PhanUndeclaredMethod
             $this->options[$definition['property']] = $this->getParameterValue($value, $definition);
 
             return;

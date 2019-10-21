@@ -11,7 +11,7 @@ return [
         'src',
         'vendor',
     ],
-    'exclude_file_regex' => '@^vendor/.*/(tests?|Tests?)/@',
+    'exclude_file_regex' => '@^vendor/(vimeo/psalm/.*|.*/(tests?|Tests?)/)@',
     'exclude_analysis_directory_list' => [
         'vendor'
     ],

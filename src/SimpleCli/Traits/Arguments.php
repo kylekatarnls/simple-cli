@@ -76,6 +76,7 @@ trait Arguments
             $restDefinition = $this->getExpectedRestArgument();
 
             if ($restDefinition) {
+                // @phan-suppress-next-line PhanUndeclaredMethod
                 $this->restArguments[] = $this->getParameterValue($argument, $restDefinition);
 
                 return;
@@ -88,6 +89,7 @@ trait Arguments
             );
         }
 
+        // @phan-suppress-next-line PhanUndeclaredMethod
         $this->arguments[$definition['property']] = $this->getParameterValue($argument, $definition);
     }
 }

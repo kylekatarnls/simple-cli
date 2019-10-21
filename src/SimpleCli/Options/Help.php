@@ -77,6 +77,7 @@ trait Help
         $argumentsNames = array_keys($arguments);
         $optionsNames = array_keys($options);
         $length = (int) max(array_merge(array_map('strlen', $argumentsNames), array_map('strlen', $optionsNames))) + 2;
+        /* @phan-suppress-next-line PhanUndeclaredMethod */
         $defaultInstance = new static();
 
         $cli->writeLine('Usage:', 'brown');
@@ -99,10 +100,11 @@ trait Help
     }
 
     /**
+     *
      * @param SimpleCli $cli
      * @param array     $arguments
      * @param int       $length
-     * @param self      $defaultInstance
+     * @param self      $defaultInstance @phan-suppress-current-line PhanTypeMismatchDeclaredParam
      */
     protected function displayArguments(SimpleCli $cli, array $arguments, int $length, self $defaultInstance): void
     {
@@ -121,7 +123,7 @@ trait Help
      * @param SimpleCli $cli
      * @param array     $options
      * @param int       $length
-     * @param self      $defaultInstance
+     * @param self      $defaultInstance @phan-suppress-current-line PhanTypeMismatchDeclaredParam
      */
     protected function displayOptions(SimpleCli $cli, array $options, int $length, self $defaultInstance): void
     {
