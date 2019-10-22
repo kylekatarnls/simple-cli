@@ -34,6 +34,10 @@ class DemoCli extends SimpleCli
         ];
     }
 
+    /**
+     * @suppressWarnings(PHPMD.UndefinedVariable)
+     * @param $callback
+     */
     public static function register($callback)
     {
         static::$registered[] = $callback;
