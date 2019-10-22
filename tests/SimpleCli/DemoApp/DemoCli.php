@@ -36,7 +36,8 @@ class DemoCli extends SimpleCli
 
     /**
      * @suppressWarnings(PHPMD.UndefinedVariable)
-     * @param $callback
+     *
+     * @param callable $callback
      */
     public static function register($callback)
     {
