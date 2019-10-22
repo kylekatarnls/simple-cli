@@ -39,7 +39,7 @@
     "scripts": {
         "unit": "phpunit --coverage-text --coverage-clover=coverage.xml",
         "cs": "phpcs",
-        "csf": "php-cs-fixer fix -v --diff --dry-run",
+        "csf": "php check-version.php 7.4.0 || php-cs-fixer fix -v --diff --dry-run",
         "md": "phpmd src,tests text ./phpmd.xml",
         "stan": "phpstan analyse --autoload-file=vendor/autoload.php --level max src tests",
         "phan": "phan",
