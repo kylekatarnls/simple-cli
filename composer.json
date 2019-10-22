@@ -45,6 +45,7 @@
         "phan": "phan",
         "psalm": "psalm",
         "style": [
+            "@psalm",
             "@phan",
             "@cs",
             "@md",
