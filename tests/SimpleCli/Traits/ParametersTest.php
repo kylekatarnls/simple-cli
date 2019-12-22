@@ -73,6 +73,10 @@ class ParametersTest extends TraitsTestCase
      */
     public function testGetParameterValueWrongCast()
     {
+        if (version_compare(phpversion(), '8.0.0-dev', '>=')) {
+            $this->markTestSkipped('settype() can no longer be muted since PHP 8.');
+        }
+
         static::expectException(InvalidArgumentException::class);
         static::expectExceptionMessage('Cannot cast arrrg to special');
 
