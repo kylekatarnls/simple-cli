@@ -73,7 +73,7 @@ class ParametersTest extends TraitsTestCase
      */
     public function testGetParameterValueWrongCast()
     {
-        if (version_compare(phpversion(), '8.0.0-dev', '>=')) {
+        if (version_compare(phpversion() ?: '0.0.0', '8.0.0-dev', '>=')) {
             $this->markTestSkipped('settype() can no longer be muted since PHP 8.');
         }
 
