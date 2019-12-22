@@ -278,6 +278,9 @@ class SimpleCliTest extends TestCase
         );
     }
 
+    /**
+     * @covers ::getCommandTraits
+     */
     public function testGetCommandTraits()
     {
         self::assertSame([
