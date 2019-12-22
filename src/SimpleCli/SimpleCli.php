@@ -30,7 +30,7 @@ use SimpleCli\Traits\Parameters;
  * @property array    $options
  * @property array[]  $expectedOptions
  */
-abstract class SimpleCli
+abstract class SimpleCli implements Writer
 {
     use Input,
         Output,
