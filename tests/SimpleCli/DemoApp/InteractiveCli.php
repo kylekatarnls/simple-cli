@@ -21,4 +21,9 @@ class InteractiveCli extends DemoCli
     {
         return array_shift($this->answers) ?: '';
     }
+
+    public function traits($command)
+    {
+        return $this->getCommandTraits($command);
+    }
 }
