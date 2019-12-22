@@ -5,6 +5,7 @@ namespace Tests\SimpleCli;
 use Tests\SimpleCli\DemoApp\BadCli;
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\DemoApp\InteractiveCli;
+use Tests\SimpleCli\DemoApp\TraitCommand;
 
 /**
  * @coversDefaultClass \SimpleCli\SimpleCli
@@ -275,5 +276,13 @@ class SimpleCliTest extends TestCase
                 $command('file', 'create', '--quiet');
             }
         );
+    }
+
+    public function testGetCommandTraits()
+    {
+        self::assertSame([
+            'SimpleCli\Options\Verbose' => 'SimpleCli\Options\Verbose',
+            'SimpleCli\Traits\Input' => 'SimpleCli\Traits\Input',
+        ], (new InteractiveCli())->traits(TraitCommand::class));
     }
 }
