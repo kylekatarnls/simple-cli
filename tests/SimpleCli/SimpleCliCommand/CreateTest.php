@@ -21,7 +21,7 @@ class CreateTest extends TestCase
      */
     protected $currentDirectory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

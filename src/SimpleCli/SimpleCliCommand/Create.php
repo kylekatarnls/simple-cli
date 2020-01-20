@@ -17,7 +17,9 @@ use SimpleCli\SimpleCli;
  */
 class Create implements Command
 {
-    use Help, Quiet, Verbose;
+    use Help;
+    use Quiet;
+    use Verbose;
 
     /**
      * List of program classes to convert into executable CLI programs.
@@ -120,7 +122,7 @@ class Create implements Command
             }
 
             /**
-             * @var SimpleCli $createdCli
+             * @var SimpleCli
              */
             $createdCli = new $className();
 

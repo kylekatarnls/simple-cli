@@ -32,17 +32,17 @@ use SimpleCli\Traits\Parameters;
  */
 abstract class SimpleCli implements Writer
 {
-    use Input,
-        Output,
-        Name,
-        File,
-        Commands,
-        CommandTrait,
-        Parameters,
-        Arguments,
-        Options,
-        Composer,
-        Documentation;
+    use Input;
+    use Output;
+    use Name;
+    use File;
+    use Commands;
+    use CommandTrait;
+    use Parameters;
+    use Arguments;
+    use Options;
+    use Composer;
+    use Documentation;
 
     public function __construct(array $colors = null, array $backgrounds = null)
     {
@@ -138,7 +138,7 @@ abstract class SimpleCli implements Writer
         }
 
         /**
-         * @var Help $helper
+         * @var Help
          * @psalm-suppress UndefinedDocblockClass
          */
         $helper = $commander;
@@ -286,7 +286,7 @@ abstract class SimpleCli implements Writer
     private function getCommandClassFromName(array $commands, string $command): ?string
     {
         /**
-         * @var string $commandClass
+         * @var string
          */
         $commandClass = $commands[$command];
 
@@ -308,7 +308,7 @@ abstract class SimpleCli implements Writer
     private function createCommander(string $commandClass): ?Command
     {
         /**
-         * @var Command $commander
+         * @var Command
          * @psalm-var Command $commander
          */
         $commander = new $commandClass();

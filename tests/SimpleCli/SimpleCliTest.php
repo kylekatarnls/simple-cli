@@ -283,7 +283,7 @@ class SimpleCliTest extends TestCase
      */
     public function testGetCommandTraits()
     {
-        self::assertSame([
+        static::assertSame([
             'SimpleCli\Options\Verbose' => 'SimpleCli\Options\Verbose',
             'SimpleCli\Traits\Input'    => 'SimpleCli\Traits\Input',
         ], (new InteractiveCli())->traits(TraitCommand::class));
