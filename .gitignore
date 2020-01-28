@@ -1,5 +1,7 @@
+/.idea/
+/coverage/
+/vendor/
 composer.phar
 composer.lock
 coverage.xml
-/vendor/
-/.idea/
+test.php

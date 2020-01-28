@@ -19,13 +19,14 @@ install:
   - if [[ $TRAVIS_PHP_VERSION != "nightly" ]]; then travis_retry composer update --prefer-dist --no-interaction --no-suggest --prefer-stable; fi;
 
 before_script:
+  - phpenv config-rm xdebug.ini || echo "XDebug is not enabled"
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
   - pecl install ast
 
 script:
-  - composer test
+  - composer phpdbg-test
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
