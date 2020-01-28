@@ -38,6 +38,7 @@
     ],
     "scripts": {
         "unit": "phpunit --coverage-text --coverage-clover=coverage.xml",
+        "phpdbg": "phpdbg -qrr ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml",
         "cs": "phpcs",
         "csf": "php check-version.php 7.4.0-dev || php-cs-fixer fix -v --diff --dry-run",
         "md": "phpmd src,tests text ./phpmd.xml",
@@ -54,6 +55,10 @@
         ],
         "test": [
             "@unit",
+            "@style"
+        ],
+        "phpdbg-test": [
+            "@phpdbg",
             "@style"
         ]
     }
