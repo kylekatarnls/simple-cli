@@ -32,17 +32,17 @@ use SimpleCli\Traits\Parameters;
  */
 abstract class SimpleCli implements Writer
 {
-    use Input,
-        Output,
-        Name,
-        File,
-        Commands,
-        CommandTrait,
-        Parameters,
-        Arguments,
-        Options,
-        Composer,
-        Documentation;
+    use Input;
+    use Output;
+    use Name;
+    use File;
+    use Commands;
+    use CommandTrait;
+    use Parameters;
+    use Arguments;
+    use Options;
+    use Composer;
+    use Documentation;
 
     public function __construct(array $colors = null, array $backgrounds = null)
     {

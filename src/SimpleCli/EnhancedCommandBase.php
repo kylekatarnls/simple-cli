@@ -9,5 +9,6 @@ use SimpleCli\Options\Verbose;
 
 abstract class EnhancedCommandBase extends CommandBase
 {
-    use Quiet, Verbose;
+    use Quiet;
+    use Verbose;
 }
