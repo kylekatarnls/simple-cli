@@ -12,7 +12,8 @@ use SimpleCli\Traits\Input;
  */
 class TraitCommand implements Command
 {
-    use Verbose, Input;
+    use Verbose;
+    use Input;
 
     public function run(SimpleCli $cli): bool
     {
