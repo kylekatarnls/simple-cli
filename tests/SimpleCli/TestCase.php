@@ -16,6 +16,14 @@ abstract class TestCase extends FrameworkTestCase
         return $reflection->invokeArgs($object, $arguments);
     }
 
+    protected function getPropertyValue($object, string $propertyName)
+    {
+        $reflection = (new ReflectionClass(get_class($object)))->getProperty($propertyName);
+        $reflection->setAccessible(true);
+
+        return $reflection->getValue($object);
+    }
+
     public function assertOutput(string $expectedOutput, Closure $action)
     {
         ob_start();

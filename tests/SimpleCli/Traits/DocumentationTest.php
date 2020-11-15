@@ -2,6 +2,9 @@
 
 namespace Tests\SimpleCli\Traits;
 
+use SimpleCli\SimpleCliCommand\DefaultValue;
+use SimpleCli\SimpleCliCommand\TypeHint;
+use SimpleCli\SimpleCliCommand\VarAnnotation;
 use stdClass;
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\DemoApp\DemoCommand;
@@ -181,5 +184,51 @@ class DocumentationTest extends TraitsTestCase
                 $command('file', 'foobar', '--prefix=hi');
             }
         );
+    }
+
+    /**
+     * @covers ::getPropertyType
+     * @covers ::getPropertyTypeByHint
+     */
+    public function testPropertyTypeByHint()
+    {
+        if (version_compare(PHP_VERSION, '7.4.0-dev', '<')) {
+            $this->markTestSkipped('Properties can be typed by hint only with PHP 7.4');
+        }
+
+        $command = new DemoCli();
+
+        $this->invoke($command, 'extractExpectations', new TypeHint());
+
+        static::assertSame('float', $this->getPropertyValue($command, 'expectedOptions')[0]['type']);
+        static::assertSame('bool', $this->getPropertyValue($command, 'expectedArguments')[0]['type']);
+    }
+
+    /**
+     * @covers ::getPropertyType
+     * @covers ::getPropertyTypeByHint
+     */
+    public function testPropertyTypeByVarAnnotation()
+    {
+        $command = new DemoCli();
+
+        $this->invoke($command, 'extractExpectations', new VarAnnotation());
+
+        static::assertSame('float', $this->getPropertyValue($command, 'expectedOptions')[0]['type']);
+        static::assertSame('bool', $this->getPropertyValue($command, 'expectedArguments')[0]['type']);
+    }
+
+    /**
+     * @covers ::getPropertyType
+     * @covers ::getPropertyTypeByHint
+     */
+    public function testPropertyTypeByDefaultValue()
+    {
+        $command = new DemoCli();
+
+        $this->invoke($command, 'extractExpectations', new DefaultValue());
+
+        static::assertSame('float', $this->getPropertyValue($command, 'expectedOptions')[0]['type']);
+        static::assertSame('bool', $this->getPropertyValue($command, 'expectedArguments')[0]['type']);
     }
 }
