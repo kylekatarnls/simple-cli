@@ -71,7 +71,7 @@ you can pick any name by adding `protected $name = 'my-custom-name';` in your cl
 Now you can run from the console:
 
 ```shell
-vendor/bin/simple-cli create MyVendorName\CliApp\EasyCalc
+vendor/bin/simple-cli create "MyVendorName\CliApp\EasyCalc"
 ```
 
 It will create `bin/easy-calc` for unix systems and `bin/easy-calc.bat` for Windows OS.
