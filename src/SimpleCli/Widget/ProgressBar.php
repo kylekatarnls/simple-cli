@@ -9,41 +9,58 @@ use SimpleCli\SimpleCli;
 
 class ProgressBar
 {
+    /** @var int|float */
     public $total = 1;
 
+    /** @var int */
     public $decimals = 0;
 
+    /** @var int */
     public $width = 50;
 
+    /** @var string */
     public $before = '';
 
+    /** @var string */
     public $after = '';
 
+    /** @var string */
     public $start = "\n";
 
+    /** @var string */
     public $end = "\n";
 
+    /** @var string */
     public $rewind = "\r";
 
+    /** @var string */
     public $bar = '=';
 
+    /** @var string */
     public $emptyBar = ' ';
 
+    /** @var string */
     public $barStart = '[';
 
+    /** @var string */
     public $barEnd = ']';
 
+    /** @var string */
     public $cursor = '>';
 
+    /** @var string */
     public $decimalPoint = '.';
 
+    /** @var string */
     public $thousandsSeparator = '.';
 
     /** @var SimpleCli */
     protected $cli;
 
+    /** @var int|float */
     protected $value = 0;
 
+    /** @var int */
     protected $step = -1;
 
     public function __construct(SimpleCli $cli)
@@ -102,7 +119,7 @@ class ProgressBar
         }
 
         return sprintf(
-            "%s%s %s%% %s%s%s%s%s%s%s",
+            '%s%s %s%% %s%s%s%s%s%s%s',
             $this->before,
             $finished ? '¤' : ['/', '-', '\\', '|'][$this->step % 4],
             str_pad(number_format(

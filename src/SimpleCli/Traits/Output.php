@@ -160,7 +160,6 @@ trait Output
         $background = $background ? $this->getColorCode($background, $this->backgrounds) : '';
 
         return $color.$background.$text.$this->escapeCharacter.'[0m';
-
     }
 
     /**
