@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SimpleCli\SimpleCliCommand;
+namespace Tests\SimpleCli\SimpleCliCommand;
 
 use SimpleCli\Command;
 use SimpleCli\SimpleCli;

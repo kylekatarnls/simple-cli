@@ -430,6 +430,58 @@ With this syntax, `@var` typing is not possible, so the type will be
 automatically set with the property type hint or inferring from the
 default value.
 
+## Progress bar widget
+
+```php
+use SimpleCli\Command;
+use SimpleCli\SimpleCli;
+use SimpleCli\Widget\ProgressBar;
+
+class SomeCommand implements Command
+{
+    public function run(SimpleCli $cli): bool
+    {
+        $bar = new ProgressBar($cli);
+        $bar->start();
+        $bar->setValue(0.3);
+        $bar->setValue(0.7);
+        $bar->setValue(1);
+        $bar->end();
+
+        return true;
+    }
+}
+```
+This will show 30% and a bar 30% full, then replace the line
+with a 70% bar, and finally a full bar. It would looks like:
+```
+|  70% [===================================>               ]
+```
+`ProgressBar` as its settings and characters used exposed as public
+properties, so you can simply set as you wish to customize the bar
+style:
+[src/SimpleCli/Widget/ProgressBar.php](https://github.com/kylekatarnls/simple-cli/blob/master/src/SimpleCli/Widget/ProgressBar.php)
+
+Let's see a concrete example:
+```php
+public function run(SimpleCli $cli): bool
+{
+    $bar = new ProgressBar($cli);
+    // Assuming we have a 214MB file being downloaded in a parallel process
+    $bar->total = 214 * 1024 * 1024;
+    $bar->start();
+
+    while ($bar->isInProgress()) { // while value < total
+        $bar->setValue(filesize('partially-downloaded-file.part'));
+        usleep(250000); // Let's refresh every 250ms
+    }
+
+    $bar->end();
+
+    return true;
+}
+```
+
 ## API reference
 
 In the examples above, you could see your command `run(SimpleCli $cli)`
