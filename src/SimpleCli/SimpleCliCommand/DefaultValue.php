@@ -17,7 +17,12 @@ class DefaultValue implements Command
     /**
      * @option
      */
-    public $bar = 8.3;
+    public $bar = 8.0;
+
+    /**
+     * @rest
+     */
+    public $biz = [2.0, 'ok'];
 
     /**
      * @param SimpleCli $cli
