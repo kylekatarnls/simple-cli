@@ -123,6 +123,7 @@ class Create implements Command
 
             /**
              * @psalm-suppress UnsafeInstantiation
+             *
              * @var SimpleCli $createdCli
              */
             $createdCli = new $className();

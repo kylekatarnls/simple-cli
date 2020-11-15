@@ -2,12 +2,12 @@
 
 namespace Tests\SimpleCli\Traits;
 
-use SimpleCli\SimpleCliCommand\DefaultValue;
-use SimpleCli\SimpleCliCommand\TypeHint;
-use SimpleCli\SimpleCliCommand\VarAnnotation;
 use stdClass;
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\DemoApp\DemoCommand;
+use Tests\SimpleCli\SimpleCliCommand\DefaultValue;
+use Tests\SimpleCli\SimpleCliCommand\TypeHint;
+use Tests\SimpleCli\SimpleCliCommand\VarAnnotation;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\Documentation
@@ -200,9 +200,9 @@ class DocumentationTest extends TraitsTestCase
 
         $this->invoke($command, 'extractExpectations', new TypeHint());
 
-        static::assertSame('float', $this->getPropertyValue($command, 'expectedOptions')[0]['type']);
-        static::assertSame('bool', $this->getPropertyValue($command, 'expectedArguments')[0]['type']);
-        static::assertSame('float', $this->getPropertyValue($command, 'expectedRestArgument')['type']);
+        static::assertSame('float', static::getPropertyValue($command, 'expectedOptions')[0]['type']);
+        static::assertSame('bool', static::getPropertyValue($command, 'expectedArguments')[0]['type']);
+        static::assertSame('float', static::getPropertyValue($command, 'expectedRestArgument')['type']);
     }
 
     /**
@@ -215,9 +215,9 @@ class DocumentationTest extends TraitsTestCase
 
         $this->invoke($command, 'extractExpectations', new VarAnnotation());
 
-        static::assertSame('float', $this->getPropertyValue($command, 'expectedOptions')[0]['type']);
-        static::assertSame('bool', $this->getPropertyValue($command, 'expectedArguments')[0]['type']);
-        static::assertSame('float', $this->getPropertyValue($command, 'expectedRestArgument')['type']);
+        static::assertSame('float', static::getPropertyValue($command, 'expectedOptions')[0]['type']);
+        static::assertSame('bool', static::getPropertyValue($command, 'expectedArguments')[0]['type']);
+        static::assertSame('float', static::getPropertyValue($command, 'expectedRestArgument')['type']);
     }
 
     /**
@@ -230,8 +230,8 @@ class DocumentationTest extends TraitsTestCase
 
         $this->invoke($command, 'extractExpectations', new DefaultValue());
 
-        static::assertSame('float', $this->getPropertyValue($command, 'expectedOptions')[0]['type']);
-        static::assertSame('bool', $this->getPropertyValue($command, 'expectedArguments')[0]['type']);
-        static::assertSame('float|string', $this->getPropertyValue($command, 'expectedRestArgument')['type']);
+        static::assertSame('float', static::getPropertyValue($command, 'expectedOptions')[0]['type']);
+        static::assertSame('bool', static::getPropertyValue($command, 'expectedArguments')[0]['type']);
+        static::assertSame('float|string', static::getPropertyValue($command, 'expectedRestArgument')['type']);
     }
 }
