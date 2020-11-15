@@ -469,6 +469,10 @@ public function run(SimpleCli $cli): bool
     $bar = new ProgressBar($cli);
     // Assuming we have a 214MB file being downloaded in a parallel process
     $bar->total = 214 * 1024 * 1024;
+    // Let's customize a bit the style:
+    $bar->bar = '█';
+    $bar->cursor = '';
+    $bar->emptyBar = '░';
     $bar->start();
 
     while ($bar->isInProgress()) { // while value < total
