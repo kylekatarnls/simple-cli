@@ -26,6 +26,8 @@ trait Parameters
     /**
      * Cast argument/option according to type in the definition.
      *
+     * @SuppressWarnings(PHPMD.ErrorControlOperator)
+     *
      * @param string $parameter
      * @param array  $parameterDefinition
      *

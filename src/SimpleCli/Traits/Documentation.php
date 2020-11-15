@@ -100,7 +100,7 @@ trait Documentation
                 );
             }
 
-            $optionLine = preg_split('#\s*/\s*#', $option, 2);
+            $optionLine = preg_split('#\s*/\s*#', $option, 2) ?: [];
             $preDoc = trim($optionLine[1] ?? '');
 
             $this->expectedOptions[] = [
@@ -225,6 +225,7 @@ trait Documentation
     private function getPropertyTypeByHint(ReflectionProperty $property)
     {
         /** @var mixed $property */
+        // @phan-suppress-next-line PhanUndeclaredMethod
         return method_exists($property, 'getType') ? $property->getType() : null;
     }
 }
