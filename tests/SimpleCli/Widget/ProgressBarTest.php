@@ -74,6 +74,25 @@ class ProgressBarTest extends TestCase
 
         static::assertOutput(
             "\n".implode("\r", [
+                '/   0% [░░░░░]',
+                '-  60% [███░░]',
+                '¤ 100% [█████]',
+                "\n",
+            ]),
+            function () {
+                $bar = new ProgressBar(new DemoCli());
+                $bar->width = 5;
+                $bar->bar = '█';
+                $bar->cursor = '';
+                $bar->emptyBar = '░';
+                $generator = $bar();
+                $generator->send(0.6);
+                $generator->send(1);
+            }
+        );
+
+        static::assertOutput(
+            "\n".implode("\r", [
                 '/   0% [>                                                  ]',
                 '-  30% [===============>                                   ]',
                 '\  30% [===============>                                   ]',

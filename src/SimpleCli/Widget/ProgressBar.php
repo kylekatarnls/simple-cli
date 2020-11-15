@@ -27,6 +27,8 @@ class ProgressBar
 
     public $bar = '=';
 
+    public $emptyBar = ' ';
+
     public $barStart = '[';
 
     public $barEnd = ']';
@@ -111,8 +113,8 @@ class ProgressBar
             ), $length, ' ', STR_PAD_LEFT),
             $this->barStart,
             str_repeat($this->bar, $bar),
-            $finished ? $this->bar : $this->cursor,
-            str_repeat(' ', $this->width - $bar),
+            $finished && mb_strlen($this->cursor) ? $this->bar : $this->cursor,
+            str_repeat($this->emptyBar, $this->width - $bar),
             $this->barEnd,
             $this->after,
             $this->rewind
