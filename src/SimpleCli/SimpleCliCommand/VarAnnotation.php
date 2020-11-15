@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace SimpleCli\SimpleCliCommand;
 
 use SimpleCli\Command;
-use SimpleCli\Options\Help;
-use SimpleCli\Options\Quiet;
-use SimpleCli\Options\Verbose;
 use SimpleCli\SimpleCli;
 
 /**

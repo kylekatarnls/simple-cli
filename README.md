@@ -358,8 +358,6 @@ class Add implements Command
      * @option
      *
      * Something the command can use.
-     *
-     * @var string
      */
     public $foo = 'default';
 
@@ -367,8 +365,6 @@ class Add implements Command
      * @option show-foo
      *
      * Whether foo should be displayed or not.
-     *
-     * @var bool
      */
     public $showFoo = false;
 
@@ -393,7 +389,8 @@ Note than you can pass the name for the option and alias in the annotation:
 `@option some-name, other-name, s, o` this mean `--some-name`, `--other-name`
 `-s` and `-o` will all store the value in the same option variable.
 
-Also note than if options are boolean type and have aliases, they can be merged.
+Also note than if options are boolean type (`@var bool` or a boolean
+default value) and have aliases, they can be merged.
 If you have `@option show-foo, s` and `@option verbose, v` and pass `-vs` in
 the CLI, both options will be `true`.
 
@@ -401,9 +398,37 @@ For non boolean options values can be set using `--foo bar` or `--foo=bar`,
 both are valid. And options can come anywhere (before, after or between
 arguments).
 
-Finally, if you don't set a name and use the `@option` annotation alone
+Finally, if you don't set a name, using the `@option` annotation alone
 the option will have the same name as its variable and will have its
 first letter as alias if it's available.
+
+## Short annotations
+
+Annotations for `@option`, `@argument` and `@rest` can be written on
+one line.
+
+```php
+class Add implements Command
+{
+    /** @argument / First argument. */
+    public $first = 'main';
+
+    /** @rest / Other arguments. */
+    public $others = [];
+
+    /** @option / Something the command can use. */
+    public $foo = 'default';
+
+    /** @option show-foo, f / Whether foo should be displayed or not. */
+    public $showFoo = false;
+
+    // run(...)
+}
+```
+
+With this syntax, `@var` typing is not possible, so the type will be
+automatically set with the property type hint or inferring from the
+default value.
 
 ## API reference
 
