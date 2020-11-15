@@ -180,7 +180,7 @@ in your commands).
 
 ## Add arguments
 
-Now let's add some argument so your command would actually do something.
+Now let's add some argument, so your command would actually do something.
 
 ```php
 <?php
@@ -227,6 +227,11 @@ class Add implements Command
 
 The `@argument` annotation allows simple-cli to know it's an argument.
 
+If `@var` is not provided, property type hint (as available since PHP 7.4)
+will be used instead, or else the type will be inferred from the default
+value. So `public float $number2;` will be considered as `float` and
+`public $number2 = false;` will be considered as `bool`.
+
 If you run `bin/easy-calc add --help` you will see they appear in the
 help with their description, type and default value.
 
@@ -250,7 +255,7 @@ with 5 arguments, the first one goes to the first `@argument`, the second one
 go to the second `@argument`, and the 3 other ones go as an array to the `@rest`
 argument.
 
-Of course you can also use `@rest` with any other argument so for our `add`
+Of course, you can also use `@rest` with any other argument so for our `add`
 command, it could be:
 
 ```php

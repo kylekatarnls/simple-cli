@@ -121,9 +121,8 @@ class Create implements Command
                 continue;
             }
 
-            /**
-             * @var SimpleCli $createdCli
-             */
+            /* @psalm-suppress UnsafeInstantiation */
+            /** @var SimpleCli $createdCli */
             $createdCli = new $className();
 
             $this->copyBinTemplate(

@@ -77,6 +77,7 @@ trait Help
         $argumentsNames = array_keys($arguments);
         $optionsNames = array_keys($options);
         $length = (int) max(array_merge(array_map('strlen', $argumentsNames), array_map('strlen', $optionsNames))) + 2;
+        /* @psalm-suppress UnsafeInstantiation */
         /* @phan-suppress-next-line PhanUndeclaredMethod */
         $defaultInstance = new static();
 

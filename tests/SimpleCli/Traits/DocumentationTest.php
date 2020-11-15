@@ -202,6 +202,7 @@ class DocumentationTest extends TraitsTestCase
 
         static::assertSame('float', $this->getPropertyValue($command, 'expectedOptions')[0]['type']);
         static::assertSame('bool', $this->getPropertyValue($command, 'expectedArguments')[0]['type']);
+        static::assertSame('float', $this->getPropertyValue($command, 'expectedRestArgument')['type']);
     }
 
     /**
@@ -216,6 +217,7 @@ class DocumentationTest extends TraitsTestCase
 
         static::assertSame('float', $this->getPropertyValue($command, 'expectedOptions')[0]['type']);
         static::assertSame('bool', $this->getPropertyValue($command, 'expectedArguments')[0]['type']);
+        static::assertSame('float', $this->getPropertyValue($command, 'expectedRestArgument')['type']);
     }
 
     /**
@@ -230,5 +232,6 @@ class DocumentationTest extends TraitsTestCase
 
         static::assertSame('float', $this->getPropertyValue($command, 'expectedOptions')[0]['type']);
         static::assertSame('bool', $this->getPropertyValue($command, 'expectedArguments')[0]['type']);
+        static::assertSame('float|string', $this->getPropertyValue($command, 'expectedRestArgument')['type']);
     }
 }

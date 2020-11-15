@@ -10,6 +10,11 @@ use SimpleCli\Options\Quiet;
 use SimpleCli\Options\Verbose;
 use SimpleCli\SimpleCli;
 
+/**
+ * Class VarAnnotation.
+ *
+ * @psalm-suppress MissingConstructor
+ */
 class VarAnnotation implements Command
 {
     /**
@@ -25,6 +30,13 @@ class VarAnnotation implements Command
      * @var float
      */
     public $bar = 8;
+
+    /**
+     * @rest
+     *
+     * @var float[]
+     */
+    public $biz = [];
 
     /**
      * @param SimpleCli $cli
