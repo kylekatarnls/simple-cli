@@ -14,6 +14,11 @@ class ProgressBarTest extends TestCase
     /**
      * @covers ::__construct
      * @covers ::__invoke
+     * @covers ::start
+     * @covers ::end
+     * @covers ::setValue
+     * @covers ::refresh
+     * @covers ::isInProgress
      * @covers ::getBar
      */
     public function testProgressBarWidget()

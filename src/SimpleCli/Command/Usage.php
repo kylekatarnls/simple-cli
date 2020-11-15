@@ -17,13 +17,6 @@ class Usage implements Command
         $commands = $cli->getAvailableCommands();
         $length = max(array_map('strlen', array_keys($commands))) + 2;
 
-        $cli->write(' Hello ', 'black', 'cyan');
-        $cli->write('◣', 'cyan', 'red');
-        $cli->write(' World ', 'black', 'red');
-        $cli->write('◣', 'red', 'green');
-        $cli->write(' By ', 'black', 'green');
-        $cli->write('◣', 'green');
-        $cli->writeLine();
         $cli->writeLine('Usage:', 'brown');
         $cli->writeLine('  '.basename($cli->getFile()).' [command] [options] [arguments]');
         $cli->writeLine();

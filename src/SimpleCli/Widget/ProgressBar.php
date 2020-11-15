@@ -70,7 +70,7 @@ class ProgressBar
     public function refresh(): void
     {
         $this->step++;
-        $this->cli->write($this->getCurrentBar());
+        $this->cli->write($this->getBar());
     }
 
     public function isInProgress(): bool
@@ -89,7 +89,7 @@ class ProgressBar
         $this->end();
     }
 
-    protected function getCurrentBar(): string
+    protected function getBar(): string
     {
         $bar = (int) round(($this->width * $this->value) / $this->total);
         $finished = ((float) $this->value === (float) $this->total);
