@@ -175,7 +175,7 @@ trait Documentation
         return strtr($type ?: 'string', [
             'boolean' => 'bool',
             'integer' => 'int',
-            'double' => 'float',
+            'double'  => 'float',
             'decimal' => 'float',
         ]);
     }
