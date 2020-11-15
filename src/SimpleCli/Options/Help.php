@@ -12,8 +12,6 @@ trait Help
      * @option
      *
      * Display documentation of the current command.
-     *
-     * @var bool
      */
     public $help = false;
 

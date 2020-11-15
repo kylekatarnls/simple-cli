@@ -6,7 +6,10 @@ namespace SimpleCli\Traits;
 
 use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionNamedType;
 use ReflectionObject;
+use ReflectionProperty;
+use ReflectionType;
 use SimpleCli\Command;
 
 /**
@@ -72,7 +75,7 @@ trait Documentation
 
     private function cleanPhpDocComment(string $doc): string
     {
-        $doc = (string) preg_replace('/^\s*\/\*+/', '', $doc);
+        $doc = (string) preg_replace('/^\s*\/\*+[\t ]*/', '', $doc);
         $doc = (string) preg_replace('/\s*\*+\/$/', '', $doc);
         $doc = (string) preg_replace('/^\s*\*\s?/m', '', $doc);
 
@@ -142,7 +145,7 @@ trait Documentation
             $rest = $this->extractAnnotation($doc, 'rest') !== null;
             $option = $this->extractAnnotation($doc, 'option');
             $values = $this->extractAnnotation($doc, 'values');
-            $var = str_replace('boolean', 'bool', $this->extractAnnotation($doc, 'var') ?: 'string');
+            $var = $this->getPropertyType($this->extractAnnotation($doc, 'var'), $property, $command);
             $doc = trim($doc);
 
             if ($option === '') {
@@ -151,5 +154,42 @@ trait Documentation
 
             $this->addExpectation($option, $argument, $rest, $name, $doc, $values, $var);
         }
+    }
+
+    private function getPropertyType(?string $varAnnotation, ReflectionProperty $property, Command $command)
+    {
+        $type = $this->getPropertyTypeByHint($property);
+        $type = $type instanceof ReflectionNamedType
+            ? $type->getName()
+            : $varAnnotation;
+
+        if (!$type) {
+            $defaultValue = $property->getValue($command);
+
+            if ($defaultValue !== null) {
+                $type = gettype($defaultValue);
+            }
+        }
+
+        return strtr($type ?: 'string', [
+            'boolean' => 'bool',
+            'integer' => 'int',
+            'double' => 'float',
+            'decimal' => 'float',
+        ]);
+    }
+
+    /**
+     * Return the typehint of a property if PHP >= 7.4 is running and a type hint is available,
+     * else return null silently.
+     *
+     * @param ReflectionProperty $property
+     *
+     * @return ReflectionType|null
+     */
+    private function getPropertyTypeByHint(ReflectionProperty $property)
+    {
+        /** @var mixed $property */
+        return method_exists($property, 'getType') ? $property->getType() : null;
     }
 }
