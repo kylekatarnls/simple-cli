@@ -44,7 +44,7 @@
         "md": "phpmd src,tests text ./phpmd.xml",
         "stan": "phpstan analyse --autoload-file=vendor/autoload.php --level max src tests",
         "phan": "phan",
-        "psalm": "psalm",
+        "psalm": "psalm --show-info=true",
         "style": [
             "@psalm",
             "@phan",

@@ -12,6 +12,8 @@ trait Help
      * @option
      *
      * Display documentation of the current command.
+     *
+     * @var bool
      */
     public $help = false;
 
@@ -77,8 +79,10 @@ trait Help
         $argumentsNames = array_keys($arguments);
         $optionsNames = array_keys($options);
         $length = (int) max(array_merge(array_map('strlen', $argumentsNames), array_map('strlen', $optionsNames))) + 2;
-        /* @psalm-suppress UnsafeInstantiation */
-        /* @phan-suppress-next-line PhanUndeclaredMethod */
+        /**
+         * @phan-suppress-next-line PhanUndeclaredMethod
+         * @psalm-suppress UnsafeInstantiation
+         */
         $defaultInstance = new static();
 
         $cli->writeLine('Usage:', 'brown');
