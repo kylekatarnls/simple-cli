@@ -11,16 +11,22 @@ class DefaultValue implements Command
 {
     /**
      * @argument
+     *
+     * @psalm-var bool
      */
     public $foo = false;
 
     /**
      * @option
+     *
+     * @psalm-var float
      */
     public $bar = 8.0;
 
     /**
      * @rest
+     *
+     * @psalm-var (float|string)[]
      */
     public $biz = [2.0, 'ok'];
 

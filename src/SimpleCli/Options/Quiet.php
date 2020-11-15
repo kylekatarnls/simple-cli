@@ -10,6 +10,8 @@ trait Quiet
      * @option
      *
      * If this option is set, the command will run silently (no output).
+     *
+     * @var bool
      */
     public $quiet = false;
 }
