@@ -141,7 +141,7 @@ trait Documentation
     {
         $end = $end ?? '';
 
-        return $start . ($start !== '' && $end !== '' ? "\n" : '') . $end;
+        return $start.($start !== '' && $end !== '' ? "\n" : '').$end;
     }
 
     private function extractExpectations(Command $command): void
