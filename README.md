@@ -432,6 +432,8 @@ default value.
 
 ## Progress bar widget
 
+![Usage](https://raw.githubusercontent.com/kylekatarnls/simple-cli/master/doc/img/progress-bar.jpg)
+
 ```php
 use SimpleCli\Command;
 use SimpleCli\SimpleCli;
@@ -470,9 +472,20 @@ public function run(SimpleCli $cli): bool
     // Assuming we have a 214MB file being downloaded in a parallel process
     $bar->total = 214 * 1024 * 1024;
     // Let's customize a bit the style:
-    $bar->bar = '█';
-    $bar->cursor = '';
-    $bar->emptyBar = '░';
+    $bar->width = 20; // inner bar size
+    $dash = str_repeat('─', $bar->width);
+    // Let's draw a swaure around the bar
+    $bar->start = "       ┌{$dash}┐\n";
+    $bar->barStart = '│';
+    $bar->barEnd = '│';
+    $bar->after = "\n       └{$dash}┘";
+    $bar->cursor = ''; // remove bar middle cursor
+    // Colorize some characters for bar (left) and empty bar (right)
+    $bar->bar = $cli->colorize('█', 'cyan');
+    $bar->emptyBar = $cli->colorize('░', 'light_gray');
+    // as ->after contains a new line, we have
+    // to rewind 1 more line
+    $bar->rewind = "\033[1A\r";
     $bar->start();
 
     while ($bar->isInProgress()) { // while value < total
