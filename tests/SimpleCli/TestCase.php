@@ -29,7 +29,7 @@ abstract class TestCase extends FrameworkTestCase
         return strtr($output, [
             "\r" => "\\r\n",
             "\n" => "\\n\n",
-            "\t" => "————",
+            "\t" => '————',
         ]);
     }
 
