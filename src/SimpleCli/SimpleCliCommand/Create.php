@@ -32,6 +32,60 @@ class Create implements Command
 
     /**
      * @param SimpleCli $cli
+     *
+     * @return bool
+     */
+    public function run(SimpleCli $cli): bool
+    {
+        if (!$this->ensureBinDirectoryExists()) {
+            return $this->error($cli, 'Unable to create the bin directory');
+        }
+
+        $count = 0;
+
+        foreach ($this->classNames as $className) {
+            if ($this->verbose) {
+                $cli->writeLine("Creating program for $className", 'light_cyan');
+            }
+
+            if (!class_exists($className)) {
+                $this->error($cli, "$className class not found");
+                $cli->writeLine('Please check your composer autoload is up to date and allow to load this class.');
+
+                continue;
+            }
+
+            if (!is_subclass_of($className, SimpleCli::class)) {
+                $this->error($cli, "$className needs to implement ".SimpleCli::class);
+
+                continue;
+            }
+
+            /**
+             * @psalm-suppress UnsafeInstantiation
+             *
+             * @var SimpleCli $createdCli
+             */
+            $createdCli = new $className();
+
+            $this->copyBinTemplate(
+                $cli,
+                $createdCli->getName() ?: $this->extractName($className),
+                '\\'.ltrim($className, '\\')
+            );
+
+            $count++;
+        }
+
+        $program = $count === 1 ? 'program' : 'programs';
+
+        $cli->writeLine("$count $program created.", 'cyan');
+
+        return $count > 0;
+    }
+
+    /**
+     * @param SimpleCli $cli
      * @param string    $text
      *
      * @return bool
@@ -91,56 +145,12 @@ class Create implements Command
     }
 
     /**
-     * @param SimpleCli $cli
+     * @SuppressWarnings(PHPMD.ErrorControlOperator)
      *
      * @return bool
      */
-    public function run(SimpleCli $cli): bool
+    protected function ensureBinDirectoryExists(): bool
     {
-        if (!is_dir('bin') && !@mkdir('bin')) {
-            return $this->error($cli, 'Unable to create the bin directory');
-        }
-
-        $count = 0;
-
-        foreach ($this->classNames as $className) {
-            if ($this->verbose) {
-                $cli->writeLine("Creating program for $className", 'light_cyan');
-            }
-
-            if (!class_exists($className)) {
-                $this->error($cli, "$className class not found");
-                $cli->writeLine('Please check your composer autoload is up to date and allow to load this class.');
-
-                continue;
-            }
-
-            if (!is_subclass_of($className, SimpleCli::class)) {
-                $this->error($cli, "$className needs to implement ".SimpleCli::class);
-
-                continue;
-            }
-
-            /**
-             * @psalm-suppress UnsafeInstantiation
-             *
-             * @var SimpleCli $createdCli
-             */
-            $createdCli = new $className();
-
-            $this->copyBinTemplate(
-                $cli,
-                $createdCli->getName() ?: $this->extractName($className),
-                '\\'.ltrim($className, '\\')
-            );
-
-            $count++;
-        }
-
-        $program = $count === 1 ? 'program' : 'programs';
-
-        $cli->writeLine("$count $program created.", 'cyan');
-
-        return $count > 0;
+        return is_dir('bin') || @mkdir('bin');
     }
 }

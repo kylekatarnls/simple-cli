@@ -7,6 +7,9 @@ namespace SimpleCli\Widget;
 use Generator;
 use SimpleCli\SimpleCli;
 
+/**
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ */
 class ProgressBar
 {
     /** @var int|float */
@@ -68,7 +71,7 @@ class ProgressBar
         $this->cli = $cli;
     }
 
-    public function start(float $initialValue = 0): void
+    public function start(float $initialValue = 0.0): void
     {
         $this->step = -1;
         $this->cli->write(...((array) $this->start));

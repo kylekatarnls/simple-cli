@@ -7,6 +7,8 @@ use Tests\SimpleCli\DemoApp\DemoCli;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\Composer
+ *
+ * @SuppressWarnings(PHPMD.ErrorControlOperator)
  */
 class ComposerTest extends TraitsTestCase
 {

@@ -46,6 +46,8 @@ trait Composer
     /**
      * Get the list of packages installed with composer.
      *
+     * @SuppressWarnings(PHPMD.ErrorControlOperator)
+     *
      * @return array
      */
     public function getInstalledPackages()

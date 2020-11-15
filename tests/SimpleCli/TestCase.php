@@ -42,7 +42,7 @@ abstract class TestCase extends FrameworkTestCase
 
         static::assertSame(
             static::revealWhiteCharacters($expectedOutput),
-            static::revealWhiteCharacters($actualOutput),
+            static::revealWhiteCharacters($actualOutput ?: ''),
             "Output should be: $expectedOutput"
         );
     }

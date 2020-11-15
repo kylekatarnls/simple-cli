@@ -80,7 +80,7 @@ trait Help
         $optionsNames = array_keys($options);
         $length = (int) max(array_merge(array_map('strlen', $argumentsNames), array_map('strlen', $optionsNames))) + 2;
         /** @psalm-suppress UnsafeInstantiation */
-        $defaultInstance = new static();
+        $defaultInstance = new static(); // @phan-suppress-current-line PhanUndeclaredMethod
 
         $cli->writeLine('Usage:', 'brown');
         $cli->writeLine(
