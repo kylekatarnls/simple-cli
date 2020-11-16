@@ -6,7 +6,6 @@ use stdClass;
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\DemoApp\DemoCommand;
 use Tests\SimpleCli\SimpleCliCommand\DefaultValue;
-use Tests\SimpleCli\SimpleCliCommand\TypeHint;
 use Tests\SimpleCli\SimpleCliCommand\VarAnnotation;
 
 /**
@@ -184,25 +183,6 @@ class DocumentationTest extends TraitsTestCase
                 $command('file', 'foobar', '--prefix=hi');
             }
         );
-    }
-
-    /**
-     * @covers ::getPropertyType
-     * @covers ::getPropertyTypeByHint
-     */
-    public function testPropertyTypeByHint()
-    {
-        if (version_compare(PHP_VERSION, '7.4.0-dev', '<')) {
-            $this->markTestSkipped('Properties can be typed by hint only with PHP 7.4');
-        }
-
-        $command = new DemoCli();
-
-        $this->invoke($command, 'extractExpectations', new TypeHint());
-
-        static::assertSame('float', static::getPropertyValue($command, 'expectedOptions')[0]['type']);
-        static::assertSame('bool', static::getPropertyValue($command, 'expectedArguments')[0]['type']);
-        static::assertSame('float', static::getPropertyValue($command, 'expectedRestArgument')['type']);
     }
 
     /**
