@@ -73,6 +73,7 @@ class DocumentationTest extends TraitsTestCase
 
     /**
      * @covers ::addExpectation
+     * @covers ::concatDescription
      */
     public function testAddExpectation()
     {
@@ -112,6 +113,7 @@ class DocumentationTest extends TraitsTestCase
 
     /**
      * @covers ::addExpectation
+     * @covers ::concatDescription
      */
     public function testAddExpectationCast()
     {
@@ -129,6 +131,7 @@ class DocumentationTest extends TraitsTestCase
 
     /**
      * @covers ::addExpectation
+     * @covers ::concatDescription
      */
     public function testAddExpectationInvalidKind()
     {
@@ -188,12 +191,18 @@ class DocumentationTest extends TraitsTestCase
     /**
      * @covers ::getPropertyType
      * @covers ::getPropertyTypeByHint
+     * @covers ::normalizeScalarType
      */
     public function testPropertyTypeByVarAnnotation()
     {
         $command = new DemoCli();
+        $mockFile = __DIR__.'/../SimpleCliCommand/VarAnnotation.php';
+        $originalContent = file_get_contents($mockFile);
+        file_put_contents($mockFile, str_replace("@var bool\n", "@var boolean\n", $originalContent));
 
         $this->invoke($command, 'extractExpectations', new VarAnnotation());
+
+        file_put_contents($mockFile, $originalContent);
 
         static::assertSame('float', static::getPropertyValue($command, 'expectedOptions')[0]['type']);
         static::assertSame('bool', static::getPropertyValue($command, 'expectedArguments')[0]['type']);
