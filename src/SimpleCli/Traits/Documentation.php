@@ -25,6 +25,7 @@ trait Documentation
      * Get PHP comment doc block content of a given class.
      *
      * @param string $className
+     * @psalm-param class-string $className
      *
      * @return string
      */

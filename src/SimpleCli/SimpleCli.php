@@ -156,7 +156,7 @@ abstract class SimpleCli implements Writer
     }
 
     /**
-     * Return a array of traits directly in use by the given class.
+     * Return an array of traits directly in use by the given class.
      *
      * @param Command|string $commander
      *

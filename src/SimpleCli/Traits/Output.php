@@ -17,7 +17,7 @@ trait Output
     protected $muted = false;
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     protected $colors = [
         'black'        => '0;30',
@@ -39,7 +39,7 @@ trait Output
     ];
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     protected $backgrounds = [
         'black'      => '40',
@@ -127,10 +127,10 @@ trait Output
     /**
      * Set colors palette.
      *
-     * @param array|null $colors
-     * @param array|null $backgrounds
+     * @param array<string, string>|null $colors
+     * @param array<string, string>|null $backgrounds
      */
-    public function setColors(array $colors = null, array $backgrounds = null): void
+    public function setColors(?array $colors = null, ?array $backgrounds = null): void
     {
         if ($colors) {
             $this->colors = $colors;
@@ -150,7 +150,7 @@ trait Output
      *
      * @return string
      */
-    public function colorize(string $text = '', string $color = null, string $background = null): string
+    public function colorize(string $text = '', ?string $color = null, ?string $background = null): string
     {
         if (!$this->colorsSupported || (!$color && !$background)) {
             return $text;
@@ -167,7 +167,7 @@ trait Output
      *
      * @param int|null $length
      */
-    public function rewind(int $length = null): void
+    public function rewind(?int $length = null): void
     {
         if ($this->isMuted()) {
             return;
@@ -187,7 +187,7 @@ trait Output
      * @param string|null $color
      * @param string|null $background
      */
-    public function write(string $text = '', string $color = null, string $background = null): void
+    public function write(string $text = '', ?string $color = null, ?string $background = null): void
     {
         if ($this->isMuted()) {
             return;
@@ -209,7 +209,7 @@ trait Output
      * @param string|null $color
      * @param string|null $background
      */
-    public function writeLine(string $text = '', string $color = null, string $background = null): void
+    public function writeLine(string $text = '', ?string $color = null, ?string $background = null): void
     {
         $this->write("$text\n", $color, $background);
     }
@@ -221,7 +221,7 @@ trait Output
      * @param string|null $color
      * @param string|null $background
      */
-    public function rewrite(string $text = '', string $color = null, string $background = null): void
+    public function rewrite(string $text = '', ?string $color = null, ?string $background = null): void
     {
         $this->rewind();
         $this->write($text, $color, $background);
@@ -234,12 +234,18 @@ trait Output
      * @param string|null $color
      * @param string|null $background
      */
-    public function rewriteLine(string $text = '', string $color = null, string $background = null): void
+    public function rewriteLine(string $text = '', ?string $color = null, ?string $background = null): void
     {
         $this->write("\r$text", $color, $background);
     }
 
-    protected function getColorCode(string $color, array $colors = null): string
+    /**
+     * @param string                            $color
+     * @param array<string, string | null>|null $colors
+     *
+     * @return string
+     */
+    protected function getColorCode(string $color, ?array $colors = null): string
     {
         $colors = $colors ?: $this->colors;
         $color = $colors[$color] ?? $color;

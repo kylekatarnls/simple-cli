@@ -15,7 +15,7 @@ class SimpleCliTest extends TestCase
     /**
      * @covers ::__construct
      */
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $command = new DemoCli();
 
@@ -39,7 +39,7 @@ class SimpleCliTest extends TestCase
     /**
      * @covers ::getVersionDetails
      */
-    public function testGetVersionDetails()
+    public function testGetVersionDetails(): void
     {
         static::assertSame('', (new DemoCli())->getVersionDetails());
     }
@@ -47,7 +47,7 @@ class SimpleCliTest extends TestCase
     /**
      * @covers ::getVersion
      */
-    public function testGetVersion()
+    public function testGetVersion(): void
     {
         static::assertSame('[ESCAPE][0;33munknown[ESCAPE][0m', (new DemoCli())->getVersion());
     }
@@ -55,7 +55,7 @@ class SimpleCliTest extends TestCase
     /**
      * @covers ::parseParameters
      */
-    public function testParseParameters()
+    public function testParseParameters(): void
     {
         static::assertOutput(
             '[ESCAPE][0;33mUsage:
@@ -104,7 +104,7 @@ class SimpleCliTest extends TestCase
      * @covers ::getCommandClassFromName
      * @covers ::__invoke
      */
-    public function testGetCommandClass()
+    public function testGetCommandClass(): void
     {
         static::assertOutput(
             '[ESCAPE][0;31mstdClass needs to implement SimpleCli\Command[ESCAPE][0m',
@@ -140,7 +140,7 @@ class SimpleCliTest extends TestCase
      * @covers ::getCommandClassFromName
      * @covers ::__invoke
      */
-    public function testFindClosestCommand()
+    public function testFindClosestCommand(): void
     {
         static::assertOutput(
             implode(
@@ -200,7 +200,7 @@ class SimpleCliTest extends TestCase
     /**
      * @covers ::createCommander
      */
-    public function testCreateCommander()
+    public function testCreateCommander(): void
     {
         static::assertOutput(
             "9\n\n",
@@ -225,7 +225,7 @@ class SimpleCliTest extends TestCase
      * @covers ::__invoke
      * @covers ::hasTraitFeatureEnabled
      */
-    public function testInvoke()
+    public function testInvoke(): void
     {
         static::assertOutput(
             '[ESCAPE][0;33mUsage:
@@ -281,7 +281,7 @@ class SimpleCliTest extends TestCase
     /**
      * @covers ::getCommandTraits
      */
-    public function testGetCommandTraits()
+    public function testGetCommandTraits(): void
     {
         static::assertSame([
             'SimpleCli\Options\Verbose' => 'SimpleCli\Options\Verbose',

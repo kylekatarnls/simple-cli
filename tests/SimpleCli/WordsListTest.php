@@ -15,7 +15,7 @@ class WordsListTest extends TestCase
      * @covers ::__construct
      * @covers ::getWords
      */
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $words = ['ab', 'bc', 'cd'];
         $wordsList = new WordsList($words);
@@ -26,7 +26,7 @@ class WordsListTest extends TestCase
     /**
      * @covers ::getArrayIterator
      */
-    public function testGetArrayIterator()
+    public function testGetArrayIterator(): void
     {
         $words = ['ab', 'bc', 'cd'];
         $list = (new WordsList($words))->getArrayIterator();
@@ -38,7 +38,7 @@ class WordsListTest extends TestCase
     /**
      * @covers ::getIterator
      */
-    public function testGetIterator()
+    public function testGetIterator(): void
     {
         $words = ['ab', 'bc', 'cd'];
         $list = new WordsList($words);
@@ -51,7 +51,7 @@ class WordsListTest extends TestCase
      * @covers ::findClosestWords
      * @covers ::getWordScore
      */
-    public function testFindClosestWords()
+    public function testFindClosestWords(): void
     {
         $list = new WordsList(['ab', 'bc', 'cd']);
 
@@ -70,7 +70,7 @@ class WordsListTest extends TestCase
      * @covers ::findClosestWord
      * @covers ::getWordScore
      */
-    public function testFindClosestWord()
+    public function testFindClosestWord(): void
     {
         $list = new WordsList(['ab', 'bc', 'cd']);
 

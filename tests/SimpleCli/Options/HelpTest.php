@@ -17,7 +17,7 @@ class HelpTest extends TestCase
      * @covers \SimpleCli\SimpleCli::getValueExport
      * @covers \SimpleCli\SimpleCli::displayVariable
      */
-    public function testDisplayHelp()
+    public function testDisplayHelp(): void
     {
         static::assertOutput(
             '[ESCAPE][0;33mUsage:

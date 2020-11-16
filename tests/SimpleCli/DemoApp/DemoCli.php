@@ -2,6 +2,7 @@
 
 namespace Tests\SimpleCli\DemoApp;
 
+use RuntimeException;
 use SimpleCli\SimpleCli;
 use SimpleCli\SimpleCliCommand\Create;
 
@@ -10,16 +11,22 @@ use SimpleCli\SimpleCliCommand\Create;
  */
 class DemoCli extends SimpleCli
 {
+    /** @var string */
     protected $escapeCharacter = '[ESCAPE]';
 
+    /** @var callable */
     protected $readlineFunction = [self::class, 'ask'];
 
+    /** @var callable */
     protected $readlineCompletionRegisterFunction = [self::class, 'register'];
 
+    /** @var string[] */
     protected $readlineCompletionExtensions = [];
 
+    /** @var callable[] */
     public static $registered = [];
 
+    /** @var callable|null */
     public static $answerer = null;
 
     public function getCommands(): array
@@ -39,23 +46,32 @@ class DemoCli extends SimpleCli
      *
      * @param callable $callback
      */
-    public static function register($callback)
+    public static function register(callable $callback): void
     {
         static::$registered[] = $callback;
     }
 
+    /**
+     * @param string $question
+     *
+     * @return mixed
+     */
     public static function ask($question)
     {
+        if (static::$answerer === null) {
+            throw new RuntimeException('Set answer callback with setAnswerer() first.');
+        }
+
         return (static::$answerer)($question);
     }
 
-    public function setAnswerer($answerer)
+    public function setAnswerer(callable $answerer): void
     {
         static::$answerer = $answerer;
     }
 
     /**
-     * @param array $readlineCompletionExtensions
+     * @param string[] $readlineCompletionExtensions
      */
     public function setReadlineCompletionExtensions(array $readlineCompletionExtensions): void
     {

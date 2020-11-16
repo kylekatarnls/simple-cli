@@ -12,7 +12,7 @@ class OutputTest extends TraitsTestCase
     /**
      * @covers ::write
      */
-    public function testWrite()
+    public function testWrite(): void
     {
         $command = new DemoCli();
 
@@ -43,7 +43,7 @@ class OutputTest extends TraitsTestCase
     /**
      * @covers ::writeLine
      */
-    public function testWriteLine()
+    public function testWriteLine(): void
     {
         $command = new DemoCli();
 
@@ -75,7 +75,7 @@ class OutputTest extends TraitsTestCase
      * @covers ::colorize
      * @covers ::getColorCode
      */
-    public function testColorize()
+    public function testColorize(): void
     {
         $command = new DemoCli();
 
@@ -105,7 +105,7 @@ class OutputTest extends TraitsTestCase
      * @covers ::enableColors
      * @covers ::disableColors
      */
-    public function testColorSupport()
+    public function testColorSupport(): void
     {
         $command = new DemoCli();
 
@@ -129,7 +129,7 @@ class OutputTest extends TraitsTestCase
     /**
      * @covers ::setEscapeCharacter
      */
-    public function testSetEscapeCharacter()
+    public function testSetEscapeCharacter(): void
     {
         $command = new DemoCli();
 
@@ -149,7 +149,7 @@ class OutputTest extends TraitsTestCase
     /**
      * @covers ::setColors
      */
-    public function testSetColors()
+    public function testSetColors(): void
     {
         $command = new DemoCli();
 
@@ -176,7 +176,7 @@ class OutputTest extends TraitsTestCase
     /**
      * @covers ::rewind
      */
-    public function testRewind()
+    public function testRewind(): void
     {
         $command = new DemoCli();
 
@@ -205,7 +205,7 @@ class OutputTest extends TraitsTestCase
     /**
      * @covers ::rewrite
      */
-    public function testRewrite()
+    public function testRewrite(): void
     {
         $command = new DemoCli();
 
@@ -221,7 +221,7 @@ class OutputTest extends TraitsTestCase
     /**
      * @covers ::rewriteLine
      */
-    public function testRewriteLine()
+    public function testRewriteLine(): void
     {
         $command = new DemoCli();
 
@@ -240,7 +240,7 @@ class OutputTest extends TraitsTestCase
      * @covers ::mute
      * @covers ::unmute
      */
-    public function testSetMute()
+    public function testSetMute(): void
     {
         $command = new DemoCli();
 

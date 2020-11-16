@@ -16,7 +16,7 @@ class CommandsTest extends TraitsTestCase
     /**
      * @covers ::getCommands
      */
-    public function testGetCommands()
+    public function testGetCommands(): void
     {
         $command = new DummyCli();
 
@@ -26,7 +26,7 @@ class CommandsTest extends TraitsTestCase
     /**
      * @covers ::getAvailableCommands
      */
-    public function testGetAvailableCommands()
+    public function testGetAvailableCommands(): void
     {
         $command = new DummyCli();
 
@@ -42,7 +42,7 @@ class CommandsTest extends TraitsTestCase
     /**
      * @covers ::getAvailableCommands
      */
-    public function testGetAvailableCommandsAutoNaming()
+    public function testGetAvailableCommandsAutoNaming(): void
     {
         $command = new AutoNamingCli();
 

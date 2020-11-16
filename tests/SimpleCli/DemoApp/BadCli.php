@@ -7,6 +7,7 @@ use stdClass;
 
 class BadCli extends SimpleCli
 {
+    /** @var string */
     protected $escapeCharacter = '[ESCAPE]';
 
     public function getCommands(): array

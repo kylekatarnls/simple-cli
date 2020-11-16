@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace SimpleCli\Traits;
 
+use Closure;
+
 trait Input
 {
     /**
-     * @var \Closure|callable|array|null
+     * @var Closure|callable|string[]|null
      */
     protected $currentCompletion = null;
 
@@ -55,7 +57,7 @@ trait Input
                 array_filter(
                     $this->currentCompletion,
                     function ($suggestion) use ($length, $start) {
-                        return substr($suggestion, 0, $length) === $start;
+                        return substr((string) $suggestion, 0, $length) === $start;
                     }
                 )
             );
@@ -67,8 +69,8 @@ trait Input
     /**
      * Ask the user $prompt and return the CLI input.
      *
-     * @param string              $prompt
-     * @param array|callable|null $completion
+     * @param string                         $prompt
+     * @param Closure|callable|string[]|null $completion
      *
      * @return string
      */

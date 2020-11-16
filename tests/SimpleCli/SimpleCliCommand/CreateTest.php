@@ -31,7 +31,7 @@ class CreateTest extends TestCase
         chdir($this->currentDirectory);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->fileSystem->remove($this->currentDirectory);
 
@@ -45,7 +45,7 @@ class CreateTest extends TestCase
      * @covers ::extractName
      * @covers ::run
      */
-    public function testCopyBinTemplate()
+    public function testCopyBinTemplate(): void
     {
         static::assertOutput(
             "[ESCAPE][0;36m1 program created.\n[ESCAPE][0m",
@@ -145,7 +145,7 @@ php "%BIN_TARGET%" %*
      * @covers ::run
      * @covers ::error
      */
-    public function testRun()
+    public function testRun(): void
     {
         static::assertOutput(
             '[ESCAPE][0;31mfoobar class not found
