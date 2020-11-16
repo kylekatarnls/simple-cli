@@ -197,7 +197,7 @@ class DocumentationTest extends TraitsTestCase
     {
         $command = new DemoCli();
         $mockFile = __DIR__.'/../SimpleCliCommand/VarAnnotation.php';
-        $originalContent = file_get_contents($mockFile);
+        $originalContent = (string) file_get_contents($mockFile);
         file_put_contents($mockFile, str_replace("@var bool\n", "@var boolean\n", $originalContent));
 
         $this->invoke($command, 'extractExpectations', new VarAnnotation());
