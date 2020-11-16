@@ -8,14 +8,10 @@ use InvalidArgumentException;
 
 trait Options
 {
-    /**
-     * @var array<string, mixed>
-     */
+    /** @var array<string, mixed>*/
     protected $options;
 
-    /**
-     * @var array<array<string, string|string[]>>
-     */
+    /** @var array<array<string, mixed>> */
     protected $expectedOptions;
 
     /**
@@ -31,7 +27,7 @@ trait Options
     /**
      * Get definition of expected options.
      *
-     * @return array<array<string, (string|string[])>>
+     * @return array<array<string, mixed>>
      */
     public function getExpectedOptions(): array
     {
@@ -43,7 +39,7 @@ trait Options
      *
      * @param string $name
      *
-     * @return array<string, (string|string[])>
+     * @return array<string, mixed>
      */
     public function getOptionDefinition(string $name): array
     {
@@ -61,9 +57,9 @@ trait Options
     }
 
     /**
-     * @param array<string, (string|string[])>|null $definition
-     * @param string                                $name
-     * @param string|null                           $value
+     * @param array<string, string> $definition
+     * @param string                $name
+     * @param string|null           $value
      */
     private function enableBooleanOption(array $definition, string $name, string $value = null): void
     {

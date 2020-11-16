@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleCli\Traits;
 
+use SimpleCli\Command;
 use SimpleCli\Command\Usage;
 use SimpleCli\Command\Version;
 
@@ -12,7 +13,7 @@ trait Commands
     /**
      * Get the list of commands expect those provided by SimpleCli.
      *
-     * @return array
+     * @return array<int|string, class-string<Command>|false>
      */
     public function getCommands(): array
     {
@@ -22,7 +23,7 @@ trait Commands
     /**
      * Get the list of commands included those provided by SimpleCli.
      *
-     * @return array
+     * @return array<string, class-string<Command>>
      */
     public function getAvailableCommands(): array
     {
@@ -32,6 +33,10 @@ trait Commands
         ];
 
         foreach ($this->getCommands() as $index => $command) {
+            if (!$command) {
+                continue;
+            }
+
             if (is_int($index)) {
                 $index = (string) preg_replace('/^.*\\\\([^\\\\]+)$/', '$1', $command);
                 $index = strtolower((string) preg_replace('/[A-Z]/', '-$0', lcfirst($index)));
@@ -40,6 +45,6 @@ trait Commands
             $commands[$index] = $command;
         }
 
-        return array_filter($commands, 'boolval');
+        return $commands;
     }
 }

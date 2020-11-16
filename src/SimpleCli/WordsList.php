@@ -43,7 +43,7 @@ class WordsList implements IteratorAggregate
     /**
      * Get the words list as an ArrayIterator instance.
      *
-     * @return ArrayIterator
+     * @return ArrayIterator<int, string>
      */
     public function getArrayIterator(): ArrayIterator
     {

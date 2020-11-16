@@ -8,9 +8,7 @@ use InvalidArgumentException;
 
 trait Parameters
 {
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     protected $parameters;
 
     /**
@@ -28,8 +26,8 @@ trait Parameters
      *
      * @SuppressWarnings(PHPMD.ErrorControlOperator)
      *
-     * @param string                                $parameter
-     * @param array<string, (string|string[]|null)> $parameterDefinition
+     * @param string                       $parameter
+     * @param array<string, (string|null)> $parameterDefinition
      *
      * @return string|int|float|bool|null
      */

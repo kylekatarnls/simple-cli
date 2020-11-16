@@ -29,6 +29,9 @@ class DemoCli extends SimpleCli
     /** @var callable|null */
     public static $answerer = null;
 
+    /**
+     * @return array<string, string|class-string<Command>>
+     */
     public function getCommands(): array
     {
         return [

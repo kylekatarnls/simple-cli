@@ -6,19 +6,13 @@ namespace SimpleCli\Traits;
 
 trait Output
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $colorsSupported = true;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $muted = false;
 
-    /**
-     * @var array<string, string>
-     */
+    /** @var array<string, string> */
     protected $colors = [
         'black'        => '0;30',
         'dark_gray'    => '1;30',
@@ -38,9 +32,7 @@ trait Output
         'white'        => '1;37',
     ];
 
-    /**
-     * @var array<string, string>
-     */
+    /** @var array<string, string> */
     protected $backgrounds = [
         'black'      => '40',
         'red'        => '41',
@@ -52,14 +44,10 @@ trait Output
         'light_gray' => '47',
     ];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $lastText = '';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $escapeCharacter = "\033";
 
     /**

@@ -22,13 +22,13 @@ use SimpleCli\Traits\Parameters;
 /**
  * Class SimpleCli.
  *
- * @property string   $command
- * @property string[] $parameters
- * @property array[]  $arguments
- * @property array[]  $expectedArguments
- * @property array[]  $restArguments
- * @property array    $options
- * @property array[]  $expectedOptions
+ * @property string                                    $command
+ * @property string[]                                  $parameters
+ * @property array<string, string|int|float|bool|null> $arguments
+ * @property array<array<string, mixed>>               $expectedArguments
+ * @property array<string|int|float|bool|null>         $restArguments
+ * @property array<string, mixed>                      $options
+ * @property array<array<string, mixed>>               $expectedOptions
  */
 abstract class SimpleCli implements Writer
 {
@@ -44,7 +44,11 @@ abstract class SimpleCli implements Writer
     use Composer;
     use Documentation;
 
-    public function __construct(array $colors = null, array $backgrounds = null)
+    /**
+     * @param array<string, string>|null $colors
+     * @param array<string, string>|null $backgrounds
+     */
+    public function __construct(?array $colors = null, ?array $backgrounds = null)
     {
         $this->setColors($colors, $backgrounds);
         $this->recordAutocomplete();
@@ -78,10 +82,10 @@ abstract class SimpleCli implements Writer
     /**
      * Output standard command variable (argument or option).
      *
-     * @param int    $length       Length of the left column.
-     * @param string $variable     Argument/option name.
-     * @param array  $definition   Definition infos. Should contain description, and either values or type.
-     * @param mixed  $defaultValue Default value.
+     * @param int                  $length       Length of the left column.
+     * @param string               $variable     Argument/option name.
+     * @param array<string, mixed> $definition   Definition infos. Should contain description, and either values or type.
+     * @param mixed                $defaultValue Default value.
      */
     public function displayVariable(int $length, string $variable, array $definition, $defaultValue): void
     {
@@ -238,6 +242,12 @@ abstract class SimpleCli implements Writer
         }
     }
 
+    /**
+     * @param array<string, mixed> $commands
+     * @param string               $command
+     *
+     * @return string|null
+     */
     private function findClosestCommand(array $commands, string $command): ?string
     {
         $words = new WordsList(array_keys($commands));
@@ -264,6 +274,12 @@ abstract class SimpleCli implements Writer
         return null;
     }
 
+    /**
+     * @param array<string, mixed> $commands
+     * @param string               $command
+     *
+     * @return string|null
+     */
     private function getCommandName(array $commands, string $command): ?string
     {
         if (!isset($commands[$command])) {
@@ -276,8 +292,8 @@ abstract class SimpleCli implements Writer
     }
 
     /**
-     * @param array  $commands
-     * @param string $command
+     * @param array<string, mixed> $commands
+     * @param string               $command
      *
      * @psalm-return class-string|null
      *

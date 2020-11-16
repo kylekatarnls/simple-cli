@@ -22,7 +22,7 @@ class ArrayRestCommand implements Command
      *
      * All arguments
      *
-     * @var array
+     * @var mixed[]
      */
     public $all = [];
 

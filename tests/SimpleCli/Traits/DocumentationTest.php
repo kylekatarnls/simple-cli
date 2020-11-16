@@ -22,7 +22,9 @@ class DocumentationTest extends TraitsTestCase
 
         static::assertSame('This is a demo.', $command->extractClassNameDescription(DemoCommand::class));
         static::assertSame('stdClass', $command->extractClassNameDescription(stdClass::class));
-        static::assertSame('NotFound', $command->extractClassNameDescription('NotFound'));
+        /** @phpstan-var class-string $notFound */
+        $notFound = 'NotFound';
+        static::assertSame('NotFound', $command->extractClassNameDescription($notFound));
     }
 
     /**

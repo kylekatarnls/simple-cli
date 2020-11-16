@@ -6,3 +6,10 @@ parameters:
 	paths:
 		- src
 		- tests
+	ignoreErrors:
+		-
+			message: '#Unsafe usage of new static\(\)#'
+			path: src/SimpleCli/Options/Help.php
+		-
+			message: '#PHPDoc tag @var for variable \$helper has invalid type SimpleCli\\Options\\Help\.#'
+			path: src/SimpleCli/SimpleCli.php
