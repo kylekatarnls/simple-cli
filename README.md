@@ -456,7 +456,7 @@ class SomeCommand implements Command
 ```
 This will show 30% and a bar 30% full, then replace the line
 with a 70% bar, and finally a full bar. It would looks like:
-```
+```txt
 |  70% [===================================>               ]
 ```
 `ProgressBar` as its settings and characters used exposed as public

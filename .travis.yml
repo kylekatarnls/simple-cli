@@ -26,7 +26,8 @@ before_script:
   - pecl install ast
 
 script:
-  - composer phpdbg-test
+  - if [[ $TRAVIS_PHP_VERSION = "nightly" ]]; then ./vendor/bin/phpunit --no-coverage; fi;
+  - if [[ $TRAVIS_PHP_VERSION != "nightly" ]]; then composer phpdbg-test; fi;
 
 after_success:
   - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.4" ]]; then bash <(curl -s https://codecov.io/bash); fi;
