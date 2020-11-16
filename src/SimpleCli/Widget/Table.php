@@ -65,21 +65,22 @@ class Table
                 $data[] = $line;
             }
 
-            $template = str_replace("\r\n", "\n", $this->template);
+            $template = str_replace("\r\n", "\n", (string) $this->template);
 
             if (preg_match('/\s*\n([ \t]+)!template!\n([\s\S]+)$/', $template, $match)) {
                 $template = preg_replace('/^'.$match[1].'/m', '', $match[2]);
             }
 
-            if (!preg_match('/^((?:.*\n)?)(.*)1(.*)2(.*)\n((?:.+\n)?).*3.*4.*\n([\s\S]*)$/', $template, $match)) {
+            if (!preg_match('/^((?:.*\n)*)(.*)1(.*)2(.*)\n((?:.+\n)*).*3.*4.*\n([\s\S]*)$/', $template, $match)) {
                 throw new InvalidArgumentException(
                     "Unable to parse the table template.\n".
                     "It must contain:\n".
-                    "- 0, 1 or more header line(s),\n".
-                    "- 1 line containing '1' and '2' representing 2 cells,\n".
-                    "- 0, 1 or more separation line(s),\n".
-                    "- 1 line containing '3' and '4' representing 2 other cells,\n".
-                    "- 0, 1 or more footer line(s),\n"
+                    "  - 0, 1 or more header line(s),\n".
+                    "  - 1 line containing '1' and '2' representing 2 cells,\n".
+                    "  - 0, 1 or more separation line(s),\n".
+                    "  - 1 line containing '3' and '4' representing 2 other cells,\n".
+                    "  - 0, 1 or more footer line(s).\n".
+                    "Template given:\n$template"
                 );
             }
 

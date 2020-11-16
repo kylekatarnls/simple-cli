@@ -3,6 +3,7 @@
 namespace Tests\SimpleCli\Widget;
 
 use Generator;
+use SimpleCli\Widget\Cell;
 use SimpleCli\Widget\Table;
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\TestCase;
@@ -104,6 +105,146 @@ class TableTest extends TestCase
                     yield 'song'   => 'Feeling Good';
                 };
                 $table = new Table($iterator());
+
+                $cli->write($table);
+            }
+        );
+    }
+
+    /**
+     * @covers ::__construct
+     * @covers ::__toString
+     * @covers ::format
+     * @covers ::addBarToOutput
+     * @covers ::pad
+     * @covers ::getSplitter
+     * @covers ::getStringPadAlign
+     */
+    public function testTableWidgetWithMoreRowsAndColumns(): void
+    {
+        static::assertOutput(
+            implode("\n", [
+                '┌──────────────────┬──────────────┬──────┬────────────┐',
+                '│ Short            │ A bit longer │    4 │            │',
+                '├──────────────────┼──────────────┼──────┼────────────┤',
+                '│ Begin            │      OK      │  451 │            │',
+                '├──────────────────┼──────────────┼──────┼────────────┤',
+                '│ Some other words │    What?     │   62 │ extra info │',
+                '├──────────────────┼──────────────┼──────┼────────────┤',
+                '│                  │ stick        │ 22.3 │            │',
+                '├──────────────────┼──────────────┼──────┼────────────┤',
+                '│ Total            │              │  42? │            │',
+                '└──────────────────┴──────────────┴──────┴────────────┘',
+            ]),
+            function () {
+                $cli = new DemoCli();
+                $iterator = static function () use ($cli): Generator {
+                    yield '';
+                    yield new Cell('stick', Cell::ALIGN_LEFT);
+                    yield 22.3;
+                };
+                $table = new Table([
+                    ['Short', 'A bit longer', 4],
+                    ['Begin', 'OK', 451],
+                    ['Some other words', 'What?', 62, 'extra info'],
+                    $iterator(),
+                    ['Total', '', '42?'],
+                ]);
+                $table->align = [Cell::ALIGN_LEFT, Cell::ALIGN_CENTER, Cell::ALIGN_RIGHT];
+
+                $cli->write($table);
+            }
+        );
+    }
+
+    /**
+     * @covers ::__construct
+     * @covers ::__toString
+     * @covers ::format
+     * @covers ::addBarToOutput
+     * @covers ::pad
+     * @covers ::getSplitter
+     * @covers ::getStringPadAlign
+     */
+    public function testTableWidgetCustomTemplate(): void
+    {
+        static::assertOutput(
+            implode("\n", [
+                '╔═══════╤═══════╤═══════╗',
+                '║>One~~<│>Two~~<│>Three<║',
+                '╟───────┼───────┼───────╢',
+                '║>Hello<│>World<│>!~~~~<║',
+                '╚═══════╧═══════╧═══════╝',
+            ]),
+            function () {
+                $cli = new DemoCli();
+                $table = new Table([
+                    ['One', 'Two', 'Three'],
+                    ['Hello', 'World', '!'],
+                ]);
+                $table->fill = '~';
+                $table->template = '
+                    !template!
+                    ╔═══╤═══╗
+                    ║>1<│>2<║
+                    ╟───┼───╢
+                    ║>3<│>4<║
+                    ╚═══╧═══╝';
+
+                $cli->write($table);
+            }
+        );
+    }
+
+    /**
+     * @covers ::__construct
+     * @covers ::__toString
+     * @covers ::format
+     * @covers ::addBarToOutput
+     * @covers ::pad
+     * @covers ::getSplitter
+     * @covers ::getStringPadAlign
+     */
+    public function testTableWidgetMultiLineTemplate(): void
+    {
+        static::assertOutput(
+            implode("\n", [
+                '╔═════════╤═══════╤═════════╗',
+                ' \        |       |        /║',
+                '  ╔═══════╤═══════╤═══════╗-║',
+                '  ║ One   │ Two   │ Three ║ ║',
+                '  ╟───────┼───────┼───────╢-║',
+                '  ╟¤¤¤¤¤¤¤┼¤¤¤¤¤¤¤┼¤¤¤¤¤¤¤╢ ║',
+                '  ╟───────┼───────┼───────╢-║',
+                '  ║ Hello │ World │ !     ║ ║',
+                '  ╟───────┼───────┼───────╢-║',
+                '  ╟¤¤¤¤¤¤¤┼¤¤¤¤¤¤¤┼¤¤¤¤¤¤¤╢ ║',
+                '  ╟───────┼───────┼───────╢-║',
+                '  ║ End   │       │       ║ ║',
+                '  ╚═══════╧═══════╧═══════╝ ║',
+                ' /        |       |        \║',
+                '╚═════════╧═══════╧═════════╝',
+            ]),
+            function () {
+                $cli = new DemoCli();
+                $table = new Table([
+                    ['One', 'Two', 'Three'],
+                    ['Hello', 'World', '!'],
+                    ['End', '', ''],
+                ]);
+                $table->template = '
+                    !template!
+                    ╔═════╤═════╗
+                     \    |    /║
+                      ╔═══╤═══╗-║
+                      ║ 1 │ 2 ║ ║
+                      ╟───┼───╢-║
+                      ╟¤¤¤┼¤¤¤╢ ║
+                      ╟───┼───╢-║
+                      ║ 3 │ 4 ║ ║
+                      ╚═══╧═══╝ ║
+                     /    |    \║
+                    ╚═════╧═════╝';
 
                 $cli->write($table);
             }
