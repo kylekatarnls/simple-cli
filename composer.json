@@ -42,7 +42,7 @@
         "cs": "phpcs",
         "csf": "php-cs-fixer fix -v --diff --dry-run",
         "md": "phpmd src,tests text ./phpmd.xml",
-        "stan": "phpstan analyse --autoload-file=vendor/autoload.php --level max src tests",
+        "stan": "php tests/at-least.php 7.4.0-dev && phpstan analyse --autoload-file=vendor/autoload.php -c phpstan.neon || phpstan analyse --autoload-file=vendor/autoload.php -c phpstan-php-lt-7.4.neon",
         "phan": "phan",
         "psalm": "psalm --show-info=true",
         "style": [

@@ -1,0 +1,7 @@
+parameters:
+	level: max
+	excludes_analyse:
+		- 'tests/SimpleCli/SimpleCliCommand/TypeHint.php'
+	paths:
+		- src
+		- tests
