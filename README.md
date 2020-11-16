@@ -180,7 +180,7 @@ in your commands).
 
 ## Add arguments
 
-Now let's add some argument so your command would actually do something.
+Now let's add some argument, so your command would actually do something.
 
 ```php
 <?php
@@ -227,6 +227,11 @@ class Add implements Command
 
 The `@argument` annotation allows simple-cli to know it's an argument.
 
+If `@var` is not provided, property type hint (as available since PHP 7.4)
+will be used instead, or else the type will be inferred from the default
+value. So `public float $number2;` will be considered as `float` and
+`public $number2 = false;` will be considered as `bool`.
+
 If you run `bin/easy-calc add --help` you will see they appear in the
 help with their description, type and default value.
 
@@ -250,7 +255,7 @@ with 5 arguments, the first one goes to the first `@argument`, the second one
 go to the second `@argument`, and the 3 other ones go as an array to the `@rest`
 argument.
 
-Of course you can also use `@rest` with any other argument so for our `add`
+Of course, you can also use `@rest` with any other argument so for our `add`
 command, it could be:
 
 ```php
@@ -353,8 +358,6 @@ class Add implements Command
      * @option
      *
      * Something the command can use.
-     *
-     * @var string
      */
     public $foo = 'default';
 
@@ -362,8 +365,6 @@ class Add implements Command
      * @option show-foo
      *
      * Whether foo should be displayed or not.
-     *
-     * @var bool
      */
     public $showFoo = false;
 
@@ -388,7 +389,8 @@ Note than you can pass the name for the option and alias in the annotation:
 `@option some-name, other-name, s, o` this mean `--some-name`, `--other-name`
 `-s` and `-o` will all store the value in the same option variable.
 
-Also note than if options are boolean type and have aliases, they can be merged.
+Also note than if options are boolean type (`@var bool` or a boolean
+default value) and have aliases, they can be merged.
 If you have `@option show-foo, s` and `@option verbose, v` and pass `-vs` in
 the CLI, both options will be `true`.
 
@@ -396,9 +398,106 @@ For non boolean options values can be set using `--foo bar` or `--foo=bar`,
 both are valid. And options can come anywhere (before, after or between
 arguments).
 
-Finally, if you don't set a name and use the `@option` annotation alone
+Finally, if you don't set a name, using the `@option` annotation alone
 the option will have the same name as its variable and will have its
 first letter as alias if it's available.
+
+## Short annotations
+
+Annotations for `@option`, `@argument` and `@rest` can be written on
+one line.
+
+```php
+class Add implements Command
+{
+    /** @argument / First argument. */
+    public $first = 'main';
+
+    /** @rest / Other arguments. */
+    public $others = [];
+
+    /** @option / Something the command can use. */
+    public $foo = 'default';
+
+    /** @option show-foo, f / Whether foo should be displayed or not. */
+    public $showFoo = false;
+
+    // run(...)
+}
+```
+
+With this syntax, `@var` typing is not possible, so the type will be
+automatically set with the property type hint or inferring from the
+default value.
+
+## Progress bar widget
+
+![Usage](https://raw.githubusercontent.com/kylekatarnls/simple-cli/master/doc/img/progress-bar.jpg)
+
+```php
+use SimpleCli\Command;
+use SimpleCli\SimpleCli;
+use SimpleCli\Widget\ProgressBar;
+
+class SomeCommand implements Command
+{
+    public function run(SimpleCli $cli): bool
+    {
+        $bar = new ProgressBar($cli);
+        $bar->start();
+        $bar->setValue(0.3);
+        $bar->setValue(0.7);
+        $bar->setValue(1);
+        $bar->end();
+
+        return true;
+    }
+}
+```
+This will show 30% and a bar 30% full, then replace the line
+with a 70% bar, and finally a full bar. It would looks like:
+```txt
+|  70% [===================================>               ]
+```
+`ProgressBar` as its settings and characters used exposed as public
+properties, so you can simply set as you wish to customize the bar
+style:
+[src/SimpleCli/Widget/ProgressBar.php](https://github.com/kylekatarnls/simple-cli/blob/master/src/SimpleCli/Widget/ProgressBar.php)
+
+Let's see a concrete example:
+```php
+public function run(SimpleCli $cli): bool
+{
+    $bar = new ProgressBar($cli);
+    // Assuming we have a 214MB file being downloaded in a parallel process
+    $bar->total = 214 * 1024 * 1024;
+    // Let's customize a bit the style:
+    $bar->width = 20; // inner bar size
+    $dash = str_repeat('─', $bar->width);
+    // Let's draw a swaure around the bar
+    $bar->start = "       ┌{$dash}┐\n";
+    $bar->barStart = '│';
+    $bar->barEnd = '│';
+    $bar->after = "\n       └{$dash}┘";
+    $bar->cursor = ''; // remove bar middle cursor
+    // Colorize some characters for bar (left) and empty bar (right)
+    $bar->bar = $cli->colorize('█', 'cyan');
+    $bar->emptyBar = $cli->colorize('░', 'light_gray');
+    // as ->after contains a new line, we have
+    // to rewind 1 more line
+    $bar->rewind = "\033[1A\r";
+    $bar->start();
+
+    while ($bar->isInProgress()) { // while value < total
+        $bar->setValue(filesize('partially-downloaded-file.part'));
+        usleep(250000); // Let's refresh every 250ms
+    }
+
+    $bar->end();
+
+    return true;
+}
+```
 
 ## API reference
 

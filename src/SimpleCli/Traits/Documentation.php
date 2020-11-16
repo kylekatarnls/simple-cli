@@ -6,7 +6,10 @@ namespace SimpleCli\Traits;
 
 use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionNamedType;
 use ReflectionObject;
+use ReflectionProperty;
+use ReflectionType;
 use SimpleCli\Command;
 
 /**
@@ -72,7 +75,7 @@ trait Documentation
 
     private function cleanPhpDocComment(string $doc): string
     {
-        $doc = (string) preg_replace('/^\s*\/\*+/', '', $doc);
+        $doc = (string) preg_replace('/^\s*\/\*+[\t ]*/', '', $doc);
         $doc = (string) preg_replace('/\s*\*+\/$/', '', $doc);
         $doc = (string) preg_replace('/^\s*\*\s?/m', '', $doc);
 
@@ -81,42 +84,47 @@ trait Documentation
 
     /**
      * @param ?string $option
-     * @param bool    $argument
-     * @param bool    $rest
+     * @param ?string $argument
+     * @param ?string $rest
      * @param ?string $name
      * @param ?string $doc
      * @param ?string $values
-     * @param ?string $var
+     * @param ?string $type
      */
-    private function addExpectation($option, $argument, $rest, $name, $doc, $values, $var): void
+    private function addExpectation($option, $argument, $rest, $name, $doc, $values, $type): void
     {
-        if ($option) {
-            if ($argument) {
+        if ($option !== null) {
+            if ($argument !== null) {
                 throw new InvalidArgumentException(
                     'A property cannot be both @option and @argument'
                 );
             }
 
+            $optionLine = preg_split('#\s*/\s*#', $option, 2) ?: [];
+            $preDoc = trim($optionLine[1] ?? '');
+
             $this->expectedOptions[] = [
                 'property'    => $name,
-                'names'       => array_map('trim', explode(',', $option)),
-                'description' => $doc,
+                'names'       => array_map('trim', explode(',', $optionLine[0])),
+                'description' => $this->concatDescription($preDoc, $doc),
                 'values'      => $values,
-                'type'        => $var,
+                'type'        => $type,
             ];
 
             return;
         }
 
-        if ($argument || $rest) {
+        if ($argument !== null || $rest !== null) {
+            $preDoc = ltrim(trim($rest ?? $argument ?? ''), "/ \t");
+
             $definition = [
                 'property'    => $name,
-                'description' => $doc,
+                'description' => $this->concatDescription($preDoc, $doc),
                 'values'      => $values,
-                'type'        => $var,
+                'type'        => $type,
             ];
 
-            if ($rest) {
+            if ($rest !== null) {
                 $definition['type'] = $definition['type'] === 'array'
                     ? 'string'
                     : preg_replace('/\[]$/', '', $definition['type'] ?: '');
@@ -129,6 +137,13 @@ trait Documentation
         }
     }
 
+    private function concatDescription(string $start, ?string $end): string
+    {
+        $end = $end ?? '';
+
+        return $start.($start !== '' && $end !== '' ? "\n" : '').$end;
+    }
+
     private function extractExpectations(Command $command): void
     {
         $this->expectedRestArgument = null;
@@ -138,18 +153,81 @@ trait Documentation
         foreach ((new ReflectionObject($command))->getProperties() as $property) {
             $name = $property->getName();
             $doc = $this->cleanPhpDocComment((string) $property->getDocComment());
-            $argument = $this->extractAnnotation($doc, 'argument') !== null;
-            $rest = $this->extractAnnotation($doc, 'rest') !== null;
+            $argument = $this->extractAnnotation($doc, 'argument');
+            $rest = $this->extractAnnotation($doc, 'rest');
             $option = $this->extractAnnotation($doc, 'option');
             $values = $this->extractAnnotation($doc, 'values');
-            $var = str_replace('boolean', 'bool', $this->extractAnnotation($doc, 'var') ?: 'string');
+            $type = $this->normalizeScalarType(
+                $this->extractAnnotation($doc, 'var')
+                    ?? $this->getPropertyType($property, $command, $rest)
+            );
+
             $doc = trim($doc);
 
             if ($option === '') {
                 $option = "$name, ".substr($name, 0, 1);
             }
 
-            $this->addExpectation($option, $argument, $rest, $name, $doc, $values, $var);
+            $this->addExpectation($option, $argument, $rest, $name, $doc, $values, $type);
         }
+    }
+
+    private function normalizeScalarType(?string $type): string
+    {
+        return strtr($type ?: 'string', [
+            'boolean' => 'bool',
+            'integer' => 'int',
+            'double'  => 'float',
+            'decimal' => 'float',
+        ]);
+    }
+
+    private function getPropertyType(ReflectionProperty $property, Command $command, ?string $rest): ?string
+    {
+        $type = $this->getPropertyTypeByHint($property);
+        $type = $type instanceof ReflectionNamedType
+            ? $type->getName()
+            : null;
+
+        if (!$type) {
+            $defaultValue = $property->getValue($command);
+
+            if ($defaultValue !== null) {
+                $type = gettype($defaultValue);
+            }
+        }
+
+        if ($rest !== null && ($type ?? 'array') === 'array') {
+            $defaultValue = $defaultValue ?? $property->getValue($command);
+
+            if (is_iterable($defaultValue)) {
+                $types = [];
+
+                foreach ($defaultValue as $value) {
+                    $types[$this->normalizeScalarType(gettype($value))] = true;
+                }
+
+                if (count($types) > 0) {
+                    return implode('|', array_keys($types));
+                }
+            }
+        }
+
+        return $type;
+    }
+
+    /**
+     * Return the typehint of a property if PHP >= 7.4 is running and a type hint is available,
+     * else return null silently.
+     *
+     * @param ReflectionProperty $property
+     *
+     * @return ReflectionType|null
+     */
+    private function getPropertyTypeByHint(ReflectionProperty $property)
+    {
+        /** @var mixed $property */
+        // @phan-suppress-next-line PhanUndeclaredMethod
+        return method_exists($property, 'getType') ? $property->getType() : null;
     }
 }

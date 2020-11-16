@@ -1,6 +1,7 @@
 /.idea/
 /coverage/
 /vendor/
+*.cache
 composer.phar
 composer.lock
 coverage.xml

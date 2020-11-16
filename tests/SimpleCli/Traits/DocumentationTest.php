@@ -5,6 +5,8 @@ namespace Tests\SimpleCli\Traits;
 use stdClass;
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\DemoApp\DemoCommand;
+use Tests\SimpleCli\SimpleCliCommand\DefaultValue;
+use Tests\SimpleCli\SimpleCliCommand\VarAnnotation;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\Documentation
@@ -71,6 +73,7 @@ class DocumentationTest extends TraitsTestCase
 
     /**
      * @covers ::addExpectation
+     * @covers ::concatDescription
      */
     public function testAddExpectation()
     {
@@ -110,6 +113,7 @@ class DocumentationTest extends TraitsTestCase
 
     /**
      * @covers ::addExpectation
+     * @covers ::concatDescription
      */
     public function testAddExpectationCast()
     {
@@ -127,6 +131,7 @@ class DocumentationTest extends TraitsTestCase
 
     /**
      * @covers ::addExpectation
+     * @covers ::concatDescription
      */
     public function testAddExpectationInvalidKind()
     {
@@ -181,5 +186,41 @@ class DocumentationTest extends TraitsTestCase
                 $command('file', 'foobar', '--prefix=hi');
             }
         );
+    }
+
+    /**
+     * @covers ::getPropertyType
+     * @covers ::getPropertyTypeByHint
+     * @covers ::normalizeScalarType
+     */
+    public function testPropertyTypeByVarAnnotation()
+    {
+        $command = new DemoCli();
+        $mockFile = __DIR__.'/../SimpleCliCommand/VarAnnotation.php';
+        $originalContent = (string) file_get_contents($mockFile);
+        file_put_contents($mockFile, str_replace("@var bool\n", "@var boolean\n", $originalContent));
+
+        $this->invoke($command, 'extractExpectations', new VarAnnotation());
+
+        file_put_contents($mockFile, $originalContent);
+
+        static::assertSame('float', static::getPropertyValue($command, 'expectedOptions')[0]['type']);
+        static::assertSame('bool', static::getPropertyValue($command, 'expectedArguments')[0]['type']);
+        static::assertSame('float', static::getPropertyValue($command, 'expectedRestArgument')['type']);
+    }
+
+    /**
+     * @covers ::getPropertyType
+     * @covers ::getPropertyTypeByHint
+     */
+    public function testPropertyTypeByDefaultValue()
+    {
+        $command = new DemoCli();
+
+        $this->invoke($command, 'extractExpectations', new DefaultValue());
+
+        static::assertSame('float', static::getPropertyValue($command, 'expectedOptions')[0]['type']);
+        static::assertSame('bool', static::getPropertyValue($command, 'expectedArguments')[0]['type']);
+        static::assertSame('float|string', static::getPropertyValue($command, 'expectedRestArgument')['type']);
     }
 }
