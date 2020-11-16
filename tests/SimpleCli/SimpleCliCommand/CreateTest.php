@@ -40,6 +40,7 @@ class CreateTest extends TestCase
 
     /**
      * @covers \SimpleCli\SimpleCli::parseParameters
+     * @covers ::ensureBinDirectoryExists
      * @covers ::copyBinTemplate
      * @covers ::extractName
      * @covers ::run

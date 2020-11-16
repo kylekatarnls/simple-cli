@@ -157,8 +157,10 @@ trait Documentation
             $rest = $this->extractAnnotation($doc, 'rest');
             $option = $this->extractAnnotation($doc, 'option');
             $values = $this->extractAnnotation($doc, 'values');
-            $type = $this->extractAnnotation($doc, 'var')
-                ?? $this->getPropertyType($property, $command, $rest);
+            $type = $this->normalizeScalarType(
+                $this->extractAnnotation($doc, 'var')
+                    ?? $this->getPropertyType($property, $command, $rest)
+            );
 
             $doc = trim($doc);
 
@@ -180,7 +182,7 @@ trait Documentation
         ]);
     }
 
-    private function getPropertyType(ReflectionProperty $property, Command $command, ?string $rest): string
+    private function getPropertyType(ReflectionProperty $property, Command $command, ?string $rest): ?string
     {
         $type = $this->getPropertyTypeByHint($property);
         $type = $type instanceof ReflectionNamedType
@@ -211,7 +213,7 @@ trait Documentation
             }
         }
 
-        return $this->normalizeScalarType($type);
+        return $type;
     }
 
     /**
