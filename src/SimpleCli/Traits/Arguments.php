@@ -61,7 +61,7 @@ trait Arguments
     /**
      * Get definition for the rest argument if a @rest property given.
      *
-     * @return array|null
+     * @return array<string, (string|string[])>|null
      */
     public function getExpectedRestArgument(): ?array
     {
