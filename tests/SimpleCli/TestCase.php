@@ -5,9 +5,19 @@ namespace Tests\SimpleCli;
 use Closure;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
 use ReflectionClass;
+use ReflectionException;
 
 abstract class TestCase extends FrameworkTestCase
 {
+    /**
+     * @param object $object
+     * @param string $method
+     * @param mixed  ...$arguments
+     *
+     * @throws ReflectionException
+     *
+     * @return mixed
+     */
     protected static function invoke($object, string $method, ...$arguments)
     {
         $reflection = (new ReflectionClass(get_class($object)))->getMethod($method);
@@ -16,6 +26,14 @@ abstract class TestCase extends FrameworkTestCase
         return $reflection->invokeArgs($object, $arguments);
     }
 
+    /**
+     * @param object $object
+     * @param string $propertyName
+     *
+     * @throws ReflectionException
+     *
+     * @return mixed
+     */
     protected static function getPropertyValue($object, string $propertyName)
     {
         $reflection = (new ReflectionClass(get_class($object)))->getProperty($propertyName);
@@ -33,7 +51,7 @@ abstract class TestCase extends FrameworkTestCase
         ]);
     }
 
-    public static function assertOutput(string $expectedOutput, Closure $action)
+    public static function assertOutput(string $expectedOutput, Closure $action): void
     {
         ob_start();
         $action();
@@ -47,7 +65,7 @@ abstract class TestCase extends FrameworkTestCase
         );
     }
 
-    public static function assertFileContentEquals($expected, $file, $message = null)
+    public static function assertFileContentEquals(string $expected, string $file, ?string $message = null): void
     {
         $message = "$file content should mismatch.".($message ? "\n$message" : '');
 

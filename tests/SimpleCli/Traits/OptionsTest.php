@@ -14,7 +14,7 @@ class OptionsTest extends TraitsTestCase
     /**
      * @covers ::getOptions
      */
-    public function testGetOptions()
+    public function testGetOptions(): void
     {
         $command = new DummyCli();
         $command->mute();
@@ -38,7 +38,7 @@ class OptionsTest extends TraitsTestCase
     /**
      * @covers ::getExpectedOptions
      */
-    public function testGetExpectedOptions()
+    public function testGetExpectedOptions(): void
     {
         $command = new DummyCli();
         $command->mute();
@@ -99,7 +99,7 @@ class OptionsTest extends TraitsTestCase
     /**
      * @covers ::getOptionDefinition
      */
-    public function testGetOptionDefinition()
+    public function testGetOptionDefinition(): void
     {
         $command = new DemoCli();
         $command->mute();
@@ -124,7 +124,7 @@ class OptionsTest extends TraitsTestCase
     /**
      * @covers ::getOptionDefinition
      */
-    public function testUnknownOptionName()
+    public function testUnknownOptionName(): void
     {
         static::expectException(InvalidArgumentException::class);
         static::expectExceptionMessage('Unknown --xyz option');
@@ -140,7 +140,7 @@ class OptionsTest extends TraitsTestCase
     /**
      * @covers ::getOptionDefinition
      */
-    public function testUnknownOptionAlias()
+    public function testUnknownOptionAlias(): void
     {
         static::expectException(InvalidArgumentException::class);
         static::expectExceptionMessage('Unknown -x option');
@@ -156,7 +156,7 @@ class OptionsTest extends TraitsTestCase
     /**
      * @covers ::enableBooleanOption
      */
-    public function testEnableBooleanOption()
+    public function testEnableBooleanOption(): void
     {
         $command = new DemoCli();
         $command->mute();
@@ -178,7 +178,7 @@ class OptionsTest extends TraitsTestCase
     /**
      * @covers ::enableBooleanOption
      */
-    public function testEnableBooleanOptionOnNonBoolean()
+    public function testEnableBooleanOptionOnNonBoolean(): void
     {
         static::assertOutput(
             '[ESCAPE][0;31m-p option is not a boolean, so you can\'t use it in a aliases group[ESCAPE][0m',
@@ -193,7 +193,7 @@ class OptionsTest extends TraitsTestCase
     /**
      * @covers ::enableBooleanOption
      */
-    public function testEnableBooleanOptionWithValue()
+    public function testEnableBooleanOptionWithValue(): void
     {
         static::assertOutput(
             '[ESCAPE][0;31m-h option is boolean and should not have value[ESCAPE][0m',
@@ -208,7 +208,7 @@ class OptionsTest extends TraitsTestCase
     /**
      * @covers ::setOption
      */
-    public function testSetOption()
+    public function testSetOption(): void
     {
         $command = new DemoCli();
         $command->mute();
@@ -236,7 +236,7 @@ class OptionsTest extends TraitsTestCase
     /**
      * @covers ::parseOption
      */
-    public function testParseOption()
+    public function testParseOption(): void
     {
         $command = new DemoCli();
 

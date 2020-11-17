@@ -10,7 +10,7 @@ use Tests\SimpleCli\TestCase;
  */
 class QuietTest extends TestCase
 {
-    public function testIsQuiet()
+    public function testIsQuiet(): void
     {
         static::assertOutput(
             '',

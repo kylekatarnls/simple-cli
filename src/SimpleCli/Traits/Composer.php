@@ -48,16 +48,29 @@ trait Composer
      *
      * @SuppressWarnings(PHPMD.ErrorControlOperator)
      *
-     * @return array
+     * @return array<string|int, array<string, string>>
      */
     public function getInstalledPackages()
     {
-        $installedJson = $this->getVendorDirectory().'/composer/installed.json';
+        $composerDirectory = $this->getVendorDirectory().'/composer';
+
+        if (file_exists($composerDirectory.'/installed.php')) {
+            /** @psalm-suppress UnresolvableInclude */
+            $installedData = (@include $composerDirectory.'/installed.php') ?: [];
+            $installedData = $installedData['versions'] ?? $installedData;
+
+            if (!empty($installedData)) {
+                return $installedData;
+            }
+        }
+
+        $installedJson = $composerDirectory.'/installed.json';
         $installedData = file_exists($installedJson)
             ? @json_decode((string) file_get_contents($installedJson), true)
             : null;
+        $installedData = $installedData ?: [];
 
-        return $installedData ?: [];
+        return $installedData['packages'] ?? $installedData;
     }
 
     /**
@@ -69,7 +82,13 @@ trait Composer
      */
     public function getInstalledPackage(string $name): ?InstalledPackage
     {
-        foreach ($this->getInstalledPackages() as $package) {
+        foreach ($this->getInstalledPackages() as $key => $package) {
+            if (!isset($package['name']) && is_string($key)) {
+                $package['name'] = $key;
+                $package['version_normalized'] = $package['version'] ?? $package['pretty_version'] ?? 'unknown';
+                $package['version'] = $package['pretty_version'] ?? $package['version'] ?? 'unknown';
+            }
+
             if (($package['name'] ?? null) === $name) {
                 return new InstalledPackage($package);
             }

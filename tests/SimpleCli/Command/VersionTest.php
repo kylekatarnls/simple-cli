@@ -13,7 +13,7 @@ class VersionTest extends TestCase
     /**
      * @covers ::run
      */
-    public function testRun()
+    public function testRun(): void
     {
         static::assertOutput(
             "[ESCAPE][0;33munknown[ESCAPE][0m\n",

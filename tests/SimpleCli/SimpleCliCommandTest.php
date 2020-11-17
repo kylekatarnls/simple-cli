@@ -12,7 +12,7 @@ class SimpleCliCommandTest extends TestCase
     /**
      * @covers ::getPackageName
      */
-    public function testGetPackageName()
+    public function testGetPackageName(): void
     {
         static::assertSame('simple-cli/simple-cli', (new SimpleCliCommand())->getPackageName());
     }
@@ -20,7 +20,7 @@ class SimpleCliCommandTest extends TestCase
     /**
      * @covers ::getCommands
      */
-    public function testGetCommands()
+    public function testGetCommands(): void
     {
         static::assertSame(['create' => SimpleCliCommand\Create::class], (new SimpleCliCommand())->getCommands());
     }

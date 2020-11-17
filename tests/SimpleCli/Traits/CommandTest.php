@@ -12,7 +12,7 @@ class CommandTest extends TraitsTestCase
     /**
      * @covers ::getCommand
      */
-    public function testGetCommand()
+    public function testGetCommand(): void
     {
         $command = new DemoCli();
         $command->mute();

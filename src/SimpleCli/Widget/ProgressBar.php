@@ -100,6 +100,9 @@ class ProgressBar
         return $this->value < $this->total;
     }
 
+    /**
+     * @return Generator<int|float|null>
+     */
     public function __invoke(): Generator
     {
         $this->start();

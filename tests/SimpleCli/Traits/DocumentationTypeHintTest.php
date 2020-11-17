@@ -14,7 +14,7 @@ class DocumentationTypeHintTest extends TraitsTestCase
      * @covers ::getPropertyType
      * @covers ::getPropertyTypeByHint
      */
-    public function testPropertyTypeByHint()
+    public function testPropertyTypeByHint(): void
     {
         if (version_compare(PHP_VERSION, '7.4.0-dev', '<')) {
             $this->markTestSkipped('Properties can be typed by hint only with PHP 7.4');

@@ -8,6 +8,9 @@ use ArrayIterator;
 use IteratorAggregate;
 use Traversable;
 
+/**
+ * @implements IteratorAggregate<int, string>
+ */
 class WordsList implements IteratorAggregate
 {
     /**
@@ -40,7 +43,7 @@ class WordsList implements IteratorAggregate
     /**
      * Get the words list as an ArrayIterator instance.
      *
-     * @return ArrayIterator
+     * @return ArrayIterator<int, string>
      */
     public function getArrayIterator(): ArrayIterator
     {
@@ -52,8 +55,7 @@ class WordsList implements IteratorAggregate
      *
      * @link https://php.net/manual/en/iteratoraggregate.getiterator.php
      *
-     * @return Traversable An instance of an object implementing <b>Iterator</b> or
-     *                     <b>Traversable</b>
+     * @return Traversable<int, string> An instance of an object implementing <b>Iterator</b> or <b>Traversable</b>.
      */
     public function getIterator(): Traversable
     {

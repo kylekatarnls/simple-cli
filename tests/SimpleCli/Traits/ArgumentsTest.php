@@ -12,7 +12,7 @@ class ArgumentsTest extends TraitsTestCase
     /**
      * @covers ::getArguments
      */
-    public function testGetArguments()
+    public function testGetArguments(): void
     {
         $command = new DemoCli();
         $command->mute();
@@ -34,7 +34,7 @@ class ArgumentsTest extends TraitsTestCase
     /**
      * @covers ::getExpectedArguments
      */
-    public function testGetExpectedArguments()
+    public function testGetExpectedArguments(): void
     {
         $command = new DemoCli();
         $command->mute();
@@ -61,7 +61,7 @@ class ArgumentsTest extends TraitsTestCase
     /**
      * @covers ::getRestArguments
      */
-    public function testGetRestArguments()
+    public function testGetRestArguments(): void
     {
         $command = new DemoCli();
         $command->mute();
@@ -77,8 +77,9 @@ class ArgumentsTest extends TraitsTestCase
 
     /**
      * @covers ::getExpectedRestArgument
+     * @covers \SimpleCli\Traits\Documentation::addExpectation
      */
-    public function testGetExpectedRestArgument()
+    public function testGetExpectedRestArgument(): void
     {
         $command = new DemoCli();
         $command->mute();
@@ -103,7 +104,7 @@ class ArgumentsTest extends TraitsTestCase
     /**
      * @covers ::parseArgument
      */
-    public function testParseArgument()
+    public function testParseArgument(): void
     {
         $command = new DemoCli();
         $command->disableColors();

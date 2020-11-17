@@ -13,7 +13,7 @@ class ParametersTest extends TraitsTestCase
     /**
      * @covers ::getParameters
      */
-    public function testGetParameters()
+    public function testGetParameters(): void
     {
         $command = new DemoCli();
         $command->mute();
@@ -30,7 +30,7 @@ class ParametersTest extends TraitsTestCase
     /**
      * @covers ::getParameterValue
      */
-    public function testGetParameterValue()
+    public function testGetParameterValue(): void
     {
         $command = new DemoCli();
 
@@ -71,7 +71,7 @@ class ParametersTest extends TraitsTestCase
     /**
      * @covers ::getParameterValue
      */
-    public function testGetParameterValueWrongCast()
+    public function testGetParameterValueWrongCast(): void
     {
         if (version_compare(phpversion() ?: '0.0.0', '8.0.0-dev', '>=')) {
             $this->markTestSkipped('settype() can no longer be muted since PHP 8.');
@@ -94,7 +94,7 @@ class ParametersTest extends TraitsTestCase
     /**
      * @covers ::getParameterValue
      */
-    public function testGetParameterValueWrongValue()
+    public function testGetParameterValueWrongValue(): void
     {
         static::expectException(InvalidArgumentException::class);
         static::expectExceptionMessage(

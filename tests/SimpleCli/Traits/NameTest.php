@@ -13,7 +13,7 @@ class NameTest extends TraitsTestCase
     /**
      * @covers ::getName
      */
-    public function testGetName()
+    public function testGetName(): void
     {
         $command = new DemoCli();
 

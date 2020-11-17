@@ -16,19 +16,21 @@ class DocumentationTest extends TraitsTestCase
     /**
      * @covers ::extractClassNameDescription
      */
-    public function testExtractClassNameDescription()
+    public function testExtractClassNameDescription(): void
     {
         $command = new DemoCli();
 
         static::assertSame('This is a demo.', $command->extractClassNameDescription(DemoCommand::class));
         static::assertSame('stdClass', $command->extractClassNameDescription(stdClass::class));
-        static::assertSame('NotFound', $command->extractClassNameDescription('NotFound'));
+        /** @phpstan-var class-string $notFound */
+        $notFound = 'NotFound';
+        static::assertSame('NotFound', $command->extractClassNameDescription($notFound));
     }
 
     /**
      * @covers ::extractAnnotation
      */
-    public function testExtractAnnotation()
+    public function testExtractAnnotation(): void
     {
         $command = new DemoCli();
         $command->mute();
@@ -51,7 +53,7 @@ class DocumentationTest extends TraitsTestCase
     /**
      * @covers ::cleanPhpDocComment
      */
-    public function testCleanPhpDocComment()
+    public function testCleanPhpDocComment(): void
     {
         $command = new DemoCli();
         $command->mute();
@@ -75,7 +77,7 @@ class DocumentationTest extends TraitsTestCase
      * @covers ::addExpectation
      * @covers ::concatDescription
      */
-    public function testAddExpectation()
+    public function testAddExpectation(): void
     {
         $command = new DemoCli();
         $command->mute();
@@ -108,14 +110,14 @@ class DocumentationTest extends TraitsTestCase
 
         $command('file', 'create');
 
-        static::assertSame('classNames', $command->getExpectedRestArgument()['property']);
+        static::assertSame('classNames', $command->getExpectedRestArgument()['property'] ?? null);
     }
 
     /**
      * @covers ::addExpectation
      * @covers ::concatDescription
      */
-    public function testAddExpectationCast()
+    public function testAddExpectationCast(): void
     {
         static::assertOutput(
             "9\nA|B|C\n",
@@ -124,7 +126,7 @@ class DocumentationTest extends TraitsTestCase
 
                 $command('file', 'all', 'A', 'B', 'C');
 
-                static::assertSame('string', $command->getExpectedRestArgument()['type']);
+                static::assertSame('string', $command->getExpectedRestArgument()['type'] ?? null);
             }
         );
     }
@@ -133,7 +135,7 @@ class DocumentationTest extends TraitsTestCase
      * @covers ::addExpectation
      * @covers ::concatDescription
      */
-    public function testAddExpectationInvalidKind()
+    public function testAddExpectationInvalidKind(): void
     {
         static::assertOutput(
             'A property cannot be both @option and @argument',
@@ -149,7 +151,7 @@ class DocumentationTest extends TraitsTestCase
     /**
      * @covers ::extractExpectations
      */
-    public function testExtractExpectations()
+    public function testExtractExpectations(): void
     {
         static::assertOutput(
             '[ESCAPE][0;31mUnknown --foo option[ESCAPE][0m',
@@ -193,7 +195,7 @@ class DocumentationTest extends TraitsTestCase
      * @covers ::getPropertyTypeByHint
      * @covers ::normalizeScalarType
      */
-    public function testPropertyTypeByVarAnnotation()
+    public function testPropertyTypeByVarAnnotation(): void
     {
         $command = new DemoCli();
         $mockFile = __DIR__.'/../SimpleCliCommand/VarAnnotation.php';
@@ -213,7 +215,7 @@ class DocumentationTest extends TraitsTestCase
      * @covers ::getPropertyType
      * @covers ::getPropertyTypeByHint
      */
-    public function testPropertyTypeByDefaultValue()
+    public function testPropertyTypeByDefaultValue(): void
     {
         $command = new DemoCli();
 

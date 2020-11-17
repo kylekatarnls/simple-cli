@@ -25,6 +25,9 @@ class SimpleCliCommand extends SimpleCli
         return 'simple-cli/simple-cli';
     }
 
+    /**
+     * @return array<string, class-string<Command>>
+     */
     public function getCommands(): array
     {
         return [

@@ -1,0 +1,80 @@
+name: Tests
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: ['7.1', '7.2', '7.3', '7.4']
+        include:
+          - php: '8.0'
+            composerOptions: --ignore-platform-req=php
+          - php: '8.1'
+            composerOptions: --ignore-platform-req=php
+
+    name: PHP ${{ matrix.php }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: ast
+        tools: composer:v2
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v2
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      if: steps.composer-cache.outputs.cache-hit != 'true'
+      run: composer update --prefer-dist --no-progress --no-suggest ${{ matrix.composerOptions }}
+
+    - name: Downgrade symfony/event-dispatcher-contracts
+      if: matrix.php == '7.1'
+      run: composer require symfony/event-dispatcher-contracts:^1.1
+
+    - name: Run test suite
+      run: |
+        if [[ ${PHP_VERSION:0:2} == "8." ]]; then
+          ./vendor/bin/phpunit --no-coverage
+        else
+          composer phpdbg-test;
+          cp coverage.xml clover.xml;
+          ls;
+        fi;
+      env:
+        PHP_VERSION: ${{ matrix.php }}
+
+    - name: Code Climate Test Reporter
+      if: matrix.php == '7.4'
+      uses: aktions/codeclimate-test-reporter@v1
+      with:
+        codeclimate-test-reporter-id: ${{ secrets.CC_TEST_REPORTER_ID }}
+        command: after-build -t clover
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+    - name: Coverage
+      if: matrix.php == '7.4'
+      run: |
+        bash <(curl -s https://codecov.io/bash);
+        composer require codacy/coverage;
+        vendor/bin/codacycoverage clover coverage.xml;
+      env:
+        CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        PHP_VERSION: ${{ matrix.php }}

@@ -1,8 +1,7 @@
+includes:
+    - phpstan.neon
+
 parameters:
-	level: max
-	excludes_analyse:
-		- 'tests/SimpleCli/SimpleCliCommand/TypeHint.php'
-		- 'tests/SimpleCli/Traits/DocumentationTypeHintTest.php'
-	paths:
-		- src
-		- tests
+    excludes_analyse:
+        - 'tests/SimpleCli/SimpleCliCommand/TypeHint.php'
+        - 'tests/SimpleCli/Traits/DocumentationTypeHintTest.php'

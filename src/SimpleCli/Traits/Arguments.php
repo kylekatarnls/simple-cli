@@ -8,30 +8,22 @@ use InvalidArgumentException;
 
 trait Arguments
 {
-    /**
-     * @var array
-     */
+    /** @var array<string, string|int|float|bool|null> */
     protected $arguments;
 
-    /**
-     * @var array
-     */
+    /** @var array<array<string, mixed>> */
     protected $expectedArguments;
 
-    /**
-     * @var array
-     */
+    /** @var array<string|int|float|bool|null> */
     protected $restArguments;
 
-    /**
-     * @var array|null
-     */
+    /** @var array<string, mixed>|null */
     protected $expectedRestArgument;
 
     /**
      * Get list of current filtered arguments.
      *
-     * @return array
+     * @return array<string, string|int|float|bool|null>
      */
     public function getArguments(): array
     {
@@ -41,7 +33,7 @@ trait Arguments
     /**
      * Get definitions of expected arguments.
      *
-     * @return array[]
+     * @return array<array<string, mixed>>
      */
     public function getExpectedArguments(): array
     {
@@ -51,7 +43,7 @@ trait Arguments
     /**
      * Get the rest of filtered arguments.
      *
-     * @return array
+     * @return array<string|int|float|bool|null>
      */
     public function getRestArguments(): array
     {
@@ -61,7 +53,7 @@ trait Arguments
     /**
      * Get definition for the rest argument if a @rest property given.
      *
-     * @return array|null
+     * @return array<string, mixed>|null
      */
     public function getExpectedRestArgument(): ?array
     {
