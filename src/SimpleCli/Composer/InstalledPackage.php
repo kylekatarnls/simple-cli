@@ -16,6 +16,9 @@ class InstalledPackage
      */
     public $version = null;
 
+    /**
+     * @param array<string, string> $data
+     */
     public function __construct(array $data)
     {
         foreach ($data as $key => $value) {

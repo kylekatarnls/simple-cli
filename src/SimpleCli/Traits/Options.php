@@ -8,20 +8,16 @@ use InvalidArgumentException;
 
 trait Options
 {
-    /**
-     * @var array
-     */
+    /** @var array<string, mixed> */
     protected $options;
 
-    /**
-     * @var array
-     */
+    /** @var array<array<string, mixed>> */
     protected $expectedOptions;
 
     /**
      * Get list of current filtered options.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getOptions(): array
     {
@@ -31,7 +27,7 @@ trait Options
     /**
      * Get definition of expected options.
      *
-     * @return array[]
+     * @return array<array<string, mixed>>
      */
     public function getExpectedOptions(): array
     {
@@ -43,7 +39,7 @@ trait Options
      *
      * @param string $name
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getOptionDefinition(string $name): array
     {
@@ -60,6 +56,11 @@ trait Options
         );
     }
 
+    /**
+     * @param array<string, string> $definition
+     * @param string                $name
+     * @param string|null           $value
+     */
     private function enableBooleanOption(array $definition, string $name, string $value = null): void
     {
         if ($definition['type'] !== 'bool') {
@@ -77,6 +78,12 @@ trait Options
         $this->options[$definition['property']] = true;
     }
 
+    /**
+     * @param string                   $name
+     * @param string|null              $value
+     * @param array<mixed, mixed>|null $optionDefinition
+     * @param-out array<string, mixed> $optionDefinition
+     */
     private function setOption(string $name, string $value = null, array &$optionDefinition = null): void
     {
         $definition = $this->getOptionDefinition($name);
@@ -98,6 +105,11 @@ trait Options
         $optionDefinition = $definition;
     }
 
+    /**
+     * @param string                   $option
+     * @param array<mixed, mixed>|null $optionDefinition
+     * @param-out array<string, mixed> $optionDefinition
+     */
     private function parseOption(string $option, array &$optionDefinition = null): void
     {
         $parts = explode('=', $option, 2);

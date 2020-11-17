@@ -12,7 +12,7 @@ class FileTest extends TraitsTestCase
     /**
      * @covers ::getFile
      */
-    public function testGetFile()
+    public function testGetFile(): void
     {
         $command = new DemoCli();
         $command->mute();

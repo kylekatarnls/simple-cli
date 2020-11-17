@@ -15,7 +15,7 @@ class ComposerTest extends TraitsTestCase
     /**
      * @covers ::getPackageName
      */
-    public function testGetPackageName()
+    public function testGetPackageName(): void
     {
         $command = new DemoCli();
 
@@ -25,7 +25,7 @@ class ComposerTest extends TraitsTestCase
     /**
      * @covers ::getVendorDirectory
      */
-    public function testGetVendorDirectory()
+    public function testGetVendorDirectory(): void
     {
         $command = new DemoCli();
 
@@ -35,7 +35,7 @@ class ComposerTest extends TraitsTestCase
     /**
      * @covers ::setVendorDirectory
      */
-    public function testSetVendorDirectory()
+    public function testSetVendorDirectory(): void
     {
         /**
          * @var string $path
@@ -50,7 +50,7 @@ class ComposerTest extends TraitsTestCase
     /**
      * @covers ::getInstalledPackages
      */
-    public function testGetInstalledPackages()
+    public function testGetInstalledPackages(): void
     {
         $packages = [
             [
@@ -76,7 +76,7 @@ class ComposerTest extends TraitsTestCase
      * @covers ::getInstalledPackage
      * @covers \SimpleCli\Composer\InstalledPackage::__construct
      */
-    public function testGetInstalledPackage()
+    public function testGetInstalledPackage(): void
     {
         $packages = [
             [
@@ -108,7 +108,7 @@ class ComposerTest extends TraitsTestCase
     /**
      * @covers ::getInstalledPackageVersion
      */
-    public function testGetInstalledPackageVersion()
+    public function testGetInstalledPackageVersion(): void
     {
         $packages = [
             [

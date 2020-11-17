@@ -21,7 +21,7 @@ class ProgressBarTest extends TestCase
      * @covers ::isInProgress
      * @covers ::getBar
      */
-    public function testProgressBarWidget()
+    public function testProgressBarWidget(): void
     {
         static::assertOutput(
             "\n".implode("\r", [

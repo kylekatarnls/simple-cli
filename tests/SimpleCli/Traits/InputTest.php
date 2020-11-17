@@ -12,7 +12,7 @@ class InputTest extends TraitsTestCase
     /**
      * @covers ::recordAutocomplete
      */
-    public function testRecordAutocomplete()
+    public function testRecordAutocomplete(): void
     {
         if (!extension_loaded('readline') || !function_exists('readline_completion_function')) {
             self::markTestSkipped('readline extension required for this test');
@@ -38,7 +38,7 @@ class InputTest extends TraitsTestCase
     /**
      * @covers ::autocomplete
      */
-    public function testAutocomplete()
+    public function testAutocomplete(): void
     {
         $command = new DemoCli();
 
@@ -72,7 +72,7 @@ class InputTest extends TraitsTestCase
     /**
      * @covers ::read
      */
-    public function testRead()
+    public function testRead(): void
     {
         $command = new DemoCli();
 

@@ -104,10 +104,10 @@ trait Help
     /**
      * Display definitions of the arguments list.
      *
-     * @param SimpleCli $cli
-     * @param array     $arguments
-     * @param int       $length
-     * @param self      $defaultInstance @phan-suppress-current-line PhanTypeMismatchDeclaredParam
+     * @param SimpleCli                   $cli
+     * @param array<array<string, mixed>> $arguments
+     * @param int                         $length
+     * @param self                        $defaultInstance @phan-suppress-current-line PhanTypeMismatchDeclaredParam
      */
     protected function displayArguments(SimpleCli $cli, array $arguments, int $length, self $defaultInstance): void
     {
@@ -123,10 +123,10 @@ trait Help
     }
 
     /**
-     * @param SimpleCli $cli
-     * @param array     $options
-     * @param int       $length
-     * @param self      $defaultInstance @phan-suppress-current-line PhanTypeMismatchDeclaredParam
+     * @param SimpleCli                   $cli
+     * @param array<array<string, mixed>> $options
+     * @param int                         $length
+     * @param self                        $defaultInstance @phan-suppress-current-line PhanTypeMismatchDeclaredParam
      */
     protected function displayOptions(SimpleCli $cli, array $options, int $length, self $defaultInstance): void
     {
