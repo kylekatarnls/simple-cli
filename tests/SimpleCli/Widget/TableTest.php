@@ -22,6 +22,7 @@ class TableTest extends TestCase
      * @covers ::addBarToOutput
      * @covers ::addFooter
      * @covers ::pad
+     * @covers ::fill
      * @covers ::getSplitter
      * @covers ::getLeftPad
      */

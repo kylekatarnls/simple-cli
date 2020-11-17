@@ -69,9 +69,26 @@ class Table
 
             foreach ($data as $index => $line) {
                 $this->addBarToOutput($index ? $middle : $header, $columnsSizes);
+                $span = 0;
 
                 foreach ($columnsSizes as $cellIndex => $size) {
-                    [$align, $text, $length] = $line[$cellIndex] ?? [null, '', 0];
+                    if ($span > 0) {
+                        $span--;
+
+                        continue;
+                    }
+
+                    [$align, $text, $length, $colSpan] = $line[$cellIndex] ?? [null, '', 0, 1];
+                    $colSpan--;
+
+                    if ($colSpan > 0) {
+                        $span += $colSpan;
+                        $size += mb_strlen($center) * $colSpan +
+                            array_sum(array_map(function ($nextIndex) use ($columnsSizes) {
+                                return $columnsSizes[$nextIndex];
+                            }, range($cellIndex + 1, $cellIndex + $colSpan)));
+                    }
+
                     $this->output .= ($cellIndex ? $center : $left).$this->pad($text, $length, $size, $align);
                 }
 
@@ -138,8 +155,13 @@ class Table
                 $align = ($cell instanceof Cell ? $cell->getAlign() : null) ?? $this->align[$index] ?? null;
                 $text = (string) $cell;
                 $length = mb_strlen(preg_replace('/\033\[[0-9;]+m/', '', $text) ?: '');
-                $columnsSizes[$index] = (int) max($columnsSizes[$index] ?? 0, $length);
-                $line[] = [$align, $text, $length];
+                $colSpan = $cell instanceof Cell ? $cell->getColSpan() : 1;
+                $line[] = [$align, $text, $length, $colSpan];
+                $size = ceil($length / $colSpan);
+
+                for ($i = 0; $i < $colSpan; $i++) {
+                    $columnsSizes[$index + $i] = (int) max($columnsSizes[$index + $i] ?? 0, $size);
+                }
             }
 
             $data[] = $line;
@@ -193,13 +215,18 @@ class Table
         $this->addBarToOutput($split($footer), $columnsSizes);
     }
 
+    protected function fill(int $length): string
+    {
+        return mb_substr(str_repeat($this->fill, (int) ceil($length / mb_strlen($this->fill))), 0, $length);
+    }
+
     protected function pad(string $text, int $currentLength, int $expectedLength, ?string $align): string
     {
         $leftFillLength = (int) max(0, (($expectedLength - $currentLength) * $this->getLeftPad($align)));
 
-        return str_repeat($this->fill, $leftFillLength).
+        return $this->fill($leftFillLength).
             $text.
-            str_repeat($this->fill, $expectedLength - $currentLength - $leftFillLength);
+            $this->fill($expectedLength - $currentLength - $leftFillLength);
     }
 
     /**

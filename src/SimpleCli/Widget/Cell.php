@@ -16,6 +16,9 @@ class Cell
     /** @var string|null */
     protected $align;
 
+    /** @var int */
+    protected $colSpan = 1;
+
     /**
      * @param object|string $content string content or object with __toString() method.
      * @param string|null   $align   left, center or right
@@ -24,6 +27,18 @@ class Cell
     {
         $this->content = $content;
         $this->align = $align;
+    }
+
+    public function cols(int $colSpan): self
+    {
+        $this->colSpan = (int) max(1, $colSpan);
+
+        return $this;
+    }
+
+    public function getColSpan(): int
+    {
+        return $this->colSpan;
     }
 
     public function getContent(): string
