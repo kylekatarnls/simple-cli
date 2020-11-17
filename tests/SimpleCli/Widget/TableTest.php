@@ -115,10 +115,16 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::getTemplate
+     * @covers ::parseData
      * @covers ::addBarToOutput
      * @covers ::pad
      * @covers ::getSplitter
      * @covers ::getStringPadAlign
+     * @covers \SimpleCli\Widget\Cell::__construct
+     * @covers \SimpleCli\Widget\Cell::__toString
+     * @covers \SimpleCli\Widget\Cell::getContent
+     * @covers \SimpleCli\Widget\Cell::getAlign
      */
     public function testTableWidgetWithMoreRowsAndColumns(): void
     {
@@ -200,6 +206,8 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::getTemplate
+     * @covers ::parseData
      * @covers ::addBarToOutput
      * @covers ::pad
      * @covers ::getSplitter

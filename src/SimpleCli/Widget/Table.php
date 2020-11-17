@@ -48,7 +48,7 @@ class Table
      */
     public function format(): string
     {
-        if ($this->output !== null) {
+        if ($this->output === null) {
             [$data, $columnsSizes] = $this->parseData();
             $template = $this->getTemplate();
 

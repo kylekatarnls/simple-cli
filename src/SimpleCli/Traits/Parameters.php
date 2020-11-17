@@ -46,7 +46,7 @@ trait Parameters
             !in_array($parameter, array_map('trim', explode(',', (string) $parameterDefinition['values'])))
         ) {
             throw new InvalidArgumentException(
-                'The parameter '.((string) $parameterDefinition['type']).
+                'The parameter '.((string) $parameterDefinition['property']).
                 ' must be one of the following values: ['.$parameterDefinition['values']."]; '$parameter' given."
             );
         }
