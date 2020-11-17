@@ -23,7 +23,7 @@ class TableTest extends TestCase
      * @covers ::addFooter
      * @covers ::pad
      * @covers ::getSplitter
-     * @covers ::getStringPadAlign
+     * @covers ::getLeftPad
      */
     public function testTableWidget(): void
     {
@@ -54,7 +54,7 @@ class TableTest extends TestCase
      * @covers ::addBarToOutput
      * @covers ::pad
      * @covers ::getSplitter
-     * @covers ::getStringPadAlign
+     * @covers ::getLeftPad
      */
     public function testTableWidgetWithColors(): void
     {
@@ -63,7 +63,7 @@ class TableTest extends TestCase
         static::assertOutput(
             implode("\n", [
                 '┌────────┬──────────────┐',
-                "│ artist │ \033[0;34mNina Simone\033[0m │",
+                "│ artist │ \033[0;34mNina Simone\033[0m  │",
                 '├────────┼──────────────┤',
                 '│ song   │ Feeling Good │',
                 '└────────┴──────────────┘',
@@ -88,14 +88,14 @@ class TableTest extends TestCase
      * @covers ::addBarToOutput
      * @covers ::pad
      * @covers ::getSplitter
-     * @covers ::getStringPadAlign
+     * @covers ::getLeftPad
      */
     public function testTableWidgetWithRowIterators(): void
     {
         static::assertOutput(
             implode("\n", [
                 '┌────────┬──────────────┐',
-                "│ artist │ \033[0;34mNina Simone\033[0m │",
+                "│ artist │ \033[0;34mNina Simone\033[0m  │",
                 '├────────┼──────────────┤',
                 '│ song   │ Feeling Good │',
                 '└────────┴──────────────┘',
@@ -123,7 +123,7 @@ class TableTest extends TestCase
      * @covers ::addBarToOutput
      * @covers ::pad
      * @covers ::getSplitter
-     * @covers ::getStringPadAlign
+     * @covers ::getLeftPad
      * @covers \SimpleCli\Widget\Cell::__construct
      * @covers \SimpleCli\Widget\Cell::__toString
      * @covers \SimpleCli\Widget\Cell::getContent
@@ -174,7 +174,7 @@ class TableTest extends TestCase
      * @covers ::addFooter
      * @covers ::pad
      * @covers ::getSplitter
-     * @covers ::getStringPadAlign
+     * @covers ::getLeftPad
      */
     public function testTableWidgetCustomTemplate(): void
     {
@@ -216,7 +216,7 @@ class TableTest extends TestCase
      * @covers ::addFooter
      * @covers ::pad
      * @covers ::getSplitter
-     * @covers ::getStringPadAlign
+     * @covers ::getLeftPad
      */
     public function testTableWidgetMultiLineTemplate(): void
     {

@@ -71,8 +71,8 @@ class Table
                 $this->addBarToOutput($index ? $middle : $header, $columnsSizes);
 
                 foreach ($columnsSizes as $cellIndex => $size) {
-                    [$align, $text] = $line[$cellIndex] ?? [null, ''];
-                    $this->output .= ($cellIndex ? $center : $left).$this->pad($text, $size, $align);
+                    [$align, $text, $length] = $line[$cellIndex] ?? [null, '', 0];
+                    $this->output .= ($cellIndex ? $center : $left).$this->pad($text, $length, $size, $align);
                 }
 
                 $this->output .= "$right\n";
@@ -119,7 +119,7 @@ class Table
     }
 
     /**
-     * @return array{list<list<array{null|string, string}>>, array<int, int>}
+     * @return array{list<list<array{null|string, string, int}>>, array<int, int>}
      */
     protected function parseData(): array
     {
@@ -137,11 +137,9 @@ class Table
                 $index = count($line);
                 $align = ($cell instanceof Cell ? $cell->getAlign() : null) ?? $this->align[$index] ?? null;
                 $text = (string) $cell;
-                $columnsSizes[$index] = (int) max(
-                    $columnsSizes[$index] ?? 0,
-                    mb_strlen(preg_replace('/\033\[[0-9;]+m/', '', $text) ?: '')
-                );
-                $line[] = [$align, $text];
+                $length = mb_strlen(preg_replace('/\033\[[0-9;]+m/', '', $text) ?: '');
+                $columnsSizes[$index] = (int) max($columnsSizes[$index] ?? 0, $length);
+                $line[] = [$align, $text, $length];
             }
 
             $data[] = $line;
@@ -195,9 +193,13 @@ class Table
         $this->addBarToOutput($split($footer), $columnsSizes);
     }
 
-    protected function pad(string $text, int $length, ?string $align): string
+    protected function pad(string $text, int $currentLength, int $expectedLength, ?string $align): string
     {
-        return str_pad($text, $length, $this->fill, $this->getStringPadAlign($align));
+        $leftFillLength = (int) max(0, (($expectedLength - $currentLength) * $this->getLeftPad($align)));
+
+        return str_repeat($this->fill, $leftFillLength).
+            $text.
+            str_repeat($this->fill, $expectedLength - $currentLength - $leftFillLength);
     }
 
     /**
@@ -225,12 +227,12 @@ class Table
         };
     }
 
-    private function getStringPadAlign(?string $align): int
+    private function getLeftPad(?string $align): float
     {
         return ([
-            Cell::ALIGN_LEFT   => STR_PAD_RIGHT,
-            Cell::ALIGN_CENTER => STR_PAD_BOTH,
-            Cell::ALIGN_RIGHT  => STR_PAD_LEFT,
-        ])[(string) $align] ?? STR_PAD_RIGHT;
+            Cell::ALIGN_LEFT   => 0,
+            Cell::ALIGN_CENTER => 0.5,
+            Cell::ALIGN_RIGHT  => 1,
+        ])[(string) $align] ?? 0;
     }
 }

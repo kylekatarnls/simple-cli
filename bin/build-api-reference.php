@@ -19,6 +19,10 @@ foreach (get_class_methods(SimpleCli::class) as $method) {
         $param = '';
 
         if ($type = $parameter->getType()) {
+            if ($type instanceof ReflectionNamedType) {
+                $type = $type->getName();
+            }
+
             $param .= "$type ";
         }
 
@@ -41,7 +45,12 @@ foreach (get_class_methods(SimpleCli::class) as $method) {
     $comment = trim($reflextionMethod->getDocComment());
     $return = $reflextionMethod->getReturnType();
 
-    if (!$return && preg_match('/@return\s+(\S+)/', $comment, $match)) {
+    if ($return instanceof ReflectionNamedType) {
+        $return = $return->getName();
+    }
+
+
+    if (!$return && preg_match('/@return\s+(([^\s<]|<[^>]+>)+)/', $comment, $match)) {
         $return = $match[1];
     }
 
@@ -51,7 +60,7 @@ foreach (get_class_methods(SimpleCli::class) as $method) {
     $comment = trim(preg_replace('/^\/\*+([\s\S]*)\*\/$/', '$1', $comment));
     $comment = trim(preg_replace('/^\s*\* /m', '', $comment));
     $comment = trim(preg_replace('/^\s*\*/m', '', $comment));
-    $comment = trim(preg_replace('/^@(\w+)(.*)$/m', '', $comment));
+    $comment = trim(preg_replace('/^@(\w+)(.*)(\n[ \t]+\*[ \t]+\S.*)*$/m', '', $comment));
     $comment = trim(preg_replace('/^(.*)$/m', '> $1', $comment));
 
     $doc .= "$comment\n\n";

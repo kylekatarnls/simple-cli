@@ -499,6 +499,38 @@ public function run(SimpleCli $cli): bool
 }
 ```
 
+## Table widget
+
+```php
+use SimpleCli\Command;
+use SimpleCli\SimpleCli;
+use SimpleCli\Widget\Table;
+use SimpleCli\Widget\Cell;
+
+class SomeCommand implements Command
+{
+    public function run(SimpleCli $cli): bool
+    {
+        $data = [
+            [
+                new Cell('Artist', Cell::ALIGN_CENTER),
+                new Cell('Song', Cell::ALIGN_CENTER),
+                new Cell('Year', Cell::ALIGN_CENTER),
+            ],
+            [$cli->colorize('Nina Simone', 'cyan'), 'Feeling Good', 1965],
+            ['The Marvelettes', 'Please Mr. Postman', 1961],
+        ];
+        $table = new Table($data);
+
+        $cli->writeLine($table->format());
+
+        return true;
+    }
+}
+```
+
+![Usage](https://raw.githubusercontent.com/kylekatarnls/simple-cli/master/doc/img/table.jpg)
+
 ## API reference
 
 In the examples above, you could see your command `run(SimpleCli $cli)`
@@ -521,6 +553,11 @@ your program) and all methods available from the `SimpleCli` inherited class:
 ### displayVariable(int $length, string $variable, array $definition, $defaultValue): void
 
 > Output standard command variable (argument or option).
+> 
+> 
+> 
+> 
+>                                           type.
 
 ### autocomplete(string $start): array
 
@@ -654,7 +691,7 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 > Get the vendor that should contains packages including composer/installed.json.
 
-### getInstalledPackages(): array
+### getInstalledPackages(): array<string|int, array<string, string>>
 
 > Get the list of packages installed with composer.
 
