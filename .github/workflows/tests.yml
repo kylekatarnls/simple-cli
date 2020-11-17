@@ -1,0 +1,71 @@
+name: Tests
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: [7.1, 7.2, 7.3, 7.4]
+        include:
+          - php: 8.0
+            composerOptions: --ignore-platform-req=php
+          - php: 8.1
+            composerOptions: --ignore-platform-req=php
+
+    name: PHP ${{ matrix.php }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: ast
+        tools: composer:v2
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v2
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      if: steps.composer-cache.outputs.cache-hit != 'true'
+      run: composer update --prefer-dist --no-progress --no-suggest ${{ matrix.composerOptions }}
+
+    - name: Install CodeClimate
+      if: steps.composer-cache.outputs.cache-hit != 'true'
+      run: |
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        chmod +x ./cc-test-reporter
+        ./cc-test-reporter before-build
+      env:
+        CC_TEST_REPORTER_ID: b4c0fd2741b7cd363d1d0dac87a95b3aff1d0faaa54ec76886e1a358f6e5b86e
+
+    - name: Run test suite
+      run: composer phpdbg-test
+
+    - name: Coverage
+      if: ${{ always() }}
+      run: |
+        if [[ ${PHP_VERSION:0:3} == "7.4" ]]; then
+          bash <(curl -s https://codecov.io/bash);
+          cp coverage.xml clover.xml;;
+          ./cc-test-reporter after-build --coverage-input-type clover --exit-code $TRAVIS_TEST_RESULT
+          composer require codacy/coverage;
+          vendor/bin/codacycoverage clover coverage.xml;
+        fi;
+      env:
+        CODACY_PROJECT_TOKEN: 0a129ff74aca479ba21a16d8a316de07
+        PHP_VERSION: ${{ matrix.php }}
