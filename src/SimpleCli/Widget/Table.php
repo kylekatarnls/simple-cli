@@ -53,15 +53,17 @@ class Table
             $template = $this->getTemplate();
 
             /**
-             * @var string $left
-             * @var string $center
-             * @var string $right
+             * @var string      $header
+             * @var string      $left
+             * @var string      $center
+             * @var string      $right
+             * @var string      $middle
+             * @var string|null $footer
              */
-            [, $header, $left, $center, $right, $middle, $footer] = $template;
+            [, $header, $left, $center, $right, $middle, $footer] = array_pad($template, 7, null);
             $split = $this->getSplitter($left, $center);
             $header = $split($header);
             $middle = $split($middle);
-            $footer = $split($footer);
 
             $this->output = '';
 
@@ -76,7 +78,7 @@ class Table
                 $this->output .= "$right\n";
             }
 
-            $this->addBarToOutput($footer, $columnsSizes);
+            $this->addFooter($split, $footer, $columnsSizes);
         }
 
         return (string) $this->output;
@@ -100,7 +102,7 @@ class Table
             $template = preg_replace('/^'.$match[1].'/m', '', $match[2]);
         }
 
-        if (!\preg_match('/^((?:.*\n)*)(.*)1(.*)2(.*)\n((?:.+\n)*).*3.*4.*\n([\s\S]*)$/', $template, $match)) {
+        if (!\preg_match('/^((?:.*\n)*)(.*)1(.*)2(.*)\n((?:.+\n)*).*3.*4.*(?:\n([\s\S]*))?$/', $template, $match)) {
             throw new InvalidArgumentException(
                 "Unable to parse the table template.\n".
                 "It must contain:\n".
@@ -135,10 +137,10 @@ class Table
                 $index = count($line);
                 $align = ($cell instanceof Cell ? $cell->getAlign() : null) ?? $this->align[$index] ?? null;
                 $text = (string) $cell;
-                $columnsSizes[$index] = max(
+                $columnsSizes[$index] = (int) max(
                     $columnsSizes[$index] ?? 0,
                     mb_strlen(preg_replace('/\033\[[0-9;]+m/', '', $text) ?: '')
-                ) ?: 0;
+                );
                 $line[] = [$align, $text];
             }
 
@@ -167,6 +169,30 @@ class Table
 
             $this->output .= $line[3];
         }
+    }
+
+    /**
+     * @psalm-suppress PossiblyNullOperand
+     *
+     * @param Closure     $split
+     * @param string|null $footer
+     * @param int[]       $columnsSizes
+     *
+     * @psalm-param Closure(string): string[][] $split
+     */
+    protected function addFooter(Closure $split, ?string $footer, array $columnsSizes): void
+    {
+        if ($footer === null) {
+            $output = $this->output ?? '';
+
+            if (substr($output, -1) === "\n") {
+                $this->output = substr($output, 0, -1);
+            }
+
+            return;
+        }
+
+        $this->addBarToOutput($split($footer), $columnsSizes);
     }
 
     protected function pad(string $text, int $length, ?string $align): string

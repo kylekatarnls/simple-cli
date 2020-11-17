@@ -24,7 +24,7 @@ class RestCommand implements Command
      *
      * Suffixes after the sentence.
      *
-     * @var string[]
+     * @var array
      */
     public $suffixes = [];
 

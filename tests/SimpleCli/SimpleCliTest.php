@@ -2,6 +2,9 @@
 
 namespace Tests\SimpleCli;
 
+use SimpleCli\Command\Usage;
+use SimpleCli\Command\Version;
+use SimpleCli\SimpleCli;
 use Tests\SimpleCli\DemoApp\BadCli;
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\DemoApp\InteractiveCli;
@@ -287,5 +290,32 @@ class SimpleCliTest extends TestCase
             'SimpleCli\Options\Verbose' => 'SimpleCli\Options\Verbose',
             'SimpleCli\Traits\Input'    => 'SimpleCli\Traits\Input',
         ], (new InteractiveCli())->traits(TraitCommand::class));
+    }
+
+    /**
+     * @covers \SimpleCli\Traits\Commands::getAvailableCommands
+     * @covers \SimpleCli\Traits\Commands::getCommandKey
+     */
+    public function testCommandsFilter(): void
+    {
+        $cli = new class() extends SimpleCli {
+            public function getCommands(): array
+            {
+                return ['version' => false];
+            }
+        };
+        $commands = $cli->getAvailableCommands();
+
+        $this->assertSame(['list' => Usage::class], $commands);
+
+        $cli = new class() extends SimpleCli {
+            // Noop
+        };
+        $commands = $cli->getAvailableCommands();
+
+        $this->assertSame([
+            'list'    => Usage::class,
+            'version' => Version::class,
+        ], $commands);
     }
 }

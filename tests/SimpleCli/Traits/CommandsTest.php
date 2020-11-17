@@ -25,6 +25,7 @@ class CommandsTest extends TraitsTestCase
 
     /**
      * @covers ::getAvailableCommands
+     * @covers ::getCommandKey
      */
     public function testGetAvailableCommands(): void
     {
@@ -41,6 +42,7 @@ class CommandsTest extends TraitsTestCase
 
     /**
      * @covers ::getAvailableCommands
+     * @covers ::getCommandKey
      */
     public function testGetAvailableCommandsAutoNaming(): void
     {

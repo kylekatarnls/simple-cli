@@ -85,8 +85,8 @@ trait Composer
         foreach ($this->getInstalledPackages() as $key => $package) {
             if (!isset($package['name']) && is_string($key)) {
                 $package['name'] = $key;
-                $package['version_normalized'] = $package['version'];
-                $package['version'] = $package['pretty_version'];
+                $package['version_normalized'] = $package['version'] ?? $package['pretty_version'] ?? 'unknown';
+                $package['version'] = $package['pretty_version'] ?? $package['version'] ?? 'unknown';
             }
 
             if (($package['name'] ?? null) === $name) {

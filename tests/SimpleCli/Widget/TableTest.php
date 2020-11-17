@@ -3,6 +3,7 @@
 namespace Tests\SimpleCli\Widget;
 
 use Generator;
+use InvalidArgumentException;
 use SimpleCli\Widget\Cell;
 use SimpleCli\Widget\Table;
 use Tests\SimpleCli\DemoApp\DemoCli;
@@ -17,7 +18,9 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::parseData
      * @covers ::addBarToOutput
+     * @covers ::addFooter
      * @covers ::pad
      * @covers ::getSplitter
      * @covers ::getStringPadAlign
@@ -168,6 +171,7 @@ class TableTest extends TestCase
      * @covers ::__toString
      * @covers ::format
      * @covers ::addBarToOutput
+     * @covers ::addFooter
      * @covers ::pad
      * @covers ::getSplitter
      * @covers ::getStringPadAlign
@@ -209,6 +213,7 @@ class TableTest extends TestCase
      * @covers ::getTemplate
      * @covers ::parseData
      * @covers ::addBarToOutput
+     * @covers ::addFooter
      * @covers ::pad
      * @covers ::getSplitter
      * @covers ::getStringPadAlign
@@ -257,5 +262,53 @@ class TableTest extends TestCase
                 $cli->write($table);
             }
         );
+
+        static::assertOutput(
+            implode("\n", [
+                'One   Two   Three',
+                'Hello World !    ',
+                'End              ',
+            ]),
+            function () {
+                $cli = new DemoCli();
+                $table = new Table([
+                    ['One', 'Two', 'Three'],
+                    ['Hello', 'World', '!'],
+                    ['End', '', ''],
+                ]);
+                $table->template = "1 2\n3 4";
+
+                $cli->write($table);
+            }
+        );
+    }
+
+    /**
+     * @covers ::getTemplate
+     */
+    public function testTableWidgetIncorrectTemplate(): void
+    {
+        static::expectException(InvalidArgumentException::class);
+        static::expectExceptionMessage(implode("\n", [
+            'Unable to parse the table template.',
+            'It must contain:',
+            '  - 0, 1 or more header line(s),',
+            "  - 1 line containing '1' and '2' representing 2 cells,",
+            '  - 0, 1 or more separation line(s),',
+            "  - 1 line containing '3' and '4' representing 2 other cells,",
+            '  - 0, 1 or more footer line(s).',
+            'Template given:',
+            '1 2',
+            '3',
+        ]));
+
+        $table = new Table([
+            ['One', 'Two', 'Three'],
+            ['Hello', 'World', '!'],
+            ['End', '', ''],
+        ]);
+        $table->template = "1 2\n3";
+
+        $table->format();
     }
 }
