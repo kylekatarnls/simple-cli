@@ -79,10 +79,10 @@ trait Options
     }
 
     /**
-     * @param string                    $name
-     * @param string|null               $value
-     * @param array<mixed, mixed>|null  $optionDefinition
-     * @param-out array<string, mixed>  $optionDefinition
+     * @param string                   $name
+     * @param string|null              $value
+     * @param array<mixed, mixed>|null $optionDefinition
+     * @param-out array<string, mixed> $optionDefinition
      */
     private function setOption(string $name, string $value = null, array &$optionDefinition = null): void
     {

@@ -55,8 +55,7 @@ class WordsList implements IteratorAggregate
      *
      * @link https://php.net/manual/en/iteratoraggregate.getiterator.php
      *
-     * @return Traversable<int, string> An instance of an object implementing <b>Iterator</b> or
-     *                                 <b>Traversable</b>
+     * @return Traversable<int, string> An instance of an object implementing <b>Iterator</b> or <b>Traversable</b>.
      */
     public function getIterator(): Traversable
     {
