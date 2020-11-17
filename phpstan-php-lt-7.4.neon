@@ -1,15 +1,7 @@
+includes:
+	- phpstan.neon
+
 parameters:
-	level: max
 	excludes_analyse:
 		- 'tests/SimpleCli/SimpleCliCommand/TypeHint.php'
 		- 'tests/SimpleCli/Traits/DocumentationTypeHintTest.php'
-	paths:
-		- src
-		- tests
-	ignoreErrors:
-		-
-			message: '#Unsafe usage of new static\(\)#'
-			path: src/SimpleCli/Options/Help.php
-		-
-			message: '#PHPDoc tag @var for variable \$helper has invalid type SimpleCli\\Options\\Help\.#'
-			path: src/SimpleCli/SimpleCli.php

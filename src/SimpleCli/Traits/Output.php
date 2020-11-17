@@ -228,8 +228,8 @@ trait Output
     }
 
     /**
-     * @param string                            $color
-     * @param array<string, string | null>|null $colors
+     * @param string                          $color
+     * @param array<string, string|null>|null $colors
      *
      * @return string
      */

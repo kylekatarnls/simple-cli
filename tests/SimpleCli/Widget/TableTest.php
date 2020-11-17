@@ -138,7 +138,7 @@ class TableTest extends TestCase
             ]),
             function () {
                 $cli = new DemoCli();
-                $iterator = static function () use ($cli): Generator {
+                $iterator = static function (): Generator {
                     yield '';
                     yield new Cell('stick', Cell::ALIGN_LEFT);
                     yield 22.3;

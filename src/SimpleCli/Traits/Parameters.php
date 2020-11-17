@@ -37,16 +37,16 @@ trait Parameters
 
         if (!@settype($value, $parameterDefinition['type'] ?? 'string')) {
             throw new InvalidArgumentException(
-                "Cannot cast $parameter to ".$parameterDefinition['type']
+                "Cannot cast $parameter to ".((string) $parameterDefinition['type'])
             );
         }
 
         if ($parameter !== '' &&
             $parameterDefinition['values'] &&
-            !in_array($parameter, array_map('trim', explode(',', $parameterDefinition['values'])))
+            !in_array($parameter, array_map('trim', explode(',', (string) $parameterDefinition['values'])))
         ) {
             throw new InvalidArgumentException(
-                'The parameter '.$parameterDefinition['property'].
+                'The parameter '.((string) $parameterDefinition['type']).
                 ' must be one of the following values: ['.$parameterDefinition['values']."]; '$parameter' given."
             );
         }

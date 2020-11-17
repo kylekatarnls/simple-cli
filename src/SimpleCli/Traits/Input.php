@@ -8,24 +8,16 @@ use Closure;
 
 trait Input
 {
-    /**
-     * @var Closure|callable|string[]|null
-     */
+    /** @var Closure|callable|string[]|null */
     protected $currentCompletion = null;
 
-    /**
-     * @var callable
-     */
+    /** @var callable */
     protected $readlineFunction = 'readline';
 
-    /**
-     * @var callable|string
-     */
+    /** @var callable|string */
     protected $readlineCompletionRegisterFunction = 'readline_completion_function';
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     protected $readlineCompletionExtensions = ['readline'];
 
     protected function recordAutocomplete(): void
@@ -57,6 +49,7 @@ trait Input
                 array_filter(
                     $this->currentCompletion,
                     function ($suggestion) use ($length, $start) {
+                        /** @psalm-suppress PossiblyInvalidCast */
                         return substr((string) $suggestion, 0, $length) === $start;
                     }
                 )

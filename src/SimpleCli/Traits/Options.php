@@ -8,7 +8,7 @@ use InvalidArgumentException;
 
 trait Options
 {
-    /** @var array<string, mixed>*/
+    /** @var array<string, mixed> */
     protected $options;
 
     /** @var array<array<string, mixed>> */
@@ -79,9 +79,10 @@ trait Options
     }
 
     /**
-     * @param string                     $name
-     * @param string|null                $value
-     * @param array<string, string>|null $optionDefinition
+     * @param string                    $name
+     * @param string|null               $value
+     * @param array<mixed, mixed>|null  $optionDefinition
+     * @param-out array<string, mixed>  $optionDefinition
      */
     private function setOption(string $name, string $value = null, array &$optionDefinition = null): void
     {
@@ -105,8 +106,9 @@ trait Options
     }
 
     /**
-     * @param string                     $option
-     * @param array<string, string>|null $optionDefinition
+     * @param string                   $option
+     * @param array<mixed, mixed>|null $optionDefinition
+     * @param-out array<string, mixed> $optionDefinition
      */
     private function parseOption(string $option, array &$optionDefinition = null): void
     {

@@ -55,6 +55,7 @@ trait Composer
         $composerDirectory = $this->getVendorDirectory().'/composer';
 
         if (file_exists($composerDirectory.'/installed.php')) {
+            /** @psalm-suppress UnresolvableInclude */
             $installedData = (@include $composerDirectory.'/installed.php') ?: [];
             $installedData = $installedData['versions'] ?? $installedData;
 

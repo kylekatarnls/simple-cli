@@ -84,7 +84,8 @@ abstract class SimpleCli implements Writer
      *
      * @param int                  $length       Length of the left column.
      * @param string               $variable     Argument/option name.
-     * @param array<string, mixed> $definition   Definition infos. Should contain description, and either values or type.
+     * @param array<string, mixed> $definition   Definition infos. Should contain description, and either values or
+     *                                           type.
      * @param mixed                $defaultValue Default value.
      */
     public function displayVariable(int $length, string $variable, array $definition, $defaultValue): void

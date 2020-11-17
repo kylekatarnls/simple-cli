@@ -16,6 +16,10 @@ class Cell
     /** @var string|null */
     protected $align;
 
+    /**
+     * @param object|string $content string content or object with __toString() method.
+     * @param string|null   $align   left, center or right
+     */
     public function __construct($content, ?string $align = null)
     {
         $this->content = $content;
@@ -24,6 +28,7 @@ class Cell
 
     public function getContent(): string
     {
+        /** @psalm-suppress PossiblyInvalidCast */
         return (string) $this->content;
     }
 

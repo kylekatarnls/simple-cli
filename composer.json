@@ -18,7 +18,7 @@
         "friendsofphp/php-cs-fixer": "^2.15.0",
         "phan/phan": "^2.3",
         "phpunit/phpunit": "^7",
-        "phpmd/phpmd": "dev-master",
+        "phpmd/phpmd": "dev-feature/issue-818-unit-tests",
         "phpstan/phpstan": "^0.12",
         "squizlabs/php_codesniffer": "^3.0",
         "vimeo/psalm": "^3.6"
