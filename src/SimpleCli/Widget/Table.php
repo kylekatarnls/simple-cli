@@ -70,41 +70,12 @@ class Table
 
             $this->output = '';
 
-            foreach ($data as $index => $line) {
+            foreach ($data as $index => $row) {
                 $this->addBarToOutput($index ? $middle : $header, $columnsSizes);
-                $span = 0;
-                $textHeight = max(array_map(static function ($cell) {
-                    return count($cell[1]);
-                }, $line));
-
-                for ($textY = 0; $textY < $textHeight; $textY++) {
-                    foreach ($columnsSizes as $cellIndex => $size) {
-                        if ($span > 0) {
-                            $span--;
-
-                            continue;
-                        }
-
-                        [$align, $text, $lengths, $colSpan] = $line[$cellIndex] ?? [null, '', 0, 1];
-                        $colSpan--;
-
-                        if ($colSpan > 0) {
-                            $span += $colSpan;
-                            $size += mb_strlen($center) * $colSpan +
-                                array_sum(array_map(function ($nextIndex) use ($columnsSizes) {
-                                    return $columnsSizes[$nextIndex];
-                                }, range($cellIndex + 1, $cellIndex + $colSpan)));
-                        }
-
-                        $this->output .= ($cellIndex ? $center : $left).
-                            $this->pad($text[$textY] ?? '', $lengths[$textY] ?? 0, $size, $align);
-                    }
-
-                    $this->output .= "$right\n";
-                }
+                $this->addRowToOutput($row, $columnsSizes, $left, $center, $right);
             }
 
-            $this->addFooter($split, $footer, $columnsSizes);
+            $this->addFooterToOutput($split, $footer, $columnsSizes);
         }
 
         return (string) $this->output;
@@ -162,7 +133,7 @@ class Table
             foreach ($row as $cell) {
                 $index = count($line);
                 $align = ($cell instanceof Cell ? $cell->getAlign() : null) ?? $this->align[$index] ?? null;
-                $text = explode("\n", (string) $cell) ?: [];
+                $text = explode("\n", (string) $cell);
                 $lengths = array_map(static function ($line) {
                     return mb_strlen(preg_replace('/\033\[[0-9;]+m/', '', $line) ?: '');
                 }, $text);
@@ -170,8 +141,8 @@ class Table
                 $line[] = [$align, $text, $lengths, $colSpan];
                 $size = ceil(max($lengths) / $colSpan);
 
-                for ($i = 0; $i < $colSpan; $i++) {
-                    $columnsSizes[$index + $i] = (int) max($columnsSizes[$index + $i] ?? 0, $size);
+                for ($skip = 0; $skip < $colSpan; $skip++) {
+                    $columnsSizes[$index + $skip] = (int) max($columnsSizes[$index + $skip] ?? 0, $size);
                 }
             }
 
@@ -205,13 +176,72 @@ class Table
     /**
      * @psalm-suppress PossiblyNullOperand
      *
+     * @param array  $row          list of cells as [align, text-lines, lines-lengths, colspan]
+     * @param int[]  $columnsSizes calculated sizes of each columns
+     * @param string $left         left end border
+     * @param string $center       border between cells
+     * @param string $right        right end border
+     *
+     * @psalm-param list<array{null|string, string[], int[], int}> $row
+     * @psalm-param array<int, int>                                $columnsSizes
+     */
+    protected function addRowToOutput(
+        array $row,
+        array $columnsSizes,
+        string $left,
+        string $center,
+        string $right
+    ): void {
+        $span = 0;
+        /** @var int $textHeight */
+        $textHeight = max(array_map(static function ($cell) {
+            return count($cell[1]);
+        }, $row));
+
+        for ($textY = 0; $textY < $textHeight; $textY++) {
+            foreach ($columnsSizes as $cellIndex => $size) {
+                if ($span > 0) {
+                    $span--;
+
+                    continue;
+                }
+
+                /**
+                 * @var string|null $align
+                 * @var string[]    $text
+                 * @var int[]       $lengths
+                 * @var int         $colSpan
+                 */
+                [$align, $text, $lengths, $colSpan] = $row[$cellIndex] ?? [null, [], [], 1];
+                $colSpan--;
+
+                if ($colSpan > 0) {
+                    $span += $colSpan;
+                    $size += mb_strlen($center) * $colSpan +
+                        array_sum(array_map(function ($nextIndex) use ($columnsSizes) {
+                            return $columnsSizes[(int) $nextIndex];
+                        }, range($cellIndex + 1, $cellIndex + $colSpan)));
+                }
+
+                /** @var int $size */
+                $this->output .= ($cellIndex ? $center : $left).
+                    $this->pad($text[$textY] ?? '', $lengths[$textY] ?? 0, $size, $align);
+            }
+
+            $this->output .= "$right\n";
+        }
+    }
+
+    /**
+     * @psalm-suppress PossiblyNullOperand
+     *
      * @param Closure     $split
      * @param string|null $footer
      * @param int[]       $columnsSizes
      *
      * @psalm-param Closure(string): string[][] $split
      */
-    protected function addFooter(Closure $split, ?string $footer, array $columnsSizes): void
+    protected function addFooterToOutput(Closure $split, ?string $footer, array $columnsSizes): void
     {
         if ($footer === null) {
             $output = $this->output ?? '';

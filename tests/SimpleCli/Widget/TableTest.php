@@ -18,9 +18,10 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::addRowToOutput
      * @covers ::parseData
      * @covers ::addBarToOutput
-     * @covers ::addFooter
+     * @covers ::addFooterToOutput
      * @covers ::pad
      * @covers ::fill
      * @covers ::getSplitter
@@ -52,6 +53,7 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::addRowToOutput
      * @covers ::addBarToOutput
      * @covers ::pad
      * @covers ::getSplitter
@@ -86,6 +88,7 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::addRowToOutput
      * @covers ::addBarToOutput
      * @covers ::pad
      * @covers ::getSplitter
@@ -119,6 +122,7 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::addRowToOutput
      * @covers ::getTemplate
      * @covers ::parseData
      * @covers ::addBarToOutput
@@ -171,8 +175,9 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::addRowToOutput
      * @covers ::addBarToOutput
-     * @covers ::addFooter
+     * @covers ::addFooterToOutput
      * @covers ::pad
      * @covers ::getSplitter
      * @covers ::getLeftPad
@@ -209,6 +214,7 @@ class TableTest extends TestCase
 
     /**
      * @covers ::format
+     * @covers ::addRowToOutput
      * @covers \SimpleCli\Widget\Cell::cols
      * @covers \SimpleCli\Widget\Cell::getColSpan
      */
@@ -249,10 +255,11 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::addRowToOutput
      * @covers ::getTemplate
      * @covers ::parseData
      * @covers ::addBarToOutput
-     * @covers ::addFooter
+     * @covers ::addFooterToOutput
      * @covers ::pad
      * @covers ::getSplitter
      * @covers ::getLeftPad
