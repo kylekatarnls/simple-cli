@@ -6,6 +6,7 @@ namespace SimpleCli\Widget;
 
 use Closure;
 use InvalidArgumentException;
+use function preg_match;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyFields)
@@ -62,23 +63,19 @@ class Table
              */
             [, $header, $left, $center, $right, $middle, $footer] = array_pad($template, 7, null);
             $split = $this->getSplitter($left, $center);
+            /** @var string[][] $header */
             $header = $split($header);
+            /** @var string[][] $middle */
             $middle = $split($middle);
 
             $this->output = '';
 
-            foreach ($data as $index => $line) {
+            foreach ($data as $index => $row) {
                 $this->addBarToOutput($index ? $middle : $header, $columnsSizes);
-
-                foreach ($columnsSizes as $cellIndex => $size) {
-                    [$align, $text] = $line[$cellIndex] ?? [null, ''];
-                    $this->output .= ($cellIndex ? $center : $left).$this->pad($text, $size, $align);
-                }
-
-                $this->output .= "$right\n";
+                $this->addRowToOutput($row, $columnsSizes, $left, $center, $right);
             }
 
-            $this->addFooter($split, $footer, $columnsSizes);
+            $this->addFooterToOutput($split, $footer, $columnsSizes);
         }
 
         return (string) $this->output;
@@ -98,11 +95,11 @@ class Table
     {
         $template = str_replace("\r\n", "\n", (string) $this->template);
 
-        if (\preg_match('/\s*\n([ \t]+)!template!\n([\s\S]+)$/', $template, $match)) {
+        if (preg_match('/\s*\n([ \t]+)!template!\n([\s\S]+)$/', $template, $match)) {
             $template = preg_replace('/^'.$match[1].'/m', '', $match[2]);
         }
 
-        if (!\preg_match('/^((?:.*\n)*)(.*)1(.*)2(.*)\n((?:.+\n)*).*3.*4.*(?:\n([\s\S]*))?$/', $template, $match)) {
+        if (!preg_match('/^((?:.*\n)*)(.*)1(.*)2(.*)\n((?:.+\n)*).*3.*4.*(?:\n([\s\S]*))?$/', $template, $match)) {
             throw new InvalidArgumentException(
                 "Unable to parse the table template.\n".
                 "It must contain:\n".
@@ -119,7 +116,7 @@ class Table
     }
 
     /**
-     * @return array{list<list<array{null|string, string}>>, array<int, int>}
+     * @return array{list<list<array{null|string, string[], int[], int}>>, array<int, int>}
      */
     protected function parseData(): array
     {
@@ -136,12 +133,17 @@ class Table
             foreach ($row as $cell) {
                 $index = count($line);
                 $align = ($cell instanceof Cell ? $cell->getAlign() : null) ?? $this->align[$index] ?? null;
-                $text = (string) $cell;
-                $columnsSizes[$index] = (int) max(
-                    $columnsSizes[$index] ?? 0,
-                    mb_strlen(preg_replace('/\033\[[0-9;]+m/', '', $text) ?: '')
-                );
-                $line[] = [$align, $text];
+                $text = explode("\n", (string) $cell);
+                $lengths = array_map(static function ($line) {
+                    return mb_strlen(preg_replace('/\033\[[0-9;]+m/', '', $line) ?: '');
+                }, $text);
+                $colSpan = $cell instanceof Cell ? $cell->getColSpan() : 1;
+                $line[] = [$align, $text, $lengths, $colSpan];
+                $size = ceil(max($lengths) / $colSpan);
+
+                for ($skip = 0; $skip < $colSpan; $skip++) {
+                    $columnsSizes[$index + $skip] = (int) max($columnsSizes[$index + $skip] ?? 0, $size);
+                }
             }
 
             $data[] = $line;
@@ -174,13 +176,72 @@ class Table
     /**
      * @psalm-suppress PossiblyNullOperand
      *
+     * @param array  $row          list of cells as [align, text-lines, lines-lengths, colspan]
+     * @param int[]  $columnsSizes calculated sizes of each columns
+     * @param string $left         left end border
+     * @param string $center       border between cells
+     * @param string $right        right end border
+     *
+     * @psalm-param list<array{null|string, string[], int[], int}> $row
+     * @psalm-param array<int, int>                                $columnsSizes
+     */
+    protected function addRowToOutput(
+        array $row,
+        array $columnsSizes,
+        string $left,
+        string $center,
+        string $right
+    ): void {
+        $span = 0;
+        /** @var int $textHeight */
+        $textHeight = max(array_map(static function ($cell) {
+            return count($cell[1]);
+        }, $row));
+
+        for ($textY = 0; $textY < $textHeight; $textY++) {
+            foreach ($columnsSizes as $cellIndex => $size) {
+                if ($span > 0) {
+                    $span--;
+
+                    continue;
+                }
+
+                /**
+                 * @var string|null $align
+                 * @var string[]    $text
+                 * @var int[]       $lengths
+                 * @var int         $colSpan
+                 */
+                [$align, $text, $lengths, $colSpan] = $row[$cellIndex] ?? [null, [], [], 1];
+                $colSpan--;
+
+                if ($colSpan > 0) {
+                    $span += $colSpan;
+                    $size += mb_strlen($center) * $colSpan +
+                        array_sum(array_map(function ($nextIndex) use ($columnsSizes) {
+                            return $columnsSizes[(int) $nextIndex];
+                        }, range($cellIndex + 1, $cellIndex + $colSpan)));
+                }
+
+                /** @var int $size */
+                $this->output .= ($cellIndex ? $center : $left).
+                    $this->pad($text[$textY] ?? '', $lengths[$textY] ?? 0, $size, $align);
+            }
+
+            $this->output .= "$right\n";
+        }
+    }
+
+    /**
+     * @psalm-suppress PossiblyNullOperand
+     *
      * @param Closure     $split
      * @param string|null $footer
      * @param int[]       $columnsSizes
      *
      * @psalm-param Closure(string): string[][] $split
      */
-    protected function addFooter(Closure $split, ?string $footer, array $columnsSizes): void
+    protected function addFooterToOutput(Closure $split, ?string $footer, array $columnsSizes): void
     {
         if ($footer === null) {
             $output = $this->output ?? '';
@@ -195,9 +256,18 @@ class Table
         $this->addBarToOutput($split($footer), $columnsSizes);
     }
 
-    protected function pad(string $text, int $length, ?string $align): string
+    protected function fill(int $length): string
     {
-        return str_pad($text, $length, $this->fill, $this->getStringPadAlign($align));
+        return mb_substr(str_repeat($this->fill, (int) ceil($length / mb_strlen($this->fill))), 0, $length);
+    }
+
+    protected function pad(string $text, int $currentLength, int $expectedLength, ?string $align): string
+    {
+        $leftFillLength = (int) max(0, (($expectedLength - $currentLength) * $this->getLeftPad($align)));
+
+        return $this->fill($leftFillLength).
+            $text.
+            $this->fill($expectedLength - $currentLength - $leftFillLength);
     }
 
     /**
@@ -225,12 +295,12 @@ class Table
         };
     }
 
-    private function getStringPadAlign(?string $align): int
+    private function getLeftPad(?string $align): float
     {
         return ([
-            Cell::ALIGN_LEFT   => STR_PAD_RIGHT,
-            Cell::ALIGN_CENTER => STR_PAD_BOTH,
-            Cell::ALIGN_RIGHT  => STR_PAD_LEFT,
-        ])[(string) $align] ?? STR_PAD_RIGHT;
+            Cell::ALIGN_LEFT   => 0,
+            Cell::ALIGN_CENTER => 0.5,
+            Cell::ALIGN_RIGHT  => 1,
+        ])[(string) $align] ?? 0;
     }
 }

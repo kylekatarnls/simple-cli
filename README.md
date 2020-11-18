@@ -499,6 +499,114 @@ public function run(SimpleCli $cli): bool
 }
 ```
 
+## Table widget
+
+```php
+use SimpleCli\Command;
+use SimpleCli\SimpleCli;
+use SimpleCli\Widget\Table;
+use SimpleCli\Widget\Cell;
+
+class SomeCommand implements Command
+{
+    public function run(SimpleCli $cli): bool
+    {
+        $data = [
+            [
+                new Cell('Artist', Cell::ALIGN_CENTER),
+                new Cell('Song', Cell::ALIGN_CENTER),
+                new Cell('Year', Cell::ALIGN_CENTER),
+            ],
+            [$cli->colorize('Nina Simone', 'cyan'), 'Feeling Good', 1965],
+            ['The Marvelettes', 'Please Mr. Postman', 1961],
+        ];
+        $table = new Table($data);
+
+        $cli->writeLine($table->format());
+
+        return true;
+    }
+}
+```
+
+![Usage](https://raw.githubusercontent.com/kylekatarnls/simple-cli/master/doc/img/table.jpg)
+
+`Table` just take data and wrap them formatter as a text-table so
+it can basically be used outside `SimpleCli` context.
+
+It provides an insanely easy way to customize the template. You
+just have to give it an example using `1`, `2`, `3` and `4` as
+content for a 2x2 table and it will apply your example to any
+size of tables.
+
+```php
+$table = new Table([
+    ['One', 'Two', 'Three'],
+    ['*'],
+    ['Hello', 'World', '!'],
+]);
+$table->template =
+'╔═══╤═══╗
+║ 1 │ 2 ║
+╟───┼───╢
+║ 3 │ 4 ║
+╚═══╧═══╝';
+```
+
+Output:
+```txt
+╔═══════╤═══════╤═══════╗
+║ One   │ Two   │ Three ║
+╟───────┼───────┼───────╢
+║ *     │       │       ║
+╟───────┼───────┼───────╢
+║ Hello │ World │ !     ║
+╚═══════╧═══════╧═══════╝
+```
+
+To prevent ugly indent in your code, you can use `!template!` to start the
+template at a given position:
+```php
+$table->template = '
+    !template!
+    ╔═══╤═══╗
+    ║ 1 │ 2 ║
+    ╟───┼───╢
+    ║ 3 │ 4 ║
+    ╚═══╧═══╝';
+```
+equivalent to the template above as indent before `!` is ignored.
+
+You can also set the string to use as filler:
+```php
+$table->fill = '_-';
+```
+
+And last you can set the default alignment for each column:
+```php
+$table->align = [Cell::ALIGN_LEFT, Cell::ALIGN_CENTER, Cell::ALIGN_RIGHT];
+```
+Still you can override the alignment for a given cell using:
+```php
+new Cell('Text', Cell::ALIGN_CENTER)
+```
+
+`Cell` also allow you to span columns:
+```php
+// 2 columns-wide
+(new Cell('Text'))->cols(2)
+
+// 3 columns-wide centered
+(new Cell('Text', Cell::ALIGN_CENTER))->cols(3)
+```
+
+Space taken by the text is then shared evenly among the columns.
+
+Last, you can add color with `$cli->colorize()` to the template or
+the cell contents. Color special characters are taken into account
+so the display will remain properly aligned no matter if there is
+some color here and there.
+
 ## API reference
 
 In the examples above, you could see your command `run(SimpleCli $cli)`
@@ -654,7 +762,7 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 > Get the vendor that should contains packages including composer/installed.json.
 
-### getInstalledPackages(): array
+### getInstalledPackages(): array<string|int, array<string, string>>
 
 > Get the list of packages installed with composer.
 

@@ -18,12 +18,14 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::addRowToOutput
      * @covers ::parseData
      * @covers ::addBarToOutput
-     * @covers ::addFooter
+     * @covers ::addFooterToOutput
      * @covers ::pad
+     * @covers ::fill
      * @covers ::getSplitter
-     * @covers ::getStringPadAlign
+     * @covers ::getLeftPad
      */
     public function testTableWidget(): void
     {
@@ -51,10 +53,11 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::addRowToOutput
      * @covers ::addBarToOutput
      * @covers ::pad
      * @covers ::getSplitter
-     * @covers ::getStringPadAlign
+     * @covers ::getLeftPad
      */
     public function testTableWidgetWithColors(): void
     {
@@ -63,7 +66,7 @@ class TableTest extends TestCase
         static::assertOutput(
             implode("\n", [
                 '┌────────┬──────────────┐',
-                "│ artist │ \033[0;34mNina Simone\033[0m │",
+                "│ artist │ \033[0;34mNina Simone\033[0m  │",
                 '├────────┼──────────────┤',
                 '│ song   │ Feeling Good │',
                 '└────────┴──────────────┘',
@@ -85,17 +88,18 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::addRowToOutput
      * @covers ::addBarToOutput
      * @covers ::pad
      * @covers ::getSplitter
-     * @covers ::getStringPadAlign
+     * @covers ::getLeftPad
      */
     public function testTableWidgetWithRowIterators(): void
     {
         static::assertOutput(
             implode("\n", [
                 '┌────────┬──────────────┐',
-                "│ artist │ \033[0;34mNina Simone\033[0m │",
+                "│ artist │ \033[0;34mNina Simone\033[0m  │",
                 '├────────┼──────────────┤',
                 '│ song   │ Feeling Good │',
                 '└────────┴──────────────┘',
@@ -118,12 +122,13 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::addRowToOutput
      * @covers ::getTemplate
      * @covers ::parseData
      * @covers ::addBarToOutput
      * @covers ::pad
      * @covers ::getSplitter
-     * @covers ::getStringPadAlign
+     * @covers ::getLeftPad
      * @covers \SimpleCli\Widget\Cell::__construct
      * @covers \SimpleCli\Widget\Cell::__toString
      * @covers \SimpleCli\Widget\Cell::getContent
@@ -170,11 +175,12 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::addRowToOutput
      * @covers ::addBarToOutput
-     * @covers ::addFooter
+     * @covers ::addFooterToOutput
      * @covers ::pad
      * @covers ::getSplitter
-     * @covers ::getStringPadAlign
+     * @covers ::getLeftPad
      */
     public function testTableWidgetCustomTemplate(): void
     {
@@ -207,16 +213,56 @@ class TableTest extends TestCase
     }
 
     /**
+     * @covers ::format
+     * @covers ::addRowToOutput
+     * @covers \SimpleCli\Widget\Cell::cols
+     * @covers \SimpleCli\Widget\Cell::getColSpan
+     */
+    public function testTableColSpan(): void
+    {
+        static::assertOutput(
+            implode("\n", [
+                '╔═══════════╤═══════════╤═══════════╗',
+                '║ One       │ Two       │ Three     ║',
+                '╟───────────┼───────────┼───────────╢',
+                '║    A very long text And so on     ║',
+                '╟───────────┼───────────┼───────────╢',
+                '║ Hello     │ World     │ !         ║',
+                '║ Other     │           │           ║',
+                '╚═══════════╧═══════════╧═══════════╝',
+            ]),
+            function () {
+                $cli = new DemoCli();
+                $table = new Table([
+                    ['One', 'Two', 'Three'],
+                    [(new Cell('A very long text And so on', Cell::ALIGN_CENTER))->cols(3)],
+                    ['Hello'."\nOther", 'World', '!'],
+                ]);
+                $table->template = '
+                    !template!
+                    ╔═══╤═══╗
+                    ║ 1 │ 2 ║
+                    ╟───┼───╢
+                    ║ 3 │ 4 ║
+                    ╚═══╧═══╝';
+
+                $cli->write($table);
+            }
+        );
+    }
+
+    /**
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::addRowToOutput
      * @covers ::getTemplate
      * @covers ::parseData
      * @covers ::addBarToOutput
-     * @covers ::addFooter
+     * @covers ::addFooterToOutput
      * @covers ::pad
      * @covers ::getSplitter
-     * @covers ::getStringPadAlign
+     * @covers ::getLeftPad
      */
     public function testTableWidgetMultiLineTemplate(): void
     {
