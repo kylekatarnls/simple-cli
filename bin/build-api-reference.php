@@ -11,11 +11,11 @@ foreach (get_class_methods(SimpleCli::class) as $method) {
         continue;
     }
 
-    $reflextionMethod = new ReflectionMethod(SimpleCli::class, $method);
+    $reflectionMethod = new ReflectionMethod(SimpleCli::class, $method);
 
     $parameters = [];
 
-    foreach ($reflextionMethod->getParameters() as $parameter) {
+    foreach ($reflectionMethod->getParameters() as $parameter) {
         $param = '';
 
         if ($type = $parameter->getType()) {
@@ -42,8 +42,8 @@ foreach (get_class_methods(SimpleCli::class) as $method) {
         $parameters[] = $param;
     }
 
-    $comment = trim($reflextionMethod->getDocComment());
-    $return = $reflextionMethod->getReturnType();
+    $comment = trim($reflectionMethod->getDocComment());
+    $return = $reflectionMethod->getReturnType();
 
     if ($return instanceof ReflectionNamedType) {
         $return = $return->getName();
@@ -55,11 +55,11 @@ foreach (get_class_methods(SimpleCli::class) as $method) {
 
     $doc .= '### '.$method.'('.implode(', ', $parameters).'): '.($return ?: 'mixed')."\n\n";
 
-    $comment = trim($reflextionMethod->getDocComment());
+    $comment = trim($reflectionMethod->getDocComment());
     $comment = trim(preg_replace('/^\/\*+([\s\S]*)\*\/$/', '$1', $comment));
     $comment = trim(preg_replace('/^\s*\* /m', '', $comment));
     $comment = trim(preg_replace('/^\s*\*/m', '', $comment));
-    $comment = trim(preg_replace('/^@(\w+)(.*)(\n[ \t]+\*[ \t]+\S.*)*$/m', '', $comment));
+    $comment = trim(preg_replace('/^@(\w+)(.*)(\n([ ]{4,}|\t+)\S.*)*$/m', '', $comment));
     $comment = trim(preg_replace('/^(.*)$/m', '> $1', $comment));
 
     $doc .= "$comment\n\n";

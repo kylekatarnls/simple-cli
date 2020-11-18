@@ -629,11 +629,6 @@ your program) and all methods available from the `SimpleCli` inherited class:
 ### displayVariable(int $length, string $variable, array $definition, $defaultValue): void
 
 > Output standard command variable (argument or option).
-> 
-> 
-> 
-> 
->                                           type.
 
 ### autocomplete(string $start): array
 
