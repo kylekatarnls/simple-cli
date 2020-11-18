@@ -208,6 +208,44 @@ class TableTest extends TestCase
     }
 
     /**
+     * @covers ::format
+     * @covers \SimpleCli\Widget\Cell::cols
+     * @covers \SimpleCli\Widget\Cell::getColSpan
+     */
+    public function testTableColSpan(): void
+    {
+        static::assertOutput(
+            implode("\n", [
+                '╔═══════════╤═══════════╤═══════════╗',
+                '║ One       │ Two       │ Three     ║',
+                '╟───────────┼───────────┼───────────╢',
+                '║    A very long text And so on     ║',
+                '╟───────────┼───────────┼───────────╢',
+                '║ Hello     │ World     │ !         ║',
+                '║ Other     │           │           ║',
+                '╚═══════════╧═══════════╧═══════════╝',
+            ]),
+            function () {
+                $cli = new DemoCli();
+                $table = new Table([
+                    ['One', 'Two', 'Three'],
+                    [(new Cell('A very long text And so on', Cell::ALIGN_CENTER))->cols(3)],
+                    ['Hello'."\nOther", 'World', '!'],
+                ]);
+                $table->template = '
+                    !template!
+                    ╔═══╤═══╗
+                    ║ 1 │ 2 ║
+                    ╟───┼───╢
+                    ║ 3 │ 4 ║
+                    ╚═══╧═══╝';
+
+                $cli->write($table);
+            }
+        );
+    }
+
+    /**
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format

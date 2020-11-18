@@ -49,7 +49,6 @@ foreach (get_class_methods(SimpleCli::class) as $method) {
         $return = $return->getName();
     }
 
-
     if (!$return && preg_match('/@return\s+(([^\s<]|<[^>]+>)+)/', $comment, $match)) {
         $return = $match[1];
     }

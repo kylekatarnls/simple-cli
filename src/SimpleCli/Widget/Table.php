@@ -6,6 +6,7 @@ namespace SimpleCli\Widget;
 
 use Closure;
 use InvalidArgumentException;
+use function preg_match;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyFields)
@@ -62,7 +63,9 @@ class Table
              */
             [, $header, $left, $center, $right, $middle, $footer] = array_pad($template, 7, null);
             $split = $this->getSplitter($left, $center);
+            /** @var string[][] $header */
             $header = $split($header);
+            /** @var string[][] $middle */
             $middle = $split($middle);
 
             $this->output = '';
@@ -70,29 +73,35 @@ class Table
             foreach ($data as $index => $line) {
                 $this->addBarToOutput($index ? $middle : $header, $columnsSizes);
                 $span = 0;
+                $textHeight = max(array_map(static function ($cell) {
+                    return count($cell[1]);
+                }, $line));
 
-                foreach ($columnsSizes as $cellIndex => $size) {
-                    if ($span > 0) {
-                        $span--;
+                for ($textY = 0; $textY < $textHeight; $textY++) {
+                    foreach ($columnsSizes as $cellIndex => $size) {
+                        if ($span > 0) {
+                            $span--;
 
-                        continue;
+                            continue;
+                        }
+
+                        [$align, $text, $lengths, $colSpan] = $line[$cellIndex] ?? [null, '', 0, 1];
+                        $colSpan--;
+
+                        if ($colSpan > 0) {
+                            $span += $colSpan;
+                            $size += mb_strlen($center) * $colSpan +
+                                array_sum(array_map(function ($nextIndex) use ($columnsSizes) {
+                                    return $columnsSizes[$nextIndex];
+                                }, range($cellIndex + 1, $cellIndex + $colSpan)));
+                        }
+
+                        $this->output .= ($cellIndex ? $center : $left).
+                            $this->pad($text[$textY] ?? '', $lengths[$textY] ?? 0, $size, $align);
                     }
 
-                    [$align, $text, $length, $colSpan] = $line[$cellIndex] ?? [null, '', 0, 1];
-                    $colSpan--;
-
-                    if ($colSpan > 0) {
-                        $span += $colSpan;
-                        $size += mb_strlen($center) * $colSpan +
-                            array_sum(array_map(function ($nextIndex) use ($columnsSizes) {
-                                return $columnsSizes[$nextIndex];
-                            }, range($cellIndex + 1, $cellIndex + $colSpan)));
-                    }
-
-                    $this->output .= ($cellIndex ? $center : $left).$this->pad($text, $length, $size, $align);
+                    $this->output .= "$right\n";
                 }
-
-                $this->output .= "$right\n";
             }
 
             $this->addFooter($split, $footer, $columnsSizes);
@@ -115,11 +124,11 @@ class Table
     {
         $template = str_replace("\r\n", "\n", (string) $this->template);
 
-        if (\preg_match('/\s*\n([ \t]+)!template!\n([\s\S]+)$/', $template, $match)) {
+        if (preg_match('/\s*\n([ \t]+)!template!\n([\s\S]+)$/', $template, $match)) {
             $template = preg_replace('/^'.$match[1].'/m', '', $match[2]);
         }
 
-        if (!\preg_match('/^((?:.*\n)*)(.*)1(.*)2(.*)\n((?:.+\n)*).*3.*4.*(?:\n([\s\S]*))?$/', $template, $match)) {
+        if (!preg_match('/^((?:.*\n)*)(.*)1(.*)2(.*)\n((?:.+\n)*).*3.*4.*(?:\n([\s\S]*))?$/', $template, $match)) {
             throw new InvalidArgumentException(
                 "Unable to parse the table template.\n".
                 "It must contain:\n".
@@ -136,7 +145,7 @@ class Table
     }
 
     /**
-     * @return array{list<list<array{null|string, string, int}>>, array<int, int>}
+     * @return array{list<list<array{null|string, string[], int[], int}>>, array<int, int>}
      */
     protected function parseData(): array
     {
@@ -153,11 +162,13 @@ class Table
             foreach ($row as $cell) {
                 $index = count($line);
                 $align = ($cell instanceof Cell ? $cell->getAlign() : null) ?? $this->align[$index] ?? null;
-                $text = (string) $cell;
-                $length = mb_strlen(preg_replace('/\033\[[0-9;]+m/', '', $text) ?: '');
+                $text = explode("\n", (string) $cell) ?: [];
+                $lengths = array_map(static function ($line) {
+                    return mb_strlen(preg_replace('/\033\[[0-9;]+m/', '', $line) ?: '');
+                }, $text);
                 $colSpan = $cell instanceof Cell ? $cell->getColSpan() : 1;
-                $line[] = [$align, $text, $length, $colSpan];
-                $size = ceil($length / $colSpan);
+                $line[] = [$align, $text, $lengths, $colSpan];
+                $size = ceil(max($lengths) / $colSpan);
 
                 for ($i = 0; $i < $colSpan; $i++) {
                     $columnsSizes[$index + $i] = (int) max($columnsSizes[$index + $i] ?? 0, $size);
