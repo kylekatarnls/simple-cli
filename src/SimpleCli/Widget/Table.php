@@ -28,6 +28,9 @@ class Table
         │ 3 │ 4 │
         └───┴───┘';
 
+    /** @var bool */
+    public $cache = true;
+
     /** @var iterable<mixed> */
     protected $source;
 
@@ -49,7 +52,7 @@ class Table
      */
     public function format(): string
     {
-        if ($this->output === null) {
+        if ($this->output === null || !$this->cache) {
             [$data, $columnsSizes] = $this->parseData();
             $template = $this->getTemplate();
 
@@ -67,8 +70,9 @@ class Table
             $header = $split($header);
             /** @var string[][] $middle */
             $middle = $split($middle);
+            array_unshift($middle, ['', '', '', '']);
 
-            $this->output = '';
+            $this->resetOutput();
 
             foreach ($data as $index => $row) {
                 $this->addBarToOutput($index ? $middle : $header, $columnsSizes);
@@ -175,6 +179,16 @@ class Table
         ];
     }
 
+    protected function resetOutput(): void
+    {
+        $this->output = '';
+    }
+
+    protected function addToOutput(string $content): void
+    {
+        $this->output .= $content;
+    }
+
     /**
      * @psalm-suppress PossiblyNullOperand
      *
@@ -185,14 +199,14 @@ class Table
     {
         foreach ($bar as $lineIndex => $line) {
             if ($lineIndex) {
-                $this->output .= "\n";
+                $this->addToOutput("\n");
             }
 
             foreach ($columnsSizes as $index => $size) {
-                $this->output .= $line[$index ? 2 : 1].str_repeat($line[0], $size);
+                $this->addToOutput($line[$index ? 2 : 1].str_repeat($line[0], $size));
             }
 
-            $this->output .= $line[3];
+            $this->addToOutput($line[3]);
         }
     }
 
@@ -222,6 +236,10 @@ class Table
         }, $row));
 
         for ($textY = 0; $textY < $textHeight; $textY++) {
+            if ($textY) {
+                $this->addToOutput("\n");
+            }
+
             foreach ($columnsSizes as $cellIndex => $size) {
                 if ($span > 0) {
                     $span--;
@@ -239,7 +257,7 @@ class Table
                  */
                 [$horizontalAlign, $verticalAlign, $text, $lengths, $colSpan, $rowSpan] = $row[$cellIndex]
                     ?? [null, null, [], [], 1, 1];
-                $firstLine = (int) ($textHeight - count($text)) * $this->getTopPad($verticalAlign);
+                $firstLine = (int) (($textHeight - count($text)) * $this->getTopPad($verticalAlign));
                 $lineIndex = $textY - $firstLine;
                 $colSpan--;
 
@@ -252,11 +270,13 @@ class Table
                 }
 
                 /** @var int $size */
-                $this->output .= ($cellIndex ? $center : $left).
-                    $this->pad($text[$lineIndex] ?? '', $lengths[$lineIndex] ?? 0, $size, $horizontalAlign);
+                $this->addToOutput(
+                    ($cellIndex ? $center : $left).
+                    $this->pad($text[$lineIndex] ?? '', $lengths[$lineIndex] ?? 0, $size, $horizontalAlign)
+                );
             }
 
-            $this->output .= "$right\n";
+            $this->addToOutput($right);
         }
     }
 
@@ -271,17 +291,10 @@ class Table
      */
     protected function addFooterToOutput(Closure $split, ?string $footer, array $columnsSizes): void
     {
-        if ($footer === null) {
-            $output = $this->output ?? '';
-
-            if (substr($output, -1) === "\n") {
-                $this->output = substr($output, 0, -1);
-            }
-
-            return;
+        if ($footer !== null) {
+            $this->addToOutput("\n");
+            $this->addBarToOutput($split($footer), $columnsSizes);
         }
-
-        $this->addBarToOutput($split($footer), $columnsSizes);
     }
 
     protected function fill(int $length): string

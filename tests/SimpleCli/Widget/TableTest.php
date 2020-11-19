@@ -18,7 +18,9 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::resetOutput
      * @covers ::addRowToOutput
+     * @covers ::addToOutput
      * @covers ::parseData
      * @covers ::getCellAlign
      * @covers ::addBarToOutput
@@ -54,7 +56,9 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::resetOutput
      * @covers ::addRowToOutput
+     * @covers ::addToOutput
      * @covers ::addBarToOutput
      * @covers ::pad
      * @covers ::getSplitter
