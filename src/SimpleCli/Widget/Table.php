@@ -132,13 +132,14 @@ class Table
 
             foreach ($row as $cell) {
                 $index = count($line);
-                $align = ($cell instanceof Cell ? $cell->getAlign() : null) ?? $this->align[$index] ?? null;
+                [$horizontalAlign, $verticalAlign] = $this->getCellAlign($index, $cell);
                 $text = explode("\n", (string) $cell);
                 $lengths = array_map(static function ($line) {
                     return mb_strlen(preg_replace('/\033\[[0-9;]+m/', '', $line) ?: '');
                 }, $text);
                 $colSpan = $cell instanceof Cell ? $cell->getColSpan() : 1;
-                $line[] = [$align, $text, $lengths, $colSpan];
+                $rowSpan = $cell instanceof Cell ? $cell->getRowSpan() : 1;
+                $line[] = [$horizontalAlign, $verticalAlign, $text, $lengths, $colSpan, $rowSpan];
                 $size = ceil(max($lengths) / $colSpan);
 
                 for ($skip = 0; $skip < $colSpan; $skip++) {
@@ -150,6 +151,28 @@ class Table
         }
 
         return [$data, $columnsSizes];
+    }
+
+    /**
+     * @param int         $columnIndex
+     * @param string|Cell $cell
+     *
+     * @return array{string|null, string|null}
+     */
+    protected function getCellAlign(int $columnIndex, $cell): array
+    {
+        $default = array_pad((array) ($this->align[$columnIndex] ?? []), 2, null);
+
+        if (!($cell instanceof Cell)) {
+            return $default;
+        }
+
+        [$defaultHorizontalAlign, $defaultVerticalAlign] = $default;
+
+        return [
+            $cell->getHorizontalAlign() ?? $defaultHorizontalAlign,
+            $cell->getVerticalAlign() ?? $defaultVerticalAlign,
+        ];
     }
 
     /**
@@ -195,7 +218,7 @@ class Table
         $span = 0;
         /** @var int $textHeight */
         $textHeight = max(array_map(static function ($cell) {
-            return count($cell[1]);
+            return count($cell[2]);
         }, $row));
 
         for ($textY = 0; $textY < $textHeight; $textY++) {
@@ -207,12 +230,17 @@ class Table
                 }
 
                 /**
-                 * @var string|null $align
+                 * @var string|null $horizontalAlign
+                 * @var string|null $verticalAlign
                  * @var string[]    $text
                  * @var int[]       $lengths
                  * @var int         $colSpan
+                 * @var int         $rowSpan
                  */
-                [$align, $text, $lengths, $colSpan] = $row[$cellIndex] ?? [null, [], [], 1];
+                [$horizontalAlign, $verticalAlign, $text, $lengths, $colSpan, $rowSpan] = $row[$cellIndex]
+                    ?? [null, null, [], [], 1, 1];
+                $firstLine = (int) ($textHeight - count($text)) * $this->getTopPad($verticalAlign);
+                $lineIndex = $textY - $firstLine;
                 $colSpan--;
 
                 if ($colSpan > 0) {
@@ -225,7 +253,7 @@ class Table
 
                 /** @var int $size */
                 $this->output .= ($cellIndex ? $center : $left).
-                    $this->pad($text[$textY] ?? '', $lengths[$textY] ?? 0, $size, $align);
+                    $this->pad($text[$lineIndex] ?? '', $lengths[$lineIndex] ?? 0, $size, $horizontalAlign);
             }
 
             $this->output .= "$right\n";
@@ -301,6 +329,15 @@ class Table
             Cell::ALIGN_LEFT   => 0,
             Cell::ALIGN_CENTER => 0.5,
             Cell::ALIGN_RIGHT  => 1,
+        ])[(string) $align] ?? 0;
+    }
+
+    private function getTopPad(?string $align): float
+    {
+        return ([
+            Cell::ALIGN_TOP    => 0,
+            Cell::ALIGN_MIDDLE => 0.5,
+            Cell::ALIGN_BOTTOM => 1,
         ])[(string) $align] ?? 0;
     }
 }

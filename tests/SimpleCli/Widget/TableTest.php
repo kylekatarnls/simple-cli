@@ -20,6 +20,7 @@ class TableTest extends TestCase
      * @covers ::format
      * @covers ::addRowToOutput
      * @covers ::parseData
+     * @covers ::getCellAlign
      * @covers ::addBarToOutput
      * @covers ::addFooterToOutput
      * @covers ::pad
@@ -125,6 +126,7 @@ class TableTest extends TestCase
      * @covers ::addRowToOutput
      * @covers ::getTemplate
      * @covers ::parseData
+     * @covers ::getCellAlign
      * @covers ::addBarToOutput
      * @covers ::pad
      * @covers ::getSplitter
@@ -132,7 +134,7 @@ class TableTest extends TestCase
      * @covers \SimpleCli\Widget\Cell::__construct
      * @covers \SimpleCli\Widget\Cell::__toString
      * @covers \SimpleCli\Widget\Cell::getContent
-     * @covers \SimpleCli\Widget\Cell::getAlign
+     * @covers \SimpleCli\Widget\Cell::getHorizontalAlign
      */
     public function testTableWidgetWithMoreRowsAndColumns(): void
     {
@@ -258,6 +260,7 @@ class TableTest extends TestCase
      * @covers ::addRowToOutput
      * @covers ::getTemplate
      * @covers ::parseData
+     * @covers ::getCellAlign
      * @covers ::addBarToOutput
      * @covers ::addFooterToOutput
      * @covers ::pad

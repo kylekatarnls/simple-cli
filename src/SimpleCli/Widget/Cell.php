@@ -10,23 +10,35 @@ class Cell
     public const ALIGN_CENTER = 'center';
     public const ALIGN_RIGHT = 'right';
 
+    public const ALIGN_TOP = 'top';
+    public const ALIGN_MIDDLE = 'middle';
+    public const ALIGN_BOTTOM = 'bottom';
+
     /** @var string|object */
     protected $content;
 
     /** @var string|null */
-    protected $align;
+    protected $horizontalAlign;
+
+    /** @var string|null */
+    protected $verticalAlign;
 
     /** @var int */
     protected $colSpan = 1;
 
+    /** @var int */
+    protected $rowSpan = 1;
+
     /**
-     * @param object|string $content string content or object with __toString() method.
-     * @param string|null   $align   left, center or right
+     * @param object|string $content         string content or object with __toString() method.
+     * @param string|null   $horizontalAlign left, center or right
+     * @param string|null   $verticalAlign   top, middle or bottom
      */
-    public function __construct($content, ?string $align = null)
+    public function __construct($content, ?string $horizontalAlign = null, ?string $verticalAlign = null)
     {
         $this->content = $content;
-        $this->align = $align;
+        $this->horizontalAlign = $horizontalAlign;
+        $this->verticalAlign = $verticalAlign;
     }
 
     public function cols(int $colSpan): self
@@ -41,15 +53,32 @@ class Cell
         return $this->colSpan;
     }
 
+    public function rows(int $rowSpan): self
+    {
+        $this->rowSpan = (int) max(1, $rowSpan);
+
+        return $this;
+    }
+
+    public function getRowSpan(): int
+    {
+        return $this->rowSpan;
+    }
+
     public function getContent(): string
     {
         /** @psalm-suppress PossiblyInvalidCast */
         return (string) $this->content;
     }
 
-    public function getAlign(): ?string
+    public function getHorizontalAlign(): ?string
     {
-        return $this->align;
+        return $this->horizontalAlign;
+    }
+
+    public function getVerticalAlign(): ?string
+    {
+        return $this->verticalAlign;
     }
 
     public function __toString()
