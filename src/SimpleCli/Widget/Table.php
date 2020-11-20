@@ -73,10 +73,11 @@ class Table
             array_unshift($middle, ['', '', '', '']);
 
             $this->resetOutput();
+            $spannedCells = [];
 
             foreach ($data as $index => $row) {
                 $this->addBarToOutput($index ? $middle : $header, $columnsSizes);
-                $this->addRowToOutput($row, $columnsSizes, $left, $center, $right);
+                $this->addRowToOutput($spannedCells, $row, $columnsSizes, $left, $center, $right);
             }
 
             $this->addFooterToOutput($split, $footer, $columnsSizes);
@@ -213,16 +214,18 @@ class Table
     /**
      * @psalm-suppress PossiblyNullOperand
      *
-     * @param array  $row          list of cells as [align, text-lines, lines-lengths, colspan]
-     * @param int[]  $columnsSizes calculated sizes of each columns
-     * @param string $left         left end border
-     * @param string $center       border between cells
-     * @param string $right        right end border
+     * @param array  &$spannedCells record of spanned cells for next/from previous rows
+     * @param array  $row           list of cells as [align, text-lines, lines-lengths, colspan]
+     * @param int[]  $columnsSizes  calculated sizes of each columns
+     * @param string $left          left end border
+     * @param string $center        border between cells
+     * @param string $right         right end border
      *
      * @psalm-param list<array{null|string, string[], int[], int}> $row
      * @psalm-param array<int, int>                                $columnsSizes
      */
     protected function addRowToOutput(
+        array &$spannedCells,
         array $row,
         array $columnsSizes,
         string $left,
@@ -234,6 +237,7 @@ class Table
         $textHeight = max(array_map(static function ($cell) {
             return count($cell[2]);
         }, $row));
+        $columnSkip = 0;
 
         for ($textY = 0; $textY < $textHeight; $textY++) {
             if ($textY) {
@@ -247,6 +251,15 @@ class Table
                     continue;
                 }
 
+                $firstBorder = $cellIndex ? $center : $left;
+
+                if ($spannedCells[0][$cellIndex] ?? false) {
+                    $columnSkip++;
+                    $this->addToOutput($firstBorder.$this->fill($size));
+
+                    continue;
+                }
+
                 /**
                  * @var string|null $horizontalAlign
                  * @var string|null $verticalAlign
@@ -255,10 +268,21 @@ class Table
                  * @var int         $colSpan
                  * @var int         $rowSpan
                  */
-                [$horizontalAlign, $verticalAlign, $text, $lengths, $colSpan, $rowSpan] = $row[$cellIndex]
+                [$horizontalAlign, $verticalAlign, $text, $lengths, $colSpan, $rowSpan] = $row[$cellIndex - $columnSkip]
                     ?? [null, null, [], [], 1, 1];
                 $firstLine = (int) (($textHeight - count($text)) * $this->getTopPad($verticalAlign));
                 $lineIndex = $textY - $firstLine;
+
+                for ($rowIndex = 1; $rowIndex < $rowSpan; $rowIndex++) {
+                    if (!isset($spannedCells[$rowIndex])) {
+                        $spannedCells[$rowIndex] = [];
+                    }
+
+                    for ($colIndex = 0; $colIndex < $colSpan; $colIndex++) {
+                        $spannedCells[$rowIndex][$colIndex] = true;
+                    }
+                }
+
                 $colSpan--;
 
                 if ($colSpan > 0) {
@@ -271,13 +295,25 @@ class Table
 
                 /** @var int $size */
                 $this->addToOutput(
-                    ($cellIndex ? $center : $left).
+                    $firstBorder.
                     $this->pad($text[$lineIndex] ?? '', $lengths[$lineIndex] ?? 0, $size, $horizontalAlign)
                 );
             }
 
             $this->addToOutput($right);
         }
+
+        $shiftedSpannedCells = [];
+
+        foreach ($spannedCells as $index => $row) {
+            if (!$index) {
+                continue;
+            }
+
+            $shiftedSpannedCells[$index - 1]= $row;
+        }
+
+        $spannedCells = $shiftedSpannedCells;
     }
 
     /**
