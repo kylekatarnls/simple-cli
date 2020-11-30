@@ -2,6 +2,8 @@
 
 namespace Tests\SimpleCli\DemoApp;
 
+use SimpleCli\Annotation\argument;
+use SimpleCli\Annotation\rest;
 use SimpleCli\Command;
 use SimpleCli\SimpleCli;
 
