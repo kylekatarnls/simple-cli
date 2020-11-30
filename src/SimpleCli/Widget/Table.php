@@ -261,11 +261,11 @@ class Table
      * @psalm-suppress PossiblyNullOperand
      *
      * @param array<int, array<int, true>> $spannedCells record of spanned cells for next/from previous rows
-     * @param array                        $row           list of cells as [align, text-lines, lines-lengths, colspan]
-     * @param int[]                        $columnsSizes  calculated sizes of each columns
-     * @param string                       $left          left end border
-     * @param string                       $center        border between cells
-     * @param string                       $right         right end border
+     * @param array                        $row          list of cells as [align, text-lines, lines-lengths, colspan]
+     * @param int[]                        $columnsSizes calculated sizes of each columns
+     * @param string                       $left         left end border
+     * @param string                       $center       border between cells
+     * @param string                       $right        right end border
      *
      * @psalm-param list<array{null|string, null|string, list<string>, list<false|int>, int, int}> $row
      * @psalm-param array<int, int>                                                                $columnsSizes
