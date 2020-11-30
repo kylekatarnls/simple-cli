@@ -294,6 +294,7 @@ class TableTest extends TestCase
      * @covers ::shiftSpan
      * @covers ::addRowToOutput
      * @covers ::addBarToOutput
+     * @covers ::getLeftCellBorder
      */
     public function testRowSpan(): void
     {

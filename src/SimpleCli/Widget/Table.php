@@ -7,12 +7,17 @@ namespace SimpleCli\Widget;
 use Closure;
 use InvalidArgumentException;
 use function preg_match;
+use SimpleCli\Widget\Traits\TableOutput;
+use SimpleCli\Widget\Traits\TableSpan;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyFields)
  */
 class Table
 {
+    use TableOutput;
+    use TableSpan;
+
     /** @var string[] */
     public $align = [];
 
@@ -33,9 +38,6 @@ class Table
 
     /** @var iterable<mixed> */
     protected $source;
-
-    /** @var string|null */
-    protected $output = null;
 
     /**
      * @param iterable<mixed> $source
@@ -202,50 +204,22 @@ class Table
     }
 
     /**
+     * @param int                          $cellIndex
+     * @param string                       $left
+     * @param string                       $center
      * @param array<int, array<int, true>> $spannedCells record of spanned cells for next/from previous rows
-     * @param int                          $colSpan
-     * @param int                          $rowSpan
+     *
+     * @return string
      */
-    protected function recordSpan(array &$spannedCells, int $colSpan, int $rowSpan): void
+    protected function getLeftCellBorder(int $cellIndex, string $left, string $center, array $spannedCells = []): string
     {
-        for ($rowIndex = 1; $rowIndex < $rowSpan; $rowIndex++) {
-            if (!isset($spannedCells[$rowIndex])) {
-                $spannedCells[$rowIndex] = [];
-            }
-
-            for ($colIndex = 0; $colIndex < $colSpan; $colIndex++) {
-                $spannedCells[$rowIndex][$colIndex] = true;
-            }
-        }
-    }
-
-    /**
-     * @param array<int, array<int, true>> $spannedCells record of spanned cells for next/from previous rows
-     */
-    protected function shiftSpan(array &$spannedCells): void
-    {
-        $shiftedSpannedCells = [];
-
-        foreach ($spannedCells as $index => $row) {
-            if (!$index) {
-                continue;
-            }
-
-            $shiftedSpannedCells[$index - 1] = $row;
+        if (!$cellIndex) {
+            return $left;
         }
 
-        $spannedCells = $shiftedSpannedCells;
-    }
-
-    protected function resetOutput(): void
-    {
-        $this->output = '';
-    }
-
-    protected function addToOutput(string $content): void
-    {
-        /** @psalm-suppress PossiblyNullOperand */
-        $this->output .= $content;
+        return ($spannedCells[0][$cellIndex - 1] ?? false) && ($spannedCells[0][$cellIndex] ?? false)
+            ? $this->fill(mb_strlen($center))
+            : $center;
     }
 
     /**
@@ -320,12 +294,7 @@ class Table
                     continue;
                 }
 
-                $firstBorder = $cellIndex
-                    ? (($spannedCells[0][$cellIndex - 1] ?? false) && ($spannedCells[0][$cellIndex] ?? false)
-                        ? $this->fill(mb_strlen($center))
-                        : $center
-                    )
-                    : $left;
+                $firstBorder = $this->getLeftCellBorder($cellIndex, $left, $center, $spannedCells);
 
                 if ($spannedCells[0][$cellIndex] ?? false) {
                     $columnSkip++;
