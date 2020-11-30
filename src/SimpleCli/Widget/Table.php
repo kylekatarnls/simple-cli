@@ -73,6 +73,7 @@ class Table
             array_unshift($middle, ['', '', '', '']);
 
             $this->resetOutput();
+            /** @psalm-var array<int, array<int, true>> $spannedCells */
             $spannedCells = [];
 
             foreach ($data as $index => $row) {
@@ -121,7 +122,12 @@ class Table
     }
 
     /**
-     * @return array{list<list<array{null|string, string[], int[], int}>>, array<int, int>}
+     * @return array
+     *
+     * @psalm-return array{
+     *     list<list<array{null|string, null|string, non-empty-list<string>, non-empty-list<int>, int, int}>>,
+     *     array<int, int>
+     * }
      */
     protected function parseData(): array
     {
@@ -138,7 +144,9 @@ class Table
             foreach ($row as $cell) {
                 $index = count($line);
                 [$horizontalAlign, $verticalAlign] = $this->getCellAlign($index, $cell);
+                /** @var non-empty-list<string> $text */
                 $text = explode("\n", (string) $cell);
+                /** @var non-empty-list<int> $lengths */
                 $lengths = array_map(static function ($line) {
                     return mb_strlen(preg_replace('/\033\[[0-9;]+m/', '', $line) ?: '');
                 }, $text);
@@ -166,6 +174,7 @@ class Table
      */
     protected function getCellAlign(int $columnIndex, $cell): array
     {
+        /** @var array{string|null, string|null} $default */
         $default = array_pad((array) ($this->align[$columnIndex] ?? []), 2, null);
 
         if (!($cell instanceof Cell)) {
@@ -187,6 +196,7 @@ class Table
 
     protected function addToOutput(string $content): void
     {
+        /** @psalm-suppress PossiblyNullOperand */
         $this->output .= $content;
     }
 
@@ -221,8 +231,9 @@ class Table
      * @param string $center        border between cells
      * @param string $right         right end border
      *
-     * @psalm-param list<array{null|string, string[], int[], int}> $row
-     * @psalm-param array<int, int>                                $columnsSizes
+     * @psalm-param array<int, array<int, true>>                                                   &$spannedCells
+     * @psalm-param list<array{null|string, null|string, list<string>, list<false|int>, int, int}> $row
+     * @psalm-param array<int, int>                                                                $columnsSizes
      */
     protected function addRowToOutput(
         array &$spannedCells,
