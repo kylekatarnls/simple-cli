@@ -2,11 +2,7 @@
 
 namespace Tests\SimpleCli\Widget;
 
-use Generator;
-use InvalidArgumentException;
 use SimpleCli\Widget\Cell;
-use SimpleCli\Widget\Table;
-use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\TestCase;
 
 /**
