@@ -289,6 +289,40 @@ class TableTest extends TestCase
     }
 
     /**
+     * @covers ::parseData
+     * @covers ::recordSpan
+     * @covers ::shiftSpan
+     * @covers ::addRowToOutput
+     * @covers ::addBarToOutput
+     */
+    public function testRowSpan(): void
+    {
+        static::assertOutput(
+            implode("\n", [
+                '┌─────────┬─────────┬───────┬───────┐',
+                '│ One     │ Two     │ Three │       │',
+                '├─────────┼─────────┼───────┼───────┤',
+                '│   Double-height   │ 3     │       │',
+                '├─                 ─┼───────┼───────┤',
+                '│                   │ Hello │ World │',
+                '│                   │ Other │       │',
+                '└─────────┴─────────┴───────┴───────┘',
+            ]),
+            function () {
+                $cli = new DemoCli();
+
+                $table = new Table([
+                    ['One', 'Two', 'Three'],
+                    [(new Cell('Double-height', Cell::ALIGN_CENTER))->rows(2)->cols(2), 2, 3],
+                    ['Hello'."\nOther", (new Cell('World', null, Cell::ALIGN_MIDDLE))],
+                ]);
+
+                $cli->write($table);
+            }
+        );
+    }
+
+    /**
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format

@@ -77,7 +77,7 @@ class Table
             $spannedCells = [];
 
             foreach ($data as $index => $row) {
-                $this->addBarToOutput($index ? $middle : $header, $columnsSizes);
+                $this->addBarToOutput($index ? $middle : $header, $columnsSizes, $spannedCells);
                 $this->addRowToOutput($spannedCells, $row, $columnsSizes, $left, $center, $right);
             }
 
@@ -133,6 +133,8 @@ class Table
     {
         $columnsSizes = [];
         $data = [];
+        /** @psalm-var array<int, array<int, true>> $spannedCells */
+        $spannedCells = [];
 
         foreach ($this->source as $key => $row) {
             if (!is_iterable($row)) {
@@ -140,9 +142,16 @@ class Table
             }
 
             $line = [];
+            $startIndex = 0;
 
             foreach ($row as $cell) {
                 $index = count($line);
+
+                while ($spannedCells[0][$index + $startIndex] ?? false) {
+                    $columnsSizes[$index + $startIndex] = $columnsSizes[$index + $startIndex] ?? 0;
+                    $startIndex++;
+                }
+
                 [$horizontalAlign, $verticalAlign] = $this->getCellAlign($index, $cell);
                 /** @var non-empty-list<string> $text */
                 $text = explode("\n", (string) $cell);
@@ -152,15 +161,18 @@ class Table
                 }, $text);
                 $colSpan = $cell instanceof Cell ? $cell->getColSpan() : 1;
                 $rowSpan = $cell instanceof Cell ? $cell->getRowSpan() : 1;
+                $this->recordSpan($spannedCells, $colSpan, $rowSpan);
                 $line[] = [$horizontalAlign, $verticalAlign, $text, $lengths, $colSpan, $rowSpan];
                 $size = ceil(max($lengths) / $colSpan);
 
                 for ($skip = 0; $skip < $colSpan; $skip++) {
-                    $columnsSizes[$index + $skip] = (int) max($columnsSizes[$index + $skip] ?? 0, $size);
+                    $columnIndex = $index + $skip + $startIndex;
+                    $columnsSizes[$columnIndex] = (int) max($columnsSizes[$columnIndex] ?? 0, $size);
                 }
             }
 
             $data[] = $line;
+            $this->shiftSpan($spannedCells);
         }
 
         return [$data, $columnsSizes];
@@ -187,38 +199,6 @@ class Table
             $cell->getHorizontalAlign() ?? $horizontalAlign,
             $cell->getVerticalAlign() ?? $verticalAlign,
         ];
-    }
-
-    protected function resetOutput(): void
-    {
-        $this->output = '';
-    }
-
-    protected function addToOutput(string $content): void
-    {
-        /** @psalm-suppress PossiblyNullOperand */
-        $this->output .= $content;
-    }
-
-    /**
-     * @psalm-suppress PossiblyNullOperand
-     *
-     * @param string[][] $bar
-     * @param int[]      $columnsSizes
-     */
-    protected function addBarToOutput(array $bar, array $columnsSizes): void
-    {
-        foreach ($bar as $lineIndex => $line) {
-            if ($lineIndex) {
-                $this->addToOutput("\n");
-            }
-
-            foreach ($columnsSizes as $index => $size) {
-                $this->addToOutput($line[$index ? 2 : 1].str_repeat($line[0], $size));
-            }
-
-            $this->addToOutput($line[3]);
-        }
     }
 
     /**
@@ -257,6 +237,48 @@ class Table
         $spannedCells = $shiftedSpannedCells;
     }
 
+    protected function resetOutput(): void
+    {
+        $this->output = '';
+    }
+
+    protected function addToOutput(string $content): void
+    {
+        /** @psalm-suppress PossiblyNullOperand */
+        $this->output .= $content;
+    }
+
+    /**
+     * @psalm-suppress PossiblyNullOperand
+     *
+     * @param string[][]                   $bar
+     * @param int[]                        $columnsSizes
+     * @param array<int, array<int, true>> $spannedCells record of spanned cells for next/from previous rows
+     */
+    protected function addBarToOutput(array $bar, array $columnsSizes, array $spannedCells = []): void
+    {
+        foreach ($bar as $lineIndex => $line) {
+            if ($lineIndex) {
+                $this->addToOutput("\n");
+            }
+
+            foreach ($columnsSizes as $index => $size) {
+                $barEnd = str_repeat($line[0], $size);
+                $barString = $line[$index ? 2 : 1].$barEnd;
+
+                if ($spannedCells[0][$index] ?? false) {
+                    $barString = $index
+                        ? $this->fill(mb_strlen($barString))
+                        : $line[1].$this->fill(mb_strlen($barEnd));
+                }
+
+                $this->addToOutput($barString);
+            }
+
+            $this->addToOutput($line[3]);
+        }
+    }
+
     /**
      * @psalm-suppress PossiblyNullOperand
      *
@@ -283,9 +305,10 @@ class Table
         $textHeight = max(array_map(static function ($cell) {
             return count($cell[2]);
         }, $row));
-        $columnSkip = 0;
 
         for ($textY = 0; $textY < $textHeight; $textY++) {
+            $columnSkip = 0;
+
             if ($textY) {
                 $this->addToOutput("\n");
             }
@@ -297,7 +320,12 @@ class Table
                     continue;
                 }
 
-                $firstBorder = $cellIndex ? $center : $left;
+                $firstBorder = $cellIndex
+                    ? (($spannedCells[0][$cellIndex - 1] ?? false) && ($spannedCells[0][$cellIndex] ?? false)
+                        ? $this->fill(mb_strlen($center))
+                        : $center
+                    )
+                    : $left;
 
                 if ($spannedCells[0][$cellIndex] ?? false) {
                     $columnSkip++;
