@@ -222,11 +222,9 @@ class Table
     }
 
     /**
-     * @param array &$spannedCells record of spanned cells for next/from previous rows
-     * @param int   $colSpan
-     * @param int   $rowSpan
-     *
-     * @psalm-param array<int, array<int, true>> &$spannedCells
+     * @param array<int, array<int, true>> $spannedCells record of spanned cells for next/from previous rows
+     * @param int                          $colSpan
+     * @param int                          $rowSpan
      */
     protected function recordSpan(array &$spannedCells, int $colSpan, int $rowSpan): void
     {
@@ -242,9 +240,7 @@ class Table
     }
 
     /**
-     * @param array &$spannedCells record of spanned cells for next/from previous rows
-     *
-     * @psalm-param array<int, array<int, true>> &$spannedCells
+     * @param array<int, array<int, true>> $spannedCells record of spanned cells for next/from previous rows
      */
     protected function shiftSpan(array &$spannedCells): void
     {
@@ -264,14 +260,13 @@ class Table
     /**
      * @psalm-suppress PossiblyNullOperand
      *
-     * @param array  &$spannedCells record of spanned cells for next/from previous rows
-     * @param array  $row           list of cells as [align, text-lines, lines-lengths, colspan]
-     * @param int[]  $columnsSizes  calculated sizes of each columns
-     * @param string $left          left end border
-     * @param string $center        border between cells
-     * @param string $right         right end border
+     * @param array<int, array<int, true>> $spannedCells record of spanned cells for next/from previous rows
+     * @param array                        $row           list of cells as [align, text-lines, lines-lengths, colspan]
+     * @param int[]                        $columnsSizes  calculated sizes of each columns
+     * @param string                       $left          left end border
+     * @param string                       $center        border between cells
+     * @param string                       $right         right end border
      *
-     * @psalm-param array<int, array<int, true>>                                                   &$spannedCells
      * @psalm-param list<array{null|string, null|string, list<string>, list<false|int>, int, int}> $row
      * @psalm-param array<int, int>                                                                $columnsSizes
      */
