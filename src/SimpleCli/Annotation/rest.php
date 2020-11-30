@@ -9,9 +9,8 @@ namespace SimpleCli\Annotation;
 /**
  * Remaining arguments after all specific arguments filled.
  *
- * Syntax:
+ * Syntax can be either:
  *
- * Either:
  * @rest / description
  * Example:
  * @rest / File path

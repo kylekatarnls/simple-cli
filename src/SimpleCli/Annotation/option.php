@@ -9,9 +9,8 @@ namespace SimpleCli\Annotation;
 /**
  * Option to be set with --option-name or alias like -o.
  *
- * Syntax:
+ * Syntax can be either:
  *
- * Either:
  * @option names and aliases / description
  * Example:
  * @option debug d / Add debug information in the output

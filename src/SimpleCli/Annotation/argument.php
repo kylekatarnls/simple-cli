@@ -9,9 +9,8 @@ namespace SimpleCli\Annotation;
 /**
  * Ordered argument.
  *
- * Syntax:
+ * Syntax can be either:
  *
- * Either:
  * @argument / description
  * Example:
  * @argument / File path
