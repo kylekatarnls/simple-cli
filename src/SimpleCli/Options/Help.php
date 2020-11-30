@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleCli\Options;
 
-use SimpleCli\Annotation\option;
+use SimpleCli\Annotation\option; // @phan-suppress-current-line PhanUnreferencedUseNormal used as annotation
 use SimpleCli\SimpleCli;
 
 trait Help
