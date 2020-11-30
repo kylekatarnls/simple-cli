@@ -30,7 +30,7 @@ namespace SimpleCli\Annotation;
  * When names and aliases are not specified, the property name is used as option name and its first letter is used
  * as its alias if it's not yet in use.
  *
- * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.CamelCaseClassName)
  */
 class option
 {

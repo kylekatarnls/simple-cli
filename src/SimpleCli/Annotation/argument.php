@@ -22,7 +22,7 @@ namespace SimpleCli\Annotation;
  * @argument
  * File path
  *
- * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.CamelCaseClassName)
  */
 class argument
 {

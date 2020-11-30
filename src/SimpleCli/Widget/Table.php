@@ -181,11 +181,11 @@ class Table
             return $default;
         }
 
-        [$defaultHorizontalAlign, $defaultVerticalAlign] = $default;
+        [$horizontalAlign, $verticalAlign] = $default;
 
         return [
-            $cell->getHorizontalAlign() ?? $defaultHorizontalAlign,
-            $cell->getVerticalAlign() ?? $defaultVerticalAlign,
+            $cell->getHorizontalAlign() ?? $horizontalAlign,
+            $cell->getVerticalAlign() ?? $verticalAlign,
         ];
     }
 
@@ -219,6 +219,46 @@ class Table
 
             $this->addToOutput($line[3]);
         }
+    }
+
+    /**
+     * @param array &$spannedCells record of spanned cells for next/from previous rows
+     * @param int   $colSpan
+     * @param int   $rowSpan
+     *
+     * @psalm-param array<int, array<int, true>> &$spannedCells
+     */
+    protected function recordSpan(array &$spannedCells, int $colSpan, int $rowSpan): void
+    {
+        for ($rowIndex = 1; $rowIndex < $rowSpan; $rowIndex++) {
+            if (!isset($spannedCells[$rowIndex])) {
+                $spannedCells[$rowIndex] = [];
+            }
+
+            for ($colIndex = 0; $colIndex < $colSpan; $colIndex++) {
+                $spannedCells[$rowIndex][$colIndex] = true;
+            }
+        }
+    }
+
+    /**
+     * @param array &$spannedCells record of spanned cells for next/from previous rows
+     *
+     * @psalm-param array<int, array<int, true>> &$spannedCells
+     */
+    protected function shiftSpan(array &$spannedCells): void
+    {
+        $shiftedSpannedCells = [];
+
+        foreach ($spannedCells as $index => $row) {
+            if (!$index) {
+                continue;
+            }
+
+            $shiftedSpannedCells[$index - 1] = $row;
+        }
+
+        $spannedCells = $shiftedSpannedCells;
     }
 
     /**
@@ -283,16 +323,7 @@ class Table
                     ?? [null, null, [], [], 1, 1];
                 $firstLine = (int) (($textHeight - count($text)) * $this->getTopPad($verticalAlign));
                 $lineIndex = $textY - $firstLine;
-
-                for ($rowIndex = 1; $rowIndex < $rowSpan; $rowIndex++) {
-                    if (!isset($spannedCells[$rowIndex])) {
-                        $spannedCells[$rowIndex] = [];
-                    }
-
-                    for ($colIndex = 0; $colIndex < $colSpan; $colIndex++) {
-                        $spannedCells[$rowIndex][$colIndex] = true;
-                    }
-                }
+                $this->recordSpan($spannedCells, $colSpan, $rowSpan);
 
                 $colSpan--;
 
@@ -314,17 +345,7 @@ class Table
             $this->addToOutput($right);
         }
 
-        $shiftedSpannedCells = [];
-
-        foreach ($spannedCells as $index => $row) {
-            if (!$index) {
-                continue;
-            }
-
-            $shiftedSpannedCells[$index - 1] = $row;
-        }
-
-        $spannedCells = $shiftedSpannedCells;
+        $this->shiftSpan($spannedCells);
     }
 
     /**
