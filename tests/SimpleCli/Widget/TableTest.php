@@ -135,10 +135,6 @@ class TableTest extends TestCase
      * @covers ::pad
      * @covers ::getSplitter
      * @covers ::getLeftPad
-     * @covers \SimpleCli\Widget\Cell::__construct
-     * @covers \SimpleCli\Widget\Cell::__toString
-     * @covers \SimpleCli\Widget\Cell::getContent
-     * @covers \SimpleCli\Widget\Cell::getHorizontalAlign
      */
     public function testTableWidgetWithMoreRowsAndColumns(): void
     {
@@ -221,8 +217,8 @@ class TableTest extends TestCase
     /**
      * @covers ::format
      * @covers ::addRowToOutput
-     * @covers \SimpleCli\Widget\Cell::cols
-     * @covers \SimpleCli\Widget\Cell::getColSpan
+     * @covers ::recordSpan
+     * @covers ::shiftSpan
      */
     public function testTableColSpan(): void
     {
@@ -243,6 +239,41 @@ class TableTest extends TestCase
                     ['One', 'Two', 'Three'],
                     [(new Cell('A very long text And so on', Cell::ALIGN_CENTER))->cols(3)],
                     ['Hello'."\nOther", 'World', '!'],
+                ]);
+                $table->template = '
+                    !template!
+                    ╔═══╤═══╗
+                    ║ 1 │ 2 ║
+                    ╟───┼───╢
+                    ║ 3 │ 4 ║
+                    ╚═══╧═══╝';
+
+                $cli->write($table);
+            }
+        );
+    }
+
+    /**
+     * @covers ::getTopPad
+     */
+    public function testTableVerticalAlign(): void
+    {
+        static::assertOutput(
+            implode("\n", [
+                '╔═════╤═════╤═══════╗',
+                '║     │ 2   │       ║',
+                '║ One │ Two │       ║',
+                '║     │ 2   │ Three ║',
+                '╚═════╧═════╧═══════╝',
+            ]),
+            function () {
+                $cli = new DemoCli();
+                $table = new Table([
+                    [
+                        new Cell('One', null, Cell::ALIGN_MIDDLE),
+                        "2\nTwo\n2",
+                        new Cell('Three', null, Cell::ALIGN_BOTTOM),
+                    ],
                 ]);
                 $table->template = '
                     !template!
