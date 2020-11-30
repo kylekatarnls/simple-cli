@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace SimpleCli\Annotation;
 
+// phpcs:disable Squiz.Classes.ValidClassName
+
 /**
+ * Ordered argument.
+ *
  * Syntax:
  *
  * Either:
@@ -18,6 +22,8 @@ namespace SimpleCli\Annotation;
  * Example:
  * @argument
  * File path
+ *
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
  */
 class argument
 {

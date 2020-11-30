@@ -310,7 +310,7 @@ class Table
                 continue;
             }
 
-            $shiftedSpannedCells[$index - 1]= $row;
+            $shiftedSpannedCells[$index - 1] = $row;
         }
 
         $spannedCells = $shiftedSpannedCells;
