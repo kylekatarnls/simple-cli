@@ -18,8 +18,11 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::resetOutput
      * @covers ::addRowToOutput
+     * @covers ::addToOutput
      * @covers ::parseData
+     * @covers ::getCellAlign
      * @covers ::addBarToOutput
      * @covers ::addFooterToOutput
      * @covers ::pad
@@ -53,7 +56,9 @@ class TableTest extends TestCase
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
+     * @covers ::resetOutput
      * @covers ::addRowToOutput
+     * @covers ::addToOutput
      * @covers ::addBarToOutput
      * @covers ::pad
      * @covers ::getSplitter
@@ -125,14 +130,11 @@ class TableTest extends TestCase
      * @covers ::addRowToOutput
      * @covers ::getTemplate
      * @covers ::parseData
+     * @covers ::getCellAlign
      * @covers ::addBarToOutput
      * @covers ::pad
      * @covers ::getSplitter
      * @covers ::getLeftPad
-     * @covers \SimpleCli\Widget\Cell::__construct
-     * @covers \SimpleCli\Widget\Cell::__toString
-     * @covers \SimpleCli\Widget\Cell::getContent
-     * @covers \SimpleCli\Widget\Cell::getAlign
      */
     public function testTableWidgetWithMoreRowsAndColumns(): void
     {
@@ -215,8 +217,8 @@ class TableTest extends TestCase
     /**
      * @covers ::format
      * @covers ::addRowToOutput
-     * @covers \SimpleCli\Widget\Cell::cols
-     * @covers \SimpleCli\Widget\Cell::getColSpan
+     * @covers ::recordSpan
+     * @covers ::shiftSpan
      */
     public function testTableColSpan(): void
     {
@@ -252,12 +254,83 @@ class TableTest extends TestCase
     }
 
     /**
+     * @covers ::getTopPad
+     */
+    public function testTableVerticalAlign(): void
+    {
+        static::assertOutput(
+            implode("\n", [
+                '╔═════╤═════╤═══════╗',
+                '║     │ 2   │       ║',
+                '║ One │ Two │       ║',
+                '║     │ 2   │ Three ║',
+                '╚═════╧═════╧═══════╝',
+            ]),
+            function () {
+                $cli = new DemoCli();
+                $table = new Table([
+                    [
+                        new Cell('One', null, Cell::ALIGN_MIDDLE),
+                        "2\nTwo\n2",
+                        new Cell('Three', null, Cell::ALIGN_BOTTOM),
+                    ],
+                ]);
+                $table->template = '
+                    !template!
+                    ╔═══╤═══╗
+                    ║ 1 │ 2 ║
+                    ╟───┼───╢
+                    ║ 3 │ 4 ║
+                    ╚═══╧═══╝';
+
+                $cli->write($table);
+            }
+        );
+    }
+
+    /**
+     * @covers ::parseData
+     * @covers ::recordSpan
+     * @covers ::shiftSpan
+     * @covers ::addRowToOutput
+     * @covers ::addBarToOutput
+     * @covers ::getLeftCellBorder
+     */
+    public function testRowSpan(): void
+    {
+        static::assertOutput(
+            implode("\n", [
+                '┌─────────┬─────────┬───────┬───────┐',
+                '│ One     │ Two     │ Three │       │',
+                '├─────────┼─────────┼───────┼───────┤',
+                '│   Double-height   │ 3     │       │',
+                '├─                 ─┼───────┼───────┤',
+                '│                   │ Hello │ World │',
+                '│                   │ Other │       │',
+                '└─────────┴─────────┴───────┴───────┘',
+            ]),
+            function () {
+                $cli = new DemoCli();
+
+                $table = new Table([
+                    ['One', 'Two', 'Three'],
+                    [(new Cell('Double-height', Cell::ALIGN_CENTER))->rows(2)->cols(2), 2, 3],
+                    ['Hello'."\nOther", (new Cell('World', null, Cell::ALIGN_MIDDLE))],
+                ]);
+
+                $cli->write($table);
+            }
+        );
+    }
+
+    /**
      * @covers ::__construct
      * @covers ::__toString
      * @covers ::format
      * @covers ::addRowToOutput
      * @covers ::getTemplate
      * @covers ::parseData
+     * @covers ::getCellAlign
      * @covers ::addBarToOutput
      * @covers ::addFooterToOutput
      * @covers ::pad

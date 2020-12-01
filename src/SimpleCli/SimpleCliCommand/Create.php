@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleCli\SimpleCliCommand;
 
+use SimpleCli\Annotation\rest; // @phan-suppress-current-line PhanUnreferencedUseNormal used as annotation
 use SimpleCli\Command;
 use SimpleCli\Options\Help;
 use SimpleCli\Options\Quiet;

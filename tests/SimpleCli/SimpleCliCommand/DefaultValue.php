@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\SimpleCli\SimpleCliCommand;
 
+use SimpleCli\Annotation\argument;
+use SimpleCli\Annotation\option;
+use SimpleCli\Annotation\rest;
 use SimpleCli\Command;
 use SimpleCli\SimpleCli;
 

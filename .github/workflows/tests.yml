@@ -7,7 +7,7 @@ on:
     branches: [ '**' ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     strategy:
@@ -48,6 +48,15 @@ jobs:
       if: matrix.php == '7.1'
       run: composer require symfony/event-dispatcher-contracts:^1.1
 
+    - name: Code Climate Test Reporter Preparation
+      if: matrix.php == '7.4'
+      run: |
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter;
+        chmod +x ./cc-test-reporter;
+        ./cc-test-reporter before-build;
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+
     - name: Run test suite
       run: |
         if [[ ${PHP_VERSION:0:2} == "8." ]]; then
@@ -62,12 +71,10 @@ jobs:
 
     - name: Code Climate Test Reporter
       if: matrix.php == '7.4'
-      uses: aktions/codeclimate-test-reporter@v1
-      with:
-        codeclimate-test-reporter-id: ${{ secrets.CC_TEST_REPORTER_ID }}
-        command: after-build -t clover
+      run: |
+        ./cc-test-reporter after-build --exit-code 0;
       env:
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
     - name: Coverage
       if: matrix.php == '7.4'

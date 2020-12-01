@@ -187,6 +187,7 @@ Now let's add some argument, so your command would actually do something.
 
 namespace MyVendorName\CliApp\Command;
 
+use SimpleCli\Annotation\argument;
 use SimpleCli\Command;
 use SimpleCli\Options\Help;
 use SimpleCli\SimpleCli;
@@ -263,6 +264,7 @@ command, it could be:
 
 namespace MyVendorName\CliApp\Command;
 
+use SimpleCli\Annotation\rest;
 use SimpleCli\Command;
 use SimpleCli\Options\Help;
 use SimpleCli\SimpleCli;
@@ -299,6 +301,9 @@ bin/easy-calc build 2 3 1.5
 ```
 
 Outputs: `6.5`
+
+`SimpleCli\Annotation\*` imports such as `use SimpleCli\Annotation\argument;`
+are available to help IDE auto-completion but are optional.
 
 ## Add options
 
@@ -346,6 +351,7 @@ And you can create your own option using the `@option` annotation:
 
 namespace MyVendorName\CliApp\Command;
 
+use SimpleCli\Annotation\option;
 use SimpleCli\Command;
 use SimpleCli\SimpleCli;
 
