@@ -2,6 +2,7 @@
 
 [![Latest stable version](https://img.shields.io/packagist/v/simple-cli/simple-cli.svg?style=flat-square)](https://packagist.org/packages/simple-cli/simple-cli)
 [![GitHub Actions](https://github.com/kylekatarnls/simple-cli/workflows/Tests/badge.svg)](https://github.com/kylekatarnls/simple-cli/actions)
+[![GitHub Actions](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fkylekatarnls%2Fsimple-cli%2Fbadge&style=flat-square&label=Build&logo=none)](https://actions-badge.atrox.dev/kylekatarnls/simple-cli/goto)
 [![StyleCI](https://styleci.io/repos/192176915/shield?style=flat-square)](https://styleci.io/repos/192176915)
 [![codecov.io](https://img.shields.io/codecov/c/github/kylekatarnls/simple-cli.svg?style=flat-square)](https://codecov.io/github/kylekatarnls/simple-cli?branch=master)
 [![PHPStan](https://img.shields.io/badge/PHPStan-enabled-44CC11.svg?longCache=true&style=flat-square)](https://github.com/simple-cli/simple-cli)
