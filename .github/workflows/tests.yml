@@ -72,6 +72,7 @@ jobs:
 
     - name: Code Climate Test Reporter
       if: matrix.php == '7.4'
+      continue-on-error: true
       run: |
         ./cc-test-reporter after-build --exit-code 0;
       env:
