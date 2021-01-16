@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use function preg_match;
 use SimpleCli\Widget\Traits\TableOutput;
 use SimpleCli\Widget\Traits\TableSpan;
+use Stringable;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyFields)
@@ -24,7 +25,7 @@ class Table
     /** @var string */
     public $fill = ' ';
 
-    /** @var string */
+    /** @var string|Stringable */
     public $template = '
         !template!
         ┌───┬───┐
@@ -276,7 +277,7 @@ class Table
     ): void {
         $span = 0;
         /** @var int $textHeight */
-        $textHeight = max(array_map(static function ($cell) {
+        $textHeight = empty($row) ? 0 : max(array_map(static function ($cell) {
             return count($cell[2]);
         }, $row));
 
@@ -322,8 +323,8 @@ class Table
                 if ($colSpan > 0) {
                     $span += $colSpan;
                     $size += mb_strlen($center) * $colSpan +
-                        array_sum(array_map(function ($nextIndex) use ($columnsSizes) {
-                            return $columnsSizes[(int) $nextIndex];
+                        array_sum(array_map(function (int $nextIndex) use ($columnsSizes) {
+                            return $columnsSizes[$nextIndex];
                         }, range($cellIndex + 1, $cellIndex + $colSpan)));
                 }
 

@@ -113,7 +113,7 @@ class Create implements Command
                 function (array $match) {
                     return '-'.strtolower($match[0]);
                 },
-                (string) end($parts)
+                end($parts)
             ),
             '-'
         );

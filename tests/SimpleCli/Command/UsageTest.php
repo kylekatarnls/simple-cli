@@ -2,6 +2,8 @@
 
 namespace Tests\SimpleCli\Command;
 
+use SimpleCli\Command\Usage;
+use SimpleCli\SimpleCli;
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\TestCase;
 
@@ -36,6 +38,47 @@ class UsageTest extends TestCase
 
                 $command('file', 'list');
             }
+        );
+    }
+
+    /**
+     * @covers ::run
+     *
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     */
+    public function testCommandsEmptyList(): void
+    {
+        $cli = new class() extends SimpleCli {
+            /** @var string */
+            public $output = '';
+
+            public function getFile(): string
+            {
+                return 'x-file';
+            }
+
+            public function getCommands(): array
+            {
+                return [
+                    'list'    => false,
+                    'version' => false,
+                ];
+            }
+
+            public function write(string $text = '', ?string $color = null, ?string $background = null): void
+            {
+                $this->output .= ($color ?? '').'/'.($background ?? '').'/'.$text;
+            }
+        };
+
+        $this->assertSame([], $cli->getAvailableCommands());
+
+        $usage = new Usage();
+        $usage->run($cli);
+
+        $this->assertSame(
+            "brown//Usage:\n//  x-file [command] [options] [arguments]\n//\nbrown//Available commands:\n",
+            $cli->output
         );
     }
 }
