@@ -97,7 +97,7 @@ class OutputTest extends TraitsTestCase
         );
         static::assertSame(
             '[ESCAPE][0;34m[ESCAPE][43mHello world[ESCAPE][0m',
-            $command->colorize('Hello world', 'blue', 'yellow')
+            $command->colorize('Hello world', 'blue', 'brown')
         );
     }
 
@@ -111,18 +111,18 @@ class OutputTest extends TraitsTestCase
 
         static::assertSame(
             '[ESCAPE][0;34m[ESCAPE][43mHello world[ESCAPE][0m',
-            $command->colorize('Hello world', 'blue', 'yellow')
+            $command->colorize('Hello world', 'blue', 'brown')
         );
 
         $command->disableColors();
 
-        static::assertSame('Hello world', $command->colorize('Hello world', 'blue', 'yellow'));
+        static::assertSame('Hello world', $command->colorize('Hello world', 'blue', 'brown'));
 
         $command->enableColors();
 
         static::assertSame(
             '[ESCAPE][0;34m[ESCAPE][43mHello world[ESCAPE][0m',
-            $command->colorize('Hello world', 'blue', 'yellow')
+            $command->colorize('Hello world', 'blue', 'brown')
         );
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SimpleCli;
 
 use SimpleCli\SimpleCliCommand\Create;
+use SimpleCli\SimpleCliCommand\Palette;
 
 /**
  * Class SimpleCliCommand.
@@ -31,7 +32,8 @@ class SimpleCliCommand extends SimpleCli
     public function getCommands(): array
     {
         return [
-            'create' => Create::class,
+            'create'  => Create::class,
+            'palette' => Palette::class,
         ];
     }
 }

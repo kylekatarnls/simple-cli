@@ -22,6 +22,9 @@ class SimpleCliCommandTest extends TestCase
      */
     public function testGetCommands(): void
     {
-        static::assertSame(['create' => SimpleCliCommand\Create::class], (new SimpleCliCommand())->getCommands());
+        static::assertSame([
+            'create'  => SimpleCliCommand\Create::class,
+            'palette' => SimpleCliCommand\Palette::class,
+        ], (new SimpleCliCommand())->getCommands());
     }
 }
