@@ -43,7 +43,8 @@ trait Parameters
 
         if ($parameter !== '' &&
             $parameterDefinition['values'] &&
-            !in_array($parameter, array_map('trim', explode(',', (string) $parameterDefinition['values'])))
+            // @phan-suppress-next-line PhanTypeMismatchArgumentNullableInternal
+            !in_array($parameter, array_map('trim', explode(',', $parameterDefinition['values'])))
         ) {
             throw new InvalidArgumentException(
                 'The parameter '.((string) $parameterDefinition['property']).

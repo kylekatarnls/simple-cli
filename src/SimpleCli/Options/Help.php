@@ -79,7 +79,11 @@ trait Help
 
         $argumentsNames = array_keys($arguments);
         $optionsNames = array_keys($options);
-        $length = (int) max(array_merge(array_map('strlen', $argumentsNames), array_map('strlen', $optionsNames))) + 2;
+        $length = max(array_merge(
+            [0],
+            array_map('strlen', $argumentsNames),
+            array_map('strlen', $optionsNames)
+        )) + 2;
         /** @psalm-suppress UnsafeInstantiation */
         $defaultInstance = new static(); // @phan-suppress-current-line PhanUndeclaredMethod
 
@@ -118,7 +122,7 @@ trait Help
 
             foreach ($arguments as $definition) {
                 $property = (string) $definition['property'];
-                $cli->displayVariable($length, (string) $property, $definition, $defaultInstance->$property);
+                $cli->displayVariable($length, $property, $definition, $defaultInstance->$property);
             }
         }
     }
@@ -138,7 +142,7 @@ trait Help
             foreach ($options as $name => $definition) {
                 $name = (string) $name;
                 $property = (string) $definition['property'];
-                $cli->displayVariable($length, (string) $name, $definition, $defaultInstance->$property);
+                $cli->displayVariable($length, $name, $definition, $defaultInstance->$property);
             }
         }
     }

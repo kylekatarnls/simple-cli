@@ -203,7 +203,7 @@ abstract class SimpleCli implements Writer
      */
     protected function getValueExport($value): string
     {
-        $value = (string) var_export($value, true);
+        $value = var_export($value, true);
         $value = (string) preg_replace('/^\s*array\s*\(([\s\S]*)\)\s*$/', '[$1]', $value);
         $value = (string) preg_replace('/^\s*\[\s+]$/', '[]', $value);
 

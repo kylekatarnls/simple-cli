@@ -43,7 +43,7 @@ class Cell
 
     public function cols(int $colSpan): self
     {
-        $this->colSpan = (int) max(1, $colSpan);
+        $this->colSpan = max(1, $colSpan);
 
         return $this;
     }
@@ -55,7 +55,7 @@ class Cell
 
     public function rows(int $rowSpan): self
     {
-        $this->rowSpan = (int) max(1, $rowSpan);
+        $this->rowSpan = max(1, $rowSpan);
 
         return $this;
     }

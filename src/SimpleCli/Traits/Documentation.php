@@ -42,7 +42,7 @@ trait Documentation
             return $className;
         }
 
-        return $this->cleanPhpDocComment((string) $doc);
+        return $this->cleanPhpDocComment($doc);
     }
 
     /**
@@ -62,7 +62,8 @@ trait Documentation
         $source = (string) preg_replace_callback(
             '/^'.preg_quote($code).'( ([^\n]*(\n+'.str_repeat(' ', $length).'[^\n]*)*))?/m',
             function (array $match) use (&$result, $length) {
-                $result = (string) str_replace("\n".str_repeat(' ', $length), "\n", $match[2] ?? '');
+                /** @var string $result */
+                $result = str_replace("\n".str_repeat(' ', $length), "\n", $match[2] ?? '');
 
                 return '';
             },
@@ -84,13 +85,13 @@ trait Documentation
     }
 
     /**
-     * @param ?string $option
-     * @param ?string $argument
-     * @param ?string $rest
-     * @param ?string $name
-     * @param ?string $doc
-     * @param ?string $values
-     * @param ?string $type
+     * @param string|null $option
+     * @param string|null $argument
+     * @param string|null $rest
+     * @param string|null $name
+     * @param string|null $doc
+     * @param string|null $values
+     * @param string|null $type
      */
     private function addExpectation($option, $argument, $rest, $name, $doc, $values, $type): void
     {
@@ -116,7 +117,9 @@ trait Documentation
         }
 
         if ($argument !== null || $rest !== null) {
-            $preDoc = ltrim(trim($rest ?? $argument ?? ''), "/ \t");
+            /** @psalm-suppress PossiblyNullArgument */
+            $preDoc = ltrim(trim($rest ?? $argument), "/ \t");
+            // @phan-suppress-previous-line PhanTypeMismatchArgumentNullableInternal
 
             $definition = [
                 'property'    => $name,
