@@ -4,130 +4,13 @@ declare(strict_types=1);
 
 namespace SimpleCli\Traits;
 
+use SimpleCli\Background;
+use SimpleCli\Color;
+
 trait Output
 {
-    /** @var bool */
-    protected $colorsSupported = true;
-
-    /** @var bool */
-    protected $muted = false;
-
-    /** @var array<string, string> */
-    protected $colors = [
-        'black'        => '0;30',
-        'dark_gray'    => '1;30',
-        'blue'         => '0;34',
-        'light_blue'   => '1;34',
-        'green'        => '0;32',
-        'light_green'  => '1;32',
-        'cyan'         => '0;36',
-        'light_cyan'   => '1;36',
-        'red'          => '0;31',
-        'light_red'    => '1;31',
-        'purple'       => '0;35',
-        'light_purple' => '1;35',
-        'brown'        => '0;33',
-        'yellow'       => '1;33',
-        'light_gray'   => '0;37',
-        'white'        => '1;37',
-    ];
-
-    /** @var array<string, string> */
-    protected $backgrounds = [
-        'black'      => '40',
-        'red'        => '41',
-        'green'      => '42',
-        'yellow'     => '43',
-        'blue'       => '44',
-        'magenta'    => '45',
-        'cyan'       => '46',
-        'light_gray' => '47',
-    ];
-
     /** @var string */
     protected $lastText = '';
-
-    /** @var string */
-    protected $escapeCharacter = "\033";
-
-    /**
-     * Returns true if the CLI program is muted (quiet).
-     *
-     * @return bool
-     */
-    public function isMuted(): bool
-    {
-        return $this->muted;
-    }
-
-    /**
-     * Set the mute state.
-     *
-     * @param bool $muted
-     */
-    public function setMuted(bool $muted): void
-    {
-        $this->muted = $muted;
-    }
-
-    /**
-     * Mute the program (no more output).
-     */
-    public function mute(): void
-    {
-        $this->setMuted(true);
-    }
-
-    /**
-     * Unmute the program (enable output).
-     */
-    public function unmute(): void
-    {
-        $this->setMuted(false);
-    }
-
-    /**
-     * Enable colors support in command line.
-     */
-    public function enableColors(): void
-    {
-        $this->colorsSupported = true;
-    }
-
-    /**
-     * Disable colors support in command line.
-     */
-    public function disableColors(): void
-    {
-        $this->colorsSupported = false;
-    }
-
-    /**
-     * Set a custom string for escape command in CLI strings.
-     *
-     * @param string $escapeCharacter
-     */
-    public function setEscapeCharacter(string $escapeCharacter): void
-    {
-        $this->escapeCharacter = $escapeCharacter;
-    }
-
-    /**
-     * Set colors palette.
-     *
-     * @param array<string, string>|null $colors
-     * @param array<string, string>|null $backgrounds
-     */
-    public function setColors(?array $colors = null, ?array $backgrounds = null): void
-    {
-        if ($colors) {
-            $this->colors = $colors;
-        }
-
-        if ($backgrounds) {
-            $this->backgrounds = $backgrounds;
-        }
-    }
 
     /**
      * Return $text with given color and background color.
@@ -147,7 +30,7 @@ trait Output
         $color = $color ? $this->getColorCode($color) : '';
         $background = $background ? $this->getColorCode($background, $this->backgrounds) : '';
 
-        return $color.$background.$text.$this->escapeCharacter.'[0m';
+        return $color.$background.$text.$this->uncolorize();
     }
 
     /**
@@ -165,7 +48,7 @@ trait Output
             $length = strlen($this->lastText);
         }
 
-        echo $this->escapeCharacter.'['.$length.'D';
+        echo sprintf($this->rewindCodePattern, $this->escapeCharacter, $length);
     }
 
     /**
@@ -203,6 +86,40 @@ trait Output
     }
 
     /**
+     * Write each item iterated from the given $chunks.
+     *
+     * Use `yield 'Text'` to output text
+     * Use `yield 'Text' => 'red'` to output text in color
+     * Use `yield 'Text' => ['red', 'blue']` to output text in color and a background
+     * Use `yield 'Text' => [null, 'blue']` to output text with a background
+     *
+     * @param iterable $chunks
+     */
+    public function writeChunks(iterable $chunks): void
+    {
+        foreach ($this->getOutputChunks($chunks) as $line => $colors) {
+            $this->write($line, ...$colors);
+        }
+    }
+
+    /**
+     * Write each item iterated from the given $chunks and a new line at the end.
+     *
+     * Use `yield 'Text'` to output a line with "Text"
+     * Use `yield 'Text' => 'red'` to output a line in color
+     * Use `yield 'Text' => ['red', 'blue']` to output a line in color and a background
+     * Use `yield 'Text' => [null, 'blue']` to output a line with a background
+     *
+     * @param iterable $chunks
+     */
+    public function writeLines(iterable $chunks): void
+    {
+        foreach ($this->getOutputChunks($chunks) as $line => $colors) {
+            $this->writeLine($line, ...$colors);
+        }
+    }
+
+    /**
      * Replace last written line with $text with given color and background color.
      *
      * @param string      $text
@@ -228,16 +145,31 @@ trait Output
     }
 
     /**
-     * @param string                          $color
-     * @param array<string, string|null>|null $colors
+     * Standardize the input iterable stream to output a "text" => ["color", "background"] iteration.
      *
-     * @return string
+     * @param iterable<int|string, string|string[]> $chunks
+     *
+     * @return iterable<string, string[]>
      */
-    protected function getColorCode(string $color, ?array $colors = null): string
+    protected function getOutputChunks(iterable $chunks): iterable
     {
-        $colors = $colors ?: $this->colors;
-        $color = $colors[$color] ?? $color;
+        foreach ($chunks as $line => $color) {
+            if (is_int($line)) {
+                $line = is_array($color) ? array_unshift($color) : (string) $color;
 
-        return $this->escapeCharacter.'['.$color.'m';
+                if (($color instanceof Color) || ($color instanceof Background)) {
+                    $color = [
+                        $color instanceof Color ? $color->getColor() : null,
+                        $color instanceof Background ? $color->getBackground() : null,
+                    ];
+                }
+
+                if (!is_array($color)) {
+                    $color = [];
+                }
+            }
+
+            yield (string) $line => (array) $color;
+        }
     }
 }

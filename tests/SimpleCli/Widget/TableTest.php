@@ -78,7 +78,28 @@ class TableTest extends TestCase
             ]),
             function () {
                 $cli = new DemoCli();
-                $cli->setEscapeCharacter("\033");
+                $cli->setEscapeCharacter("\033", '\\033');
+                $table = new Table([
+                    'artist' => $cli->colorize('Nina Simone', 'blue'),
+                    'song'   => 'Feeling Good',
+                ]);
+
+                $cli->write($table);
+            }
+        );
+
+        static::assertOutput(
+            implode("\n", [
+                '┌────────┬──────────────┐',
+                "│ artist │ Nina Simone  │",
+                '├────────┼──────────────┤',
+                '│ song   │ Feeling Good │',
+                '└────────┴──────────────┘',
+            ]),
+            function () {
+                $cli = new DemoCli();
+                $cli->setEscapeCharacter("\033", '\\033');
+                $cli->disableColors();
                 $table = new Table([
                     'artist' => $cli->colorize('Nina Simone', 'blue'),
                     'song'   => 'Feeling Good',
@@ -111,7 +132,7 @@ class TableTest extends TestCase
             ]),
             function () {
                 $cli = new DemoCli();
-                $cli->setEscapeCharacter("\033");
+                $cli->setEscapeCharacter("\033", '\\033');
                 $iterator = static function () use ($cli): Generator {
                     yield 'artist' => $cli->colorize('Nina Simone', 'blue');
                     yield 'song'   => 'Feeling Good';
