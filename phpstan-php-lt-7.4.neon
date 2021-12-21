@@ -1,7 +1,0 @@
-includes:
-    - phpstan.neon
-
-parameters:
-    excludes_analyse:
-        - 'tests/SimpleCli/SimpleCliCommand/TypeHint.php'
-        - 'tests/SimpleCli/Traits/DocumentationTypeHintTest.php'

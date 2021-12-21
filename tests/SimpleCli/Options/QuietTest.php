@@ -6,12 +6,12 @@ use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\TestCase;
 
 /**
- * @coversDefaultClass \SimpleCli\Options\Quiet
+ * @coversDefaultClass \SimpleCli\SimpleCli
  */
 class QuietTest extends TestCase
 {
     /**
-     * @covers ::run
+     * @covers ::__invoke
      */
     public function testIsQuiet(): void
     {
