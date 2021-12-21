@@ -52,11 +52,24 @@ jobs:
     - name: Run test suite
       run: |
         ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml;
-        composer style;
         cp coverage.xml clover.xml;
         ls;
-      env:
-        PHP_VERSION: ${{ matrix.php }}
+
+    - name: Psalm
+      run: composer psalm;
+
+    - name: Phan
+      run: composer phan;
+
+    - name: PHPCS
+      run: composer cs;
+
+    - name: PHPMD
+      run: composer md;
+
+    - name: php-cs-fixer
+      if: matrix.php == '8.0'
+      run: composer csf;
 
     - name: Code Climate Test Reporter
       if: matrix.php == '8.0'
