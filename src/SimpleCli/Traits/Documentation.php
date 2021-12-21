@@ -230,7 +230,6 @@ trait Documentation
      */
     private function getPropertyTypeByHint(ReflectionProperty $property)
     {
-        /** @var mixed $property */
         // @phan-suppress-next-line PhanUndeclaredMethod
         return method_exists($property, 'getType') ? $property->getType() : null;
     }
