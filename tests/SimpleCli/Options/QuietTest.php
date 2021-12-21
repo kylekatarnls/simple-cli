@@ -10,6 +10,9 @@ use Tests\SimpleCli\TestCase;
  */
 class QuietTest extends TestCase
 {
+    /**
+     * @covers ::run
+     */
     public function testIsQuiet(): void
     {
         static::assertOutput(
