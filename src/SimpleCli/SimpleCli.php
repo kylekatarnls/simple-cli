@@ -155,10 +155,8 @@ abstract class SimpleCli implements Writer
             return true;
         }
 
-        array_unshift($parameters, $this);
-
         // @phan-suppress-next-line PhanParamTooManyUnpack
-        return $commander->run(...$parameters);
+        return $commander->run($this, ...$parameters);
     }
 
     /**

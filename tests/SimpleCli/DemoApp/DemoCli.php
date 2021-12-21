@@ -17,7 +17,11 @@ class DemoCli extends SimpleCli
     /** @var callable */
     protected $readlineFunction = [self::class, 'ask'];
 
-    /** @var callable */
+    /**
+     * @var callable|string
+     *
+     * @psalm-suppress NonInvariantDocblockPropertyType
+     */
     protected $readlineCompletionRegisterFunction = [self::class, 'register'];
 
     /** @var string[] */

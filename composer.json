@@ -44,7 +44,7 @@
         "md": "phpmd src,tests text ./phpmd.xml",
         "stan": "phpstan analyse --autoload-file=vendor/autoload.php -c phpstan.neon",
         "phan": "phan",
-        "psalm": "php tests/help-psalm.php && psalm --show-info=true",
+        "psalm": "psalm --show-info=true",
         "style": [
             "@psalm",
             "@phan",
