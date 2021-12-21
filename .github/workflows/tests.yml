@@ -12,12 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        php: ['7.1', '7.2', '7.3', '7.4']
-        include:
-          - php: '8.0'
-            composerOptions: --ignore-platform-req=php
-          - php: '8.1'
-            composerOptions: --ignore-platform-req=php
+        php: ['8.0', '8.1']
 
     name: PHP ${{ matrix.php }}
 
@@ -44,12 +39,8 @@ jobs:
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer update --prefer-dist --no-progress --no-suggest ${{ matrix.composerOptions }}
 
-    - name: Downgrade symfony/event-dispatcher-contracts
-      if: matrix.php == '7.1'
-      run: composer require symfony/event-dispatcher-contracts:^1.1
-
     - name: Code Climate Test Reporter Preparation
-      if: matrix.php == '7.4'
+      if: matrix.php == '8.0'
       run: |
         curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter;
         chmod +x ./cc-test-reporter;
@@ -58,20 +49,15 @@ jobs:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
     - name: Run test suite
-      continue-on-error: ${{ matrix.php >= 8.1 }}
       run: |
-        if [[ ${PHP_VERSION:0:2} == "8." ]]; then
-          ./vendor/bin/phpunit --no-coverage
-        else
-          composer phpdbg-test;
-          cp coverage.xml clover.xml;
-          ls;
-        fi;
+        composer phpdbg-test;
+        cp coverage.xml clover.xml;
+        ls;
       env:
         PHP_VERSION: ${{ matrix.php }}
 
     - name: Code Climate Test Reporter
-      if: matrix.php == '7.4'
+      if: matrix.php == '8.0'
       continue-on-error: true
       run: |
         ./cc-test-reporter after-build --exit-code 0;
@@ -79,7 +65,7 @@ jobs:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
     - name: Coverage
-      if: matrix.php == '7.4'
+      if: matrix.php == '8.0'
       run: |
         bash <(curl -s https://codecov.io/bash);
         composer require codacy/coverage;

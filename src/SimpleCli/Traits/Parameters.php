@@ -9,7 +9,7 @@ use InvalidArgumentException;
 trait Parameters
 {
     /** @var string[] */
-    protected $parameters;
+    protected array $parameters;
 
     /**
      * Get raw parameters (options and arguments) not filtered.
@@ -26,12 +26,12 @@ trait Parameters
      *
      * @SuppressWarnings(PHPMD.ErrorControlOperator)
      *
-     * @param string                       $parameter
+     * @param string $parameter
      * @param array<string, (string|null)> $parameterDefinition
      *
      * @return string|int|float|bool|null
      */
-    public function getParameterValue(string $parameter, array $parameterDefinition)
+    public function getParameterValue(string $parameter, array $parameterDefinition): string|int|float|bool|null
     {
         $value = $parameter;
 
