@@ -26,7 +26,7 @@ trait Parameters
      *
      * @SuppressWarnings(PHPMD.ErrorControlOperator)
      *
-     * @param string                       $parameter
+     * @param string $parameter
      * @param array<string, (string|null)> $parameterDefinition
      *
      * @return string|int|float|bool|null
