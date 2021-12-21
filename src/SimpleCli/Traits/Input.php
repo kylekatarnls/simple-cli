@@ -18,7 +18,7 @@ trait Input
     protected $readlineCompletionRegisterFunction = 'readline_completion_function';
 
     /** @var string[] */
-    protected $readlineCompletionExtensions = ['readline'];
+    protected array $readlineCompletionExtensions = ['readline'];
 
     protected function recordAutocomplete(): void
     {
@@ -67,7 +67,7 @@ trait Input
      *
      * @return string
      */
-    public function read($prompt, $completion = null): string
+    public function read(string $prompt, Closure|callable|array|null $completion = null): string
     {
         $this->currentCompletion = $completion;
 

@@ -18,7 +18,7 @@ use SimpleCli\SimpleCliCommand\Create;
  */
 class SimpleCliCommand extends SimpleCli
 {
-    protected $name = 'simple-cli';
+    protected ?string $name = 'simple-cli';
 
     public function getPackageName(): string
     {
