@@ -31,7 +31,7 @@ class InteractiveCli extends DemoCli
      *
      * @return string
      */
-    public function read($prompt, $completion = null): string
+    public function read(string $prompt, Closure|callable|array|null $completion = null): string
     {
         return array_shift($this->answers) ?: '';
     }
@@ -43,7 +43,7 @@ class InteractiveCli extends DemoCli
      *
      * @return string[]
      */
-    public function traits($command)
+    public function traits(Command|string $command): array
     {
         return $this->getCommandTraits($command);
     }

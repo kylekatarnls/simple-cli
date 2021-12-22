@@ -12,19 +12,23 @@ use SimpleCli\SimpleCliCommand\Create;
 class DemoCli extends SimpleCli
 {
     /** @var string */
-    protected $escapeCharacter = '[ESCAPE]';
+    protected string $escapeCharacter = '[ESCAPE]';
 
     /** @var callable */
     protected $readlineFunction = [self::class, 'ask'];
 
-    /** @var callable */
+    /**
+     * @var callable|string
+     *
+     * @psalm-suppress NonInvariantDocblockPropertyType
+     */
     protected $readlineCompletionRegisterFunction = [self::class, 'register'];
 
     /** @var string[] */
-    protected $readlineCompletionExtensions = [];
+    protected array $readlineCompletionExtensions = [];
 
     /** @var callable[] */
-    public static $registered = [];
+    public static array $registered = [];
 
     /** @var callable|null */
     public static $answerer = null;

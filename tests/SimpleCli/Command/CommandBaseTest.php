@@ -6,10 +6,14 @@ use SimpleCli\CommandBase;
 use SimpleCli\SimpleCli;
 use Tests\SimpleCli\TestCase;
 
+/**
+ * @coversDefaultClass \SimpleCli\CommandBase
+ */
 class CommandBaseTest extends TestCase
 {
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @covers ::run
      */
     public function testRun(): void
     {

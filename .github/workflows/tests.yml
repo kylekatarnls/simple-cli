@@ -25,15 +25,14 @@ jobs:
         php-version: ${{ matrix.php }}
         extensions: ast
         tools: composer:v2
+        coverage: xdebug
 
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v2
       with:
         path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+        key: v4-${{ runner.os }}-php-v${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
 
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
@@ -50,11 +49,24 @@ jobs:
 
     - name: Run test suite
       run: |
-        composer phpdbg-test;
+        ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml;
         cp coverage.xml clover.xml;
         ls;
-      env:
-        PHP_VERSION: ${{ matrix.php }}
+
+    - name: Psalm
+      run: composer psalm;
+
+    - name: Phan
+      run: composer phan;
+
+    - name: PHPCS
+      run: composer cs;
+
+    - name: PHPMD
+      run: composer md;
+
+    - name: php-cs-fixer
+      run: composer csf;
 
     - name: Code Climate Test Reporter
       if: matrix.php == '8.0'

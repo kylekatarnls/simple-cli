@@ -6,7 +6,7 @@
  * after this file is read.
  */
 return [
-    'target_php_version' => '7.1',
+    'target_php_version' => '8.0',
     'directory_list' => [
         'src',
         'vendor',

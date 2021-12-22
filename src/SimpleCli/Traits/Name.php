@@ -6,10 +6,7 @@ namespace SimpleCli\Traits;
 
 trait Name
 {
-    /**
-     * @var string|null
-     */
-    protected $name = null;
+    protected ?string $name = null;
 
     /**
      * Get the name of the CLI program.

@@ -9,7 +9,6 @@ use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionObject;
 use ReflectionProperty;
-use ReflectionType;
 use SimpleCli\Command;
 
 /**
@@ -188,7 +187,7 @@ trait Documentation
 
     private function getPropertyType(ReflectionProperty $property, Command $command, ?string $rest): ?string
     {
-        $type = $this->getPropertyTypeByHint($property);
+        $type = $property->getType();
         $type = $type instanceof ReflectionNamedType
             ? $type->getName()
             : null;
@@ -218,20 +217,5 @@ trait Documentation
         }
 
         return $type;
-    }
-
-    /**
-     * Return the typehint of a property if PHP >= 7.4 is running and a type hint is available,
-     * else return null silently.
-     *
-     * @param ReflectionProperty $property
-     *
-     * @return ReflectionType|null
-     */
-    private function getPropertyTypeByHint(ReflectionProperty $property)
-    {
-        /** @var mixed $property */
-        // @phan-suppress-next-line PhanUndeclaredMethod
-        return method_exists($property, 'getType') ? $property->getType() : null;
     }
 }

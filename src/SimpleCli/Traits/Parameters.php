@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SimpleCli\Traits;
 
 use InvalidArgumentException;
+use Throwable;
 
 trait Parameters
 {
@@ -35,9 +36,13 @@ trait Parameters
     {
         $value = $parameter;
 
-        if (!@settype($value, $parameterDefinition['type'] ?? 'string')) {
+        try {
+            settype($value, $parameterDefinition['type'] ?? 'string');
+        } catch (Throwable $exception) {
             throw new InvalidArgumentException(
-                "Cannot cast $parameter to ".((string) $parameterDefinition['type'])
+                "Cannot cast $parameter to ".((string) $parameterDefinition['type']),
+                0,
+                $exception,
             );
         }
 

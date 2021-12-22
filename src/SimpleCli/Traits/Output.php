@@ -7,13 +7,13 @@ namespace SimpleCli\Traits;
 trait Output
 {
     /** @var bool */
-    protected $colorsSupported = true;
+    protected bool $colorsSupported = true;
 
     /** @var bool */
-    protected $muted = false;
+    protected bool $muted = false;
 
     /** @var array<string, string> */
-    protected $colors = [
+    protected array $colors = [
         'black'        => '0;30',
         'dark_gray'    => '1;30',
         'blue'         => '0;34',
@@ -33,7 +33,7 @@ trait Output
     ];
 
     /** @var array<string, string> */
-    protected $backgrounds = [
+    protected array $backgrounds = [
         'black'      => '40',
         'red'        => '41',
         'green'      => '42',
@@ -44,11 +44,9 @@ trait Output
         'light_gray' => '47',
     ];
 
-    /** @var string */
-    protected $lastText = '';
+    protected string $lastText = '';
 
-    /** @var string */
-    protected $escapeCharacter = "\033";
+    protected string $escapeCharacter = "\033";
 
     /**
      * Returns true if the CLI program is muted (quiet).
