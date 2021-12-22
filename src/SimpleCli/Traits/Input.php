@@ -20,6 +20,8 @@ trait Input
     /** @var string[] */
     protected array $readlineCompletionExtensions = ['readline'];
 
+    protected string $stdinStream = 'php://stdin';
+
     protected function recordAutocomplete(): void
     {
         foreach ($this->readlineCompletionExtensions as $extension) {
@@ -72,5 +74,32 @@ trait Input
         $this->currentCompletion = $completion;
 
         return ($this->readlineFunction)($prompt);
+    }
+
+    /**
+     * Get the initial stdin content as receive by the command using:
+     * echo "foobar" | command
+     * Or:
+     * command < some-file.txt
+     *
+     * @return string
+     */
+    public function getStandardInput(): string
+    {
+        $stdin = '';
+        $stream = fopen($this->stdinStream, 'r');
+        $read  = [$stream];
+        $write = null;
+        $except = null;
+
+        if (stream_select($read, $write, $except, 0) === 1) {
+            while ($line = fgets($stream)) {
+                $stdin .= $line;
+            }
+        }
+
+        fclose($stream);
+
+        return $stdin;
     }
 }
