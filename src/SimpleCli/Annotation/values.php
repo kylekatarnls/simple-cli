@@ -10,6 +10,7 @@ namespace SimpleCli\Annotation;
  * List of possible values.
  *
  * Example:
+ *
  * @values hello, hi, bye
  *
  * @SuppressWarnings(PHPMD.CamelCaseClassName)

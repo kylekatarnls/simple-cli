@@ -50,12 +50,13 @@ trait Documentation
 
     /**
      * Get an attribute if present or extract an annotation content from a PHP comment doc block.
+     *
      * @template T
      *
-     * @param string $source
-     * @param string $annotation
+     * @param string             $source
+     * @param string             $annotation
      * @param ReflectionProperty $property
-     * @param class-string<T> $attributeClass
+     * @param class-string<T>    $attributeClass
      *
      * @return string|T|null
      */
