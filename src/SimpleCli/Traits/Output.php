@@ -7,13 +7,13 @@ namespace SimpleCli\Traits;
 trait Output
 {
     /** @var bool */
-    protected $colorsSupported = true;
+    protected bool $colorsSupported = true;
 
     /** @var bool */
-    protected $muted = false;
+    protected bool $muted = false;
 
     /** @var array<string, string> */
-    protected $colors = [
+    protected array $colors = [
         'black'        => '0;30',
         'dark_gray'    => '1;30',
         'blue'         => '0;34',
@@ -52,11 +52,9 @@ trait Output
         'white'        => '48;5;255',
     ];
 
-    /** @var string */
-    protected $lastText = '';
+    protected string $lastText = '';
 
-    /** @var string */
-    protected $escapeCharacter = "\033";
+    protected string $escapeCharacter = "\033";
 
     /**
      * @return array<string, string>

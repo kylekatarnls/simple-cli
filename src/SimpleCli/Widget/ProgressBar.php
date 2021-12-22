@@ -124,6 +124,9 @@ class ProgressBar
             $length += mb_strlen($this->decimalPoint) + $this->decimals;
         }
 
+        /**
+         * @psalm-suppress InvalidArrayOffset $this->step >= 0 at this step
+         */
         return sprintf(
             '%s%s %s%% %s%s%s%s%s%s%s',
             $this->before,

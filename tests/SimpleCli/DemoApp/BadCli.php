@@ -8,8 +8,7 @@ use stdClass;
 
 class BadCli extends SimpleCli
 {
-    /** @var string */
-    protected $escapeCharacter = '[ESCAPE]';
+    protected string $escapeCharacter = '[ESCAPE]';
 
     /**
      * @return array<string, string|class-string<Command>>

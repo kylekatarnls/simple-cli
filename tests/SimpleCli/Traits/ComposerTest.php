@@ -71,6 +71,8 @@ class ComposerTest extends TraitsTestCase
 
         unlink($vendorDirectory.'/composer/installed.json');
 
+        static::assertSame([], $command->getInstalledPackages());
+
         $packages = [
             'versions' => [
                 'foo/bar' => [

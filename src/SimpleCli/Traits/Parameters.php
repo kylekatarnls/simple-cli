@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace SimpleCli\Traits;
 
 use InvalidArgumentException;
+use Throwable;
 
 trait Parameters
 {
     /** @var string[] */
-    protected $parameters;
+    protected array $parameters;
 
     /**
      * Get raw parameters (options and arguments) not filtered.
@@ -26,18 +27,22 @@ trait Parameters
      *
      * @SuppressWarnings(PHPMD.ErrorControlOperator)
      *
-     * @param string                       $parameter
+     * @param string $parameter
      * @param array<string, (string|null)> $parameterDefinition
      *
      * @return string|int|float|bool|null
      */
-    public function getParameterValue(string $parameter, array $parameterDefinition)
+    public function getParameterValue(string $parameter, array $parameterDefinition): string|int|float|bool|null
     {
         $value = $parameter;
 
-        if (!@settype($value, $parameterDefinition['type'] ?? 'string')) {
+        try {
+            settype($value, $parameterDefinition['type'] ?? 'string');
+        } catch (Throwable $exception) {
             throw new InvalidArgumentException(
-                "Cannot cast $parameter to ".((string) $parameterDefinition['type'])
+                "Cannot cast $parameter to ".((string) $parameterDefinition['type']),
+                0,
+                $exception,
             );
         }
 

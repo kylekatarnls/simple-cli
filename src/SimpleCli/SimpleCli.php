@@ -109,7 +109,7 @@ abstract class SimpleCli implements Writer
      *
      * @param string $file
      * @param string $command
-     * @param mixed  ...$parameters
+     * @param string ...$parameters
      *
      * @return bool
      */
@@ -155,9 +155,8 @@ abstract class SimpleCli implements Writer
             return true;
         }
 
-        array_unshift($parameters, $this);
-
-        return $commander->run(...$parameters);
+        // @phan-suppress-next-line PhanParamTooManyUnpack
+        return $commander->run($this, ...$parameters);
     }
 
     /**
@@ -167,7 +166,7 @@ abstract class SimpleCli implements Writer
      *
      * @return string[]
      */
-    protected function getCommandTraits($commander): array
+    protected function getCommandTraits(Command|string $commander): array
     {
         return class_uses($commander) ?: [];
     }
@@ -175,23 +174,20 @@ abstract class SimpleCli implements Writer
     /**
      * Determines if a Command instance has a given feature (detected by a trait or a property).
      *
-     * @param Command|null $commander
-     * @param string       $trait
-     * @param string       $property
+     * @param Command $command
+     * @param string  $trait
+     * @param string  $property
      *
      * @return bool
      */
-    protected function hasTraitFeatureEnabled(
-        Command $commander = null,
-        string $trait = '',
-        string $property = ''
-    ): bool {
-        $traits = $commander ? array_merge(
-            $this->getCommandTraits($commander),
-            ...array_map([$this, 'getCommandTraits'], array_values(class_parents($commander) ?: []))
-        ) : [];
+    protected function hasTraitFeatureEnabled(Command $command, string $trait, string $property): bool
+    {
+        $traits = array_merge(
+            $this->getCommandTraits($command),
+            ...array_map([$this, 'getCommandTraits'], array_values(class_parents($command) ?: []))
+        );
 
-        return isset($traits[$trait]) && $commander && ($commander->$property ?? false);
+        return isset($traits[$trait]) && ($command->$property ?? false);
     }
 
     /**

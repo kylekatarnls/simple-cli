@@ -19,6 +19,3 @@ parameters:
         -
             message: '#Property Tests\\SimpleCli\\DemoApp\\RestCommand::\$suffixes type has no value type specified in iterable type array\.#'
             path: tests/SimpleCli/DemoApp/RestCommand.php
-        -
-            message: '#Parameter \#1 \$str of function trim expects string, string|null given\.#'
-            path: src/SimpleCli/Traits/Documentation.php
