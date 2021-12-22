@@ -11,13 +11,13 @@ trait Arguments
     /** @var array<string, string|int|float|bool|null> */
     protected array $arguments;
 
-    /** @var array<array{type: ?string, property: string, values: ?array, description: ?string}> */
+    /** @var array<array{type: ?string, property: string, values: ?array, description: string}> */
     protected array $expectedArguments;
 
     /** @var array<string|int|float|bool|null> */
     protected array $restArguments;
 
-    /** @var array{type: ?string, property: string, values: ?array, description: ?string}|null */
+    /** @var array{type: ?string, property: string, values: ?array, description: string}|null */
     protected ?array $expectedRestArgument;
 
     /**
@@ -53,7 +53,7 @@ trait Arguments
     /**
      * Get definition for the rest argument if a @rest property given.
      *
-     * @return array<string, mixed>|null
+     * @return array{type: ?string, property: string, values: ?array, description: string}|null
      */
     public function getExpectedRestArgument(): ?array
     {

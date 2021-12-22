@@ -11,11 +11,9 @@ trait Input
     /** @var Closure|callable|string[]|null */
     protected $currentCompletion = null;
 
-    /** @var callable */
-    protected $readlineFunction = 'readline';
+    protected Closure|string|array $readlineFunction = 'readline';
 
-    /** @var callable|string */
-    protected $readlineCompletionRegisterFunction = 'readline_completion_function';
+    protected Closure|string|array $readlineCompletionRegisterFunction = 'readline_completion_function';
 
     /** @var string[] */
     protected array $readlineCompletionExtensions = ['readline'];

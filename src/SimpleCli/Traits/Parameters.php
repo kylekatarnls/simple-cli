@@ -27,6 +27,8 @@ trait Parameters
      *
      * @SuppressWarnings(PHPMD.ErrorControlOperator)
      *
+     * @phan-suppress PhanTypeMismatchDeclaredReturn
+     *
      * @param string $parameter
      * @param array{type: ?string, property: ?string, values: ?array} $parameterDefinition
      *
@@ -53,7 +55,8 @@ trait Parameters
         ) {
             throw new InvalidArgumentException(
                 'The parameter '.((string) $parameterDefinition['property']).
-                ' must be one of the following values: ['.implode(', ', $parameterDefinition['values'])."]; '$parameter' given."
+                // @phan-suppress-next-line PhanParamSpecial1
+                ' must be one of the following values: ['.implode(', ', $parameterDefinition['values'])."]; '$parameter' given.",
             );
         }
 

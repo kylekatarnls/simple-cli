@@ -11,7 +11,7 @@ trait Options
     /** @var array<string, mixed> */
     protected array $options;
 
-    /** @var array<array{type: ?string, property: string, values: ?array, description: ?string, names: array<string>|null}> */
+    /** @var array<array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null}> */
     protected array $expectedOptions;
 
     /**
@@ -27,7 +27,7 @@ trait Options
     /**
      * Get definition of expected options.
      *
-     * @return array<array<string, mixed>>
+     * @return array<array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null}>
      */
     public function getExpectedOptions(): array
     {
@@ -39,7 +39,7 @@ trait Options
      *
      * @param string $name
      *
-     * @return array<string, mixed>
+     * @return array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null}
      */
     public function getOptionDefinition(string $name): array
     {
@@ -57,9 +57,9 @@ trait Options
     }
 
     /**
-     * @param array<string, string> $definition
-     * @param string                $name
-     * @param string|null           $value
+     * @param array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null} $definition
+     * @param string                                                                                                 $name
+     * @param string|null                                                                                            $value
      */
     private function enableBooleanOption(array $definition, string $name, string $value = null): void
     {
@@ -79,12 +79,12 @@ trait Options
     }
 
     /**
-     * @param string                                                                                                       $name
-     * @param string|null                                                                                                  $value
-     * @param array{type: ?string, property: string, values: ?array, description: ?string, names: array<string>|null}|null $optionDefinition
-     * @param-out array{type: ?string, property: string, values: ?array, description: ?string, names: array<string>|null} $optionDefinition
+     * @param string                                                                                                      $name
+     * @param string|null                                                                                                 $value
+     * @param array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null}|null $optionDefinition
+     * @param-out array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null} $optionDefinition
      */
-    private function setOption(string $name, string $value = null, array &$optionDefinition = null): void
+    private function setOption(string $name, string $value = null, ?array &$optionDefinition = null): void
     {
         $definition = $this->getOptionDefinition($name);
         $name = strlen($name) === 1 ? "-$name" : "--$name";
@@ -106,9 +106,9 @@ trait Options
     }
 
     /**
-     * @param string                                                                                                       $option
-     * @param array{type: ?string, property: string, values: ?array, description: ?string, names: array<string>|null}|null $optionDefinition
-     * @param-out array{type: ?string, property: string, values: ?array, description: ?string, names: array<string>|null} $optionDefinition
+     * @param string                                                                                                      $option
+     * @param array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null}|null $optionDefinition
+     * @param-out array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null} $optionDefinition
      */
     private function parseOption(string $option, array &$optionDefinition = null): void
     {

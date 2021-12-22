@@ -51,7 +51,7 @@ trait Documentation
     /**
      * Get an attribute if present or extract an annotation content from a PHP comment doc block.
      *
-     * @template T
+     * @template T extends object
      *
      * @param string             $source
      * @param string             $annotation
@@ -204,7 +204,7 @@ trait Documentation
         }
 
         /** @psalm-suppress PossiblyNullArgument */
-        $preDoc = ltrim(trim($rest ?? $argument), "/ \t");
+        $preDoc = ltrim(trim($rest ?? $argument ?? ''), "/ \t");
         // @phan-suppress-previous-line PhanTypeMismatchArgumentNullableInternal
 
         return [

@@ -42,11 +42,10 @@ trait Help
         $options = [];
 
         foreach ($cli->getExpectedOptions() as $option) {
+            $option['names'] ??= [];
             $aliases = array_filter(
                 $option['names'],
-                function (string $name) {
-                    return strlen($name) === 1;
-                }
+                static fn (string $name) => strlen($name) === 1,
             );
             $firstAlias = array_shift($aliases);
             $start = '    ';
@@ -55,22 +54,16 @@ trait Help
                 $start = "-$firstAlias, ";
                 $option['names'] = array_merge(
                     array_map(
-                        function (string $alias) {
-                            return "-$alias";
-                        },
-                        $aliases
+                        static fn (string $alias) => "-$alias",
+                        $aliases,
                     ),
                     array_map(
-                        function (string $name) {
-                            return "--$name";
-                        },
+                        static fn (string $name) => "--$name",
                         array_filter(
                             $option['names'],
-                            function (string $name) {
-                                return strlen($name) !== 1;
-                            }
-                        )
-                    )
+                            static fn (string $name) => strlen($name) !== 1,
+                        ),
+                    ),
                 );
             }
 
@@ -82,7 +75,7 @@ trait Help
         $length = max(array_merge(
             [0],
             array_map('strlen', $argumentsNames),
-            array_map('strlen', $optionsNames)
+            array_map('strlen', $optionsNames),
         )) + 2;
         /** @psalm-suppress UnsafeInstantiation */
         $defaultInstance = new static(); // @phan-suppress-current-line PhanUndeclaredMethod
@@ -92,12 +85,10 @@ trait Help
             '  '.basename($cli->getFile()).' '.$cli->getCommand().' [options] '.implode(
                 ' ',
                 array_map(
-                    function (string $name) {
-                        return "[<$name>]";
-                    },
-                    $argumentsNames
-                )
-            )
+                    static fn (string $name) => "[<$name>]",
+                    $argumentsNames,
+                ),
+            ),
         );
 
         $this->displayArguments($cli, $arguments, $length, $defaultInstance);
