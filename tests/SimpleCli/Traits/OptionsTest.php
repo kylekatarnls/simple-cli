@@ -37,6 +37,7 @@ class OptionsTest extends TraitsTestCase
 
     /**
      * @covers ::getExpectedOptions
+     * @covers \SimpleCli\Traits\Documentation::getValues
      */
     public function testGetExpectedOptions(): void
     {

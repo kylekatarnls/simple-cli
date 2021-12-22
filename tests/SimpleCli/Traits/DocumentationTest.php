@@ -74,6 +74,7 @@ class DocumentationTest extends TraitsTestCase
      * @covers ::concatDescription
      * @covers ::extractOptionInfo
      * @covers ::extractArgumentInfo
+     * @covers ::getValues
      */
     public function testAddExpectation(): void
     {
@@ -112,6 +113,7 @@ class DocumentationTest extends TraitsTestCase
      * @covers ::concatDescription
      * @covers ::extractOptionInfo
      * @covers ::extractArgumentInfo
+     * @covers ::getValues
      */
     public function testAddExpectationCast(): void
     {
@@ -132,6 +134,7 @@ class DocumentationTest extends TraitsTestCase
      * @covers ::concatDescription
      * @covers ::extractOptionInfo
      * @covers ::extractArgumentInfo
+     * @covers ::getValues
      */
     public function testAddExpectationInvalidKind(): void
     {
@@ -148,6 +151,7 @@ class DocumentationTest extends TraitsTestCase
 
     /**
      * @covers ::extractExpectations
+     * @covers ::getAttributeOrAnnotation
      */
     public function testExtractExpectations(): void
     {
