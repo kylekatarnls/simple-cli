@@ -52,8 +52,8 @@ class ParametersTest extends TraitsTestCase
                 [
                     'type'   => 'int',
                     'values' => null,
-                ]
-            )
+                ],
+            ),
         );
 
         static::assertSame(
@@ -63,8 +63,8 @@ class ParametersTest extends TraitsTestCase
                 [
                     'type'   => 'float',
                     'values' => ['42.5', '1'],
-                ]
-            )
+                ],
+            ),
         );
     }
 
