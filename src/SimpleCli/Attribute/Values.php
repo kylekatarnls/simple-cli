@@ -12,6 +12,7 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class Values
 {
+    /** @param string[] $values */
     public function __construct(public array $values)
     {
     }

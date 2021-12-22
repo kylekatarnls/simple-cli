@@ -22,13 +22,13 @@ use SimpleCli\Traits\Parameters;
 /**
  * Class SimpleCli.
  *
- * @property string                                    $command
- * @property string[]                                  $parameters
- * @property array<string, string|int|float|bool|null> $arguments
- * @property array<array<string, mixed>>               $expectedArguments
- * @property array<string|int|float|bool|null>         $restArguments
- * @property array<string, mixed>                      $options
- * @property array<array<string, mixed>>               $expectedOptions
+ * @property string                                                                                                         $command
+ * @property string[]                                                                                                       $parameters
+ * @property array<string, string|int|float|bool|null>                                                                      $arguments
+ * @property array<array{type: ?string, property: string, values: ?array, description: ?string}>                            $expectedArguments
+ * @property array<string|int|float|bool|null>                                                                              $restArguments
+ * @property array<string, mixed>                                                                                           $options
+ * @property array<array{type: ?string, property: string, values: ?array, description: ?string, names: array<string>|null}> $expectedOptions
  */
 abstract class SimpleCli implements Writer
 {

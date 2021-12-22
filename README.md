@@ -22,6 +22,12 @@ Features:
   - Provides predefined options: `--help`, `--quiet` and `--verbose`.
   - Provides a CLI to create programs and commands bootstraps.
 
+The documentation below is for simple-cli 2 which requires PHP 8 and
+supports both attributes and annotations.
+
+[simple-cli 1](https://github.com/kylekatarnls/simple-cli/tree/1.x#readme)
+is compatible with PHP >= 7.1 and supports only annotations.
+
 ## Create a command line program
 
 You can add your command line program in any existing composer app, or create a new one using `composer init`.
@@ -66,7 +72,7 @@ class EasyCalc extends SimpleCli
 ```
 
 By default the name of the program will be calculated from the class name, here `EasyCalc` becomes `easy-calc` but
-you can pick any name by adding `protected $name = 'my-custom-name';` in your class.
+you can pick any name by adding `protected ?string $name = 'my-custom-name';` in your class.
 
 Now you can run from the console:
 

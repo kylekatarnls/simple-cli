@@ -2,5 +2,5 @@ disabled:
   - phpdoc_var_without_name
 
 finder:
-  exclude:
-    - "tests/SimpleCli/SimpleCliCommand/VarAnnotation.php"
+  not-name:
+    - "VarAnnotation.php"

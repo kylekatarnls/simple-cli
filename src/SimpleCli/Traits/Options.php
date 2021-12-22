@@ -9,10 +9,10 @@ use InvalidArgumentException;
 trait Options
 {
     /** @var array<string, mixed> */
-    protected $options;
+    protected array $options;
 
-    /** @var array<array<string, mixed>> */
-    protected $expectedOptions;
+    /** @var array<array{type: ?string, property: string, values: ?array, description: ?string, names: array<string>|null}> */
+    protected array $expectedOptions;
 
     /**
      * Get list of current filtered options.
@@ -44,7 +44,7 @@ trait Options
     public function getOptionDefinition(string $name): array
     {
         foreach ($this->expectedOptions as $definition) {
-            if (in_array($name, $definition['names'])) {
+            if (in_array($name, $definition['names'] ?? [], true)) {
                 return $definition;
             }
         }
@@ -79,10 +79,10 @@ trait Options
     }
 
     /**
-     * @param string                   $name
-     * @param string|null              $value
-     * @param array<mixed, mixed>|null $optionDefinition
-     * @param-out array<string, mixed> $optionDefinition
+     * @param string                                                                                                       $name
+     * @param string|null                                                                                                  $value
+     * @param array{type: ?string, property: string, values: ?array, description: ?string, names: array<string>|null}|null $optionDefinition
+     * @param-out array{type: ?string, property: string, values: ?array, description: ?string, names: array<string>|null} $optionDefinition
      */
     private function setOption(string $name, string $value = null, array &$optionDefinition = null): void
     {
@@ -106,9 +106,9 @@ trait Options
     }
 
     /**
-     * @param string                   $option
-     * @param array<mixed, mixed>|null $optionDefinition
-     * @param-out array<string, mixed> $optionDefinition
+     * @param string                                                                                                       $option
+     * @param array{type: ?string, property: string, values: ?array, description: ?string, names: array<string>|null}|null $optionDefinition
+     * @param-out array{type: ?string, property: string, values: ?array, description: ?string, names: array<string>|null} $optionDefinition
      */
     private function parseOption(string $option, array &$optionDefinition = null): void
     {

@@ -76,7 +76,7 @@ trait Documentation
         }
 
         if ($count) {
-            return $attributes[0];
+            return $attributes[0]->newInstance();
         }
 
         return $this->extractAnnotation($source, $annotation);
@@ -125,7 +125,7 @@ trait Documentation
         Option|string|null $option,
         Argument|string|null $argument,
         Rest|string|null $rest,
-        ?string $name,
+        string $name,
         ?string $doc,
         Values|array|string|null $values,
         ?string $type,
@@ -143,10 +143,6 @@ trait Documentation
         }
 
         if ($argument !== null || $rest !== null) {
-            /** @psalm-suppress PossiblyNullArgument */
-            $preDoc = ltrim(trim($rest ?? $argument), "/ \t");
-            // @phan-suppress-previous-line PhanTypeMismatchArgumentNullableInternal
-
             $definition = $this->extractArgumentInfo($argument, $rest, $name, $doc, $values, $type);
 
             if ($rest !== null) {
@@ -164,7 +160,7 @@ trait Documentation
 
     private function extractOptionInfo(
         Option|string|null $option,
-        ?string $name,
+        string $name,
         ?string $doc,
         Values|array|string|null $values,
         ?string $type,
@@ -179,7 +175,7 @@ trait Documentation
             ];
         }
 
-        $optionLine = preg_split('#\s*/\s*#', $option, 2) ?: [];
+        $optionLine = preg_split('#\s*/\s*#', $option ?? '', 2) ?: [];
         $preDoc = trim($optionLine[1] ?? '');
 
         return [
@@ -194,7 +190,7 @@ trait Documentation
     private function extractArgumentInfo(
         Argument|string|null $argument,
         Rest|string|null $rest,
-        ?string $name,
+        string $name,
         ?string $doc,
         Values|array|string|null $values,
         ?string $type,
