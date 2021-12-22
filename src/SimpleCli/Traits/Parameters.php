@@ -27,8 +27,6 @@ trait Parameters
      *
      * @SuppressWarnings(PHPMD.ErrorControlOperator)
      *
-     * @phan-suppress PhanTypeMismatchDeclaredReturn
-     *
      * @param string                                                  $parameter
      * @param array{type: ?string, property: ?string, values: ?array} $parameterDefinition
      *

@@ -51,6 +51,8 @@ trait Documentation
     /**
      * Get an attribute if present or extract an annotation content from a PHP comment doc block.
      *
+     * @phan-suppress PhanTypeMismatchDeclaredReturn
+     *
      * @template T extends object
      *
      * @param string             $source

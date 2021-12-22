@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        php: ['8.0', '8.1']
+        php: ['8.0']
 
     name: PHP ${{ matrix.php }}
 
@@ -23,8 +23,9 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
+        extensions: ast
         tools: composer:v2
-        coverage: xdebug
+        coverage: none
 
     - name: Cache Composer packages
       id: composer-cache
@@ -51,6 +52,21 @@ jobs:
         ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml;
         cp coverage.xml clover.xml;
         ls;
+
+    - name: Psalm
+      run: composer psalm;
+
+    - name: Phan
+      run: composer phan;
+
+    - name: PHPCS
+      run: composer cs;
+
+    - name: PHPMD
+      run: composer md;
+
+    - name: php-cs-fixer
+      run: composer csf;
 
     - name: Code Climate Test Reporter
       if: matrix.php == '8.0'
