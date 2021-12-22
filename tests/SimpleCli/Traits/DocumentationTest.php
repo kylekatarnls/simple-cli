@@ -38,15 +38,13 @@ class DocumentationTest extends TraitsTestCase
         $command('file', 'foobar');
 
         static::assertSame(
-            'hello, hi, bye',
+            ['hello', 'hi', 'bye'],
             array_values(
                 array_filter(
                     $command->getExpectedOptions(),
-                    function ($option) {
-                        return $option['property'] === 'prefix';
-                    }
+                    static fn ($option) => $option['property'] === 'prefix',
                 )
-            )[0]['values']
+            )[0]['values'],
         );
     }
 
@@ -65,17 +63,17 @@ class DocumentationTest extends TraitsTestCase
             array_values(
                 array_filter(
                     $command->getExpectedOptions(),
-                    function ($option) {
-                        return $option['property'] === 'prefix';
-                    }
+                    static fn ($option) => $option['property'] === 'prefix',
                 )
-            )[0]['description']
+            )[0]['description'],
         );
     }
 
     /**
      * @covers ::addExpectation
      * @covers ::concatDescription
+     * @covers ::extractOptionInfo
+     * @covers ::extractArgumentInfo
      */
     public function testAddExpectation(): void
     {
@@ -89,11 +87,9 @@ class DocumentationTest extends TraitsTestCase
             array_values(
                 array_filter(
                     $command->getExpectedOptions(),
-                    function ($option) {
-                        return $option['property'] === 'prefix';
-                    }
+                    static fn ($option) => $option['property'] === 'prefix',
                 )
-            )[0]['names']
+            )[0]['names'],
         );
 
         static::assertSame(
@@ -101,11 +97,9 @@ class DocumentationTest extends TraitsTestCase
             array_values(
                 array_filter(
                     $command->getExpectedArguments(),
-                    function ($argument) {
-                        return $argument['property'] === 'sentence';
-                    }
+                    static fn ($argument) => $argument['property'] === 'sentence',
                 )
-            )[0]['description']
+            )[0]['description'],
         );
 
         $command('file', 'create');
@@ -116,6 +110,8 @@ class DocumentationTest extends TraitsTestCase
     /**
      * @covers ::addExpectation
      * @covers ::concatDescription
+     * @covers ::extractOptionInfo
+     * @covers ::extractArgumentInfo
      */
     public function testAddExpectationCast(): void
     {
@@ -127,24 +123,26 @@ class DocumentationTest extends TraitsTestCase
                 $command('file', 'all', 'A', 'B', 'C');
 
                 static::assertSame('string', $command->getExpectedRestArgument()['type'] ?? null);
-            }
+            },
         );
     }
 
     /**
      * @covers ::addExpectation
      * @covers ::concatDescription
+     * @covers ::extractOptionInfo
+     * @covers ::extractArgumentInfo
      */
     public function testAddExpectationInvalidKind(): void
     {
         static::assertOutput(
-            'A property cannot be both @option and @argument',
+            'A property cannot be both #Option / @option and #Argument / @argument',
             function () {
                 $command = new DemoCli();
                 $command->disableColors();
 
                 $command('file', 'bad');
-            }
+            },
         );
     }
 

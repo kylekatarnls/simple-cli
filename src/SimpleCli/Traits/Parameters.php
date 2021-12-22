@@ -49,11 +49,11 @@ trait Parameters
         if ($parameter !== '' &&
             $parameterDefinition['values'] &&
             // @phan-suppress-next-line PhanTypeMismatchArgumentNullableInternal
-            !in_array($parameter, array_map('trim', explode(',', $parameterDefinition['values'])))
+            !in_array($parameter, $parameterDefinition['values'], true)
         ) {
             throw new InvalidArgumentException(
                 'The parameter '.((string) $parameterDefinition['property']).
-                ' must be one of the following values: ['.$parameterDefinition['values']."]; '$parameter' given."
+                ' must be one of the following values: ['.implode(', ', $parameterDefinition['values'])."]; '$parameter' given."
             );
         }
 
