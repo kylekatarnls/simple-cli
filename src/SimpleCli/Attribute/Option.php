@@ -13,9 +13,9 @@ use Attribute;
 final class Option
 {
     public function __construct(
+        public ?string $description = null,
         public array|string|null $name = null,
         public array|string|null $alias = null,
-        public ?string $description = null,
     ) {
     }
 }

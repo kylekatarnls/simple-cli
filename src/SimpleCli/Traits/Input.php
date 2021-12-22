@@ -79,6 +79,7 @@ trait Input
      * echo "foobar" | command
      * Or:
      * command < some-file.txt
+     * Returns an empty string if no input passed.
      *
      * @return string
      */
@@ -86,7 +87,7 @@ trait Input
     {
         $stdin = '';
         $stream = fopen($this->stdinStream, 'r');
-        $read  = [$stream];
+        $read = [$stream];
         $write = null;
         $except = null;
 

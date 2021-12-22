@@ -168,7 +168,7 @@ trait Documentation
         if ($option instanceof Option) {
             return [
                 'property'    => $name,
-                'names'       => is_string($option->name) ? [$option->name] : $option->name,
+                'names'       => array_merge((array) ($option->name ?? []), (array) ($option->alias ?? [])),
                 'description' => $option->description,
                 'values'      => $this->getValues($values),
                 'type'        => $type,

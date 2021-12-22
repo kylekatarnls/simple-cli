@@ -29,7 +29,7 @@ trait Parameters
      *
      * @phan-suppress PhanTypeMismatchDeclaredReturn
      *
-     * @param string $parameter
+     * @param string                                                  $parameter
      * @param array{type: ?string, property: ?string, values: ?array} $parameterDefinition
      *
      * @return string|int|float|bool|null

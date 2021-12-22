@@ -93,13 +93,12 @@ class InputTest extends TraitsTestCase
         static::assertSame('yes', $answer);
     }
 
-
     /**
      * @covers ::getStandardInput
      */
     public function testGetStandardInput(): void
     {
-        $command = new class () extends DemoCli {
+        $command = new class() extends DemoCli {
             public function setStdinStream(string $stdinStream): void
             {
                 $this->stdinStream = $stdinStream;
