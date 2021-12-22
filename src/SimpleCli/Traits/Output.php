@@ -33,20 +33,44 @@ trait Output
     ];
 
     /** @var array<string, string> */
-    protected array $backgrounds = [
-        'black'      => '40',
-        'red'        => '41',
-        'green'      => '42',
-        'yellow'     => '43',
-        'blue'       => '44',
-        'magenta'    => '45',
-        'cyan'       => '46',
-        'light_gray' => '47',
+    protected $backgrounds = [
+        'black'        => '40',
+        'dark_gray'    => '48;5;59',
+        'blue'         => '44',
+        'light_blue'   => '48;5;63',
+        'green'        => '42',
+        'light_green'  => '48;5;40',
+        'cyan'         => '46',
+        'light_cyan'   => '48;5;87',
+        'red'          => '41',
+        'light_red'    => '48;5;168',
+        'purple'       => '45',
+        'light_purple' => '48;5;164',
+        'brown'        => '43',
+        'yellow'       => '48;5;108',
+        'light_gray'   => '47',
+        'white'        => '48;5;255',
     ];
 
     protected string $lastText = '';
 
     protected string $escapeCharacter = "\033";
+
+    /**
+     * @return array<string, string>
+     */
+    public function getColors(): array
+    {
+        return $this->colors;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getBackgrounds(): array
+    {
+        return $this->backgrounds;
+    }
 
     /**
      * Returns true if the CLI program is muted (quiet).
@@ -181,7 +205,7 @@ trait Output
 
         $this->lastText = $text;
 
-        if ($color) {
+        if ($color || $background) {
             $text = $this->colorize($text, $color, $background);
         }
 

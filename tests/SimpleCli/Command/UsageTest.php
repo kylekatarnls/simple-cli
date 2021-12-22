@@ -61,6 +61,7 @@ class UsageTest extends TestCase
             {
                 return [
                     'list'    => false,
+                    'palette' => false,
                     'version' => false,
                 ];
             }
