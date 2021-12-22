@@ -139,7 +139,15 @@ trait Documentation
                 );
             }
 
-            $this->expectedOptions[] = $this->extractOptionInfo($option, $name, $doc, $values, $type);
+            $optionInfo = $this->extractOptionInfo($option, $name, $doc, $values, $type);
+
+            $optionInfo['names'] = array_filter($optionInfo['names']);
+
+            if (!count($optionInfo['names'])) {
+                $optionInfo['names'] = [$name, substr($name, 0, 1)];
+            }
+
+            $this->expectedOptions[] = $optionInfo;
 
             return;
         }

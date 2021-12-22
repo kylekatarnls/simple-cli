@@ -4,19 +4,13 @@ declare(strict_types=1);
 
 namespace SimpleCli\Options;
 
-use SimpleCli\Annotation\option; // @phan-suppress-current-line PhanUnreferencedUseNormal used as annotation
+use SimpleCli\Attribute\Option;
 use SimpleCli\SimpleCli;
 
 trait Help
 {
-    /**
-     * @option
-     *
-     * Display documentation of the current command.
-     *
-     * @var bool
-     */
-    public $help = false;
+    #[Option('Display documentation of the current command.')]
+    public bool $help = false;
 
     /**
      * Display help for the current command.
@@ -25,7 +19,7 @@ trait Help
      *
      * @return bool
      */
-    public function displayHelp(SimpleCli $cli)
+    public function displayHelp(SimpleCli $cli): bool
     {
         $arguments = [];
 
