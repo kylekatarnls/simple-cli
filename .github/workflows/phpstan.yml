@@ -32,7 +32,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: vendor
-        key: v4-${{ runner.os }}-php-v${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
+        key: phpstan-v2-${{ runner.os }}-php${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
 
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
