@@ -33,7 +33,7 @@ class RestTest extends TestCase
     public function testHelp(): void
     {
         static::assertOutput(
-            <<<EOS
+            <<<'EOS'
             [ESCAPE][0;33mUsage:
             [ESCAPE][0m  file all [options] [<...all>]
 
@@ -56,7 +56,7 @@ class RestTest extends TestCase
         );
 
         static::assertOutput(
-            <<<EOS
+            <<<'EOS'
             [ESCAPE][0;33mUsage:
             [ESCAPE][0m  file all-only [options] [<...all>]
 

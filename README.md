@@ -620,7 +620,7 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 > Get the composer version of the package handling the CLI program.
 
-### displayVariable(int $length, string $variable, array $definition, $defaultValue): void
+### displayVariable(int $length, string $variable, array $definition, mixed $defaultValue): void
 
 > Output standard command variable (argument or option).
 
@@ -628,9 +628,25 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 > Get possible completions for a given start.
 
-### read($prompt, $completion): string
+### read(string $prompt, Closure|callable|array|null $completion): string
 
 > Ask the user $prompt and return the CLI input.
+
+### getStandardInput(): string
+
+> Get the initial stdin content as receive by the command using:
+> echo "foobar" | command
+> Or:
+> command < some-file.txt
+> Returns an empty string if no input passed.
+
+### getColors(): array
+
+> List of the codes for each text color name.
+
+### getBackgrounds(): array
+
+> List of the codes for each background color name.
 
 ### isMuted(): bool
 
@@ -771,6 +787,10 @@ your program) and all methods available from the `SimpleCli` inherited class:
 ### extractClassNameDescription(string $className): string
 
 > Get PHP comment doc block content of a given class.
+
+### getAttributeOrAnnotation(string $source, string $annotation, ReflectionProperty $property, string $attributeClass): object|string|null
+
+> Get an attribute if present or extract an annotation content from a PHP comment doc block.
 
 ### extractAnnotation(string $source, string $annotation): string
 

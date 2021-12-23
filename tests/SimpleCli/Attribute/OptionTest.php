@@ -35,7 +35,7 @@ class OptionTest extends TestCase
     public function testHelp(): void
     {
         static::assertOutput(
-            <<<EOS
+            <<<'EOS'
             [ESCAPE][0;33mUsage:
             [ESCAPE][0m  file val [options] 
 
