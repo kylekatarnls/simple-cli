@@ -107,7 +107,9 @@ trait Help
 
             foreach ($arguments as $definition) {
                 $property = (string) $definition['property'];
-                $cli->displayVariable($length, $property, $definition, $defaultInstance->$property);
+                $defaultValue = $this->getDefaultValue($defaultInstance, $property, $definition);
+
+                $cli->displayVariable($length, $property, $definition, $defaultValue);
             }
         }
     }
@@ -127,8 +129,21 @@ trait Help
             foreach ($options as $name => $definition) {
                 $name = (string) $name;
                 $property = (string) $definition['property'];
-                $cli->displayVariable($length, $name, $definition, $defaultInstance->$property);
+                $defaultValue = $this->getDefaultValue($defaultInstance, $property, $definition);
+
+                $cli->displayVariable($length, $name, $definition, $defaultValue);
             }
         }
+    }
+
+    protected function getDefaultValue(self $defaultInstance, string $property, array $definition): mixed
+    {
+        return $defaultInstance->$property ?? match($definition['type'] ?? null) {
+            'float' => 0.0,
+            'int' => 0,
+            'array' => [],
+            'bool' => false,
+            default => '',
+        };
     }
 }

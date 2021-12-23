@@ -31,6 +31,7 @@ class OptionTest extends TestCase
 
     /**
      * @covers ::__construct
+     * @covers \SimpleCli\Options\Help::getDefaultValue
      */
     public function testHelp(): void
     {
@@ -50,6 +51,37 @@ class OptionTest extends TestCase
                 $command = new AttributeDemoCli();
 
                 $command('file', 'val', '--help');
+            },
+        );
+
+        static::assertOutput(
+            <<<'EOS'
+            [ESCAPE][0;33mUsage:
+            [ESCAPE][0m  file defaults [options] 
+
+            [ESCAPE][0;33mOptions:
+            [ESCAPE][0m  [ESCAPE][0;32m-n, --neutral[ESCAPE][0m   
+                              [ESCAPE][0;36mstring          [ESCAPE][0m[ESCAPE][0;33mdefault: ''[ESCAPE][0m
+              [ESCAPE][0;32m-s, --string[ESCAPE][0m    
+                              [ESCAPE][0;36mstring          [ESCAPE][0m[ESCAPE][0;33mdefault: ''[ESCAPE][0m
+              [ESCAPE][0;32m-i, --int[ESCAPE][0m       
+                              [ESCAPE][0;36mint             [ESCAPE][0m[ESCAPE][0;33mdefault: 0[ESCAPE][0m
+              [ESCAPE][0;32m-f, --float[ESCAPE][0m     
+                              [ESCAPE][0;36mfloat           [ESCAPE][0m[ESCAPE][0;33mdefault: 0.0[ESCAPE][0m
+              [ESCAPE][0;32m-b, --bool[ESCAPE][0m      
+                              [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
+              [ESCAPE][0;32m-a, --array[ESCAPE][0m     
+                              [ESCAPE][0;36marray           [ESCAPE][0m[ESCAPE][0;33mdefault: [][ESCAPE][0m
+              [ESCAPE][0;32m-s, --stdClass[ESCAPE][0m  
+                              [ESCAPE][0;36mstdClass        [ESCAPE][0m[ESCAPE][0;33mdefault: ''[ESCAPE][0m
+              [ESCAPE][0;32m-h, --help[ESCAPE][0m      Display documentation of the current command.
+                              [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
+
+            EOS,
+            static function () {
+                $command = new AttributeDemoCli();
+
+                $command('file', 'defaults', '--help');
             },
         );
     }

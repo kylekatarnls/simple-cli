@@ -23,6 +23,7 @@ class AttributeDemoCli extends SimpleCli
             'rest'     => RestCommand::class,
             'foobar'   => DemoCommand::class,
             'two'      => TwoOptionsAttributeCommand::class,
+            'defaults' => AutoTypeDefaultsCommand::class,
             'palette'  => Palette::class,
             'val'      => ValuesAttributeCommand::class,
         ];
