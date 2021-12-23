@@ -27,8 +27,8 @@ trait Parameters
      *
      * @SuppressWarnings(PHPMD.ErrorControlOperator)
      *
-     * @param string $parameter
-     * @param array<string, (string|null)> $parameterDefinition
+     * @param string                                                  $parameter
+     * @param array{type: ?string, property: ?string, values: ?array} $parameterDefinition
      *
      * @return string|int|float|bool|null
      */
@@ -49,11 +49,12 @@ trait Parameters
         if ($parameter !== '' &&
             $parameterDefinition['values'] &&
             // @phan-suppress-next-line PhanTypeMismatchArgumentNullableInternal
-            !in_array($parameter, array_map('trim', explode(',', $parameterDefinition['values'])))
+            !in_array($parameter, $parameterDefinition['values'], true)
         ) {
             throw new InvalidArgumentException(
                 'The parameter '.((string) $parameterDefinition['property']).
-                ' must be one of the following values: ['.$parameterDefinition['values']."]; '$parameter' given."
+                // @phan-suppress-next-line PhanParamSpecial1
+                ' must be one of the following values: ['.implode(', ', $parameterDefinition['values'])."]; '$parameter' given.",
             );
         }
 

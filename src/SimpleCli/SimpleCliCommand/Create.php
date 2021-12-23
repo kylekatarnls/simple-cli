@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleCli\SimpleCliCommand;
 
-use SimpleCli\Annotation\rest; // @phan-suppress-current-line PhanUnreferencedUseNormal used as annotation
+use SimpleCli\Attribute\Rest;
 use SimpleCli\Command;
 use SimpleCli\Options\Help;
 use SimpleCli\Options\Quiet;
@@ -22,20 +22,10 @@ class Create implements Command
     use Quiet;
     use Verbose;
 
-    /**
-     * List of program classes to convert into executable CLI programs.
-     *
-     * @rest
-     *
-     * @var string[]
-     */
-    public $classNames = [];
+    /** @var string[] */
+    #[Rest('List of program classes to convert into executable CLI programs.')]
+    public array $classNames = [];
 
-    /**
-     * @param SimpleCli $cli
-     *
-     * @return bool
-     */
     public function run(SimpleCli $cli): bool
     {
         if (!$this->ensureBinDirectoryExists()) {
@@ -85,13 +75,7 @@ class Create implements Command
         return $count > 0;
     }
 
-    /**
-     * @param SimpleCli $cli
-     * @param string    $text
-     *
-     * @return bool
-     */
-    protected function error(SimpleCli $cli, $text): bool
+    protected function error(SimpleCli $cli, string $text): bool
     {
         $cli->writeLine($text, 'red');
 
@@ -147,8 +131,6 @@ class Create implements Command
 
     /**
      * @SuppressWarnings(PHPMD.ErrorControlOperator)
-     *
-     * @return bool
      */
     protected function ensureBinDirectoryExists(): bool
     {

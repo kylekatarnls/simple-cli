@@ -57,6 +57,8 @@ trait Output
     protected string $escapeCharacter = "\033";
 
     /**
+     * List of the codes for each text color name.
+     *
      * @return array<string, string>
      */
     public function getColors(): array
@@ -65,6 +67,8 @@ trait Output
     }
 
     /**
+     * List of the codes for each background color name.
+     *
      * @return array<string, string>
      */
     public function getBackgrounds(): array

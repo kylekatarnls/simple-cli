@@ -20,7 +20,7 @@ class VarAnnotation implements Command
     /**
      * @argument
      *
-     * @var bool
+     * @var boolean
      */
     public $foo;
 

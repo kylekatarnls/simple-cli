@@ -2,6 +2,7 @@
 
 namespace Tests\SimpleCli\DemoApp;
 
+use Closure;
 use RuntimeException;
 use SimpleCli\SimpleCli;
 use SimpleCli\SimpleCliCommand\Create;
@@ -11,18 +12,11 @@ use SimpleCli\SimpleCliCommand\Create;
  */
 class DemoCli extends SimpleCli
 {
-    /** @var string */
     protected string $escapeCharacter = '[ESCAPE]';
 
-    /** @var callable */
-    protected $readlineFunction = [self::class, 'ask'];
+    protected Closure|string|array $readlineFunction = [self::class, 'ask'];
 
-    /**
-     * @var callable|string
-     *
-     * @psalm-suppress NonInvariantDocblockPropertyType
-     */
-    protected $readlineCompletionRegisterFunction = [self::class, 'register'];
+    protected Closure|string|array $readlineCompletionRegisterFunction = [self::class, 'register'];
 
     /** @var string[] */
     protected array $readlineCompletionExtensions = [];

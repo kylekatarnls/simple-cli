@@ -33,11 +33,11 @@ class UsageTest extends TestCase
   [ESCAPE][0;32mrest[ESCAPE][0m     This is a demo.
   [ESCAPE][0;32mfoobar[ESCAPE][0m   This is a demo.
 ',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'list');
-            }
+            },
         );
     }
 

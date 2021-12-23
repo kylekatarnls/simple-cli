@@ -78,6 +78,7 @@ class ArgumentsTest extends TraitsTestCase
     /**
      * @covers ::getExpectedRestArgument
      * @covers \SimpleCli\Traits\Documentation::addExpectation
+     * @covers \SimpleCli\Traits\Documentation::extractArgumentInfo
      */
     public function testGetExpectedRestArgument(): void
     {

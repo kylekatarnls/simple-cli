@@ -22,13 +22,13 @@ use SimpleCli\Traits\Parameters;
 /**
  * Class SimpleCli.
  *
- * @property string                                    $command
- * @property string[]                                  $parameters
- * @property array<string, string|int|float|bool|null> $arguments
- * @property array<array<string, mixed>>               $expectedArguments
- * @property array<string|int|float|bool|null>         $restArguments
- * @property array<string, mixed>                      $options
- * @property array<array<string, mixed>>               $expectedOptions
+ * @property string                                                                                                        $command
+ * @property string[]                                                                                                      $parameters
+ * @property array<string, string|int|float|bool|null>                                                                     $arguments
+ * @property array<array{type: ?string, property: string, values: ?array, description: string}>                            $expectedArguments
+ * @property array<string|int|float|bool|null>                                                                             $restArguments
+ * @property array<string, mixed>                                                                                          $options
+ * @property array<array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null}> $expectedOptions
  */
 abstract class SimpleCli implements Writer
 {
@@ -88,19 +88,26 @@ abstract class SimpleCli implements Writer
      *                                           type.
      * @param mixed                $defaultValue Default value.
      */
-    public function displayVariable(int $length, string $variable, array $definition, $defaultValue): void
+    public function displayVariable(int $length, string $variable, array $definition, mixed $defaultValue): void
     {
         $this->write('  ');
         $this->write($variable, 'green');
         $this->write(str_repeat(' ', $length - strlen($variable)));
+
+        $info = $definition['values'] ?: $definition['type'] ?: '';
+
+        if (is_array($info)) {
+            $info = implode(', ', $info);
+        }
+
         $this->writeLine(
             str_replace(
                 "\n",
                 "\n".str_repeat(' ', $length + 2),
                 $definition['description']."\n".
-                $this->colorize(str_pad($definition['values'] ?: $definition['type'], 16, ' ', STR_PAD_RIGHT), 'cyan').
+                $this->colorize(str_pad($info, 16, ' ', STR_PAD_RIGHT), 'cyan').
                 $this->colorize('default: '.$this->getValueExport($defaultValue), 'brown')
-            )
+            ),
         );
     }
 
@@ -229,7 +236,7 @@ abstract class SimpleCli implements Writer
                 continue;
             }
 
-            substr($parameter, 0, 1) === '-'
+            str_starts_with($parameter, '-')
                 ? $this->parseOption($parameter, $optionDefinition)
                 : $this->parseArgument($parameter);
         }

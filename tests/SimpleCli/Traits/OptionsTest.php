@@ -37,6 +37,7 @@ class OptionsTest extends TraitsTestCase
 
     /**
      * @covers ::getExpectedOptions
+     * @covers \SimpleCli\Traits\Documentation::getValues
      */
     public function testGetExpectedOptions(): void
     {
@@ -68,7 +69,7 @@ class OptionsTest extends TraitsTestCase
                         'p',
                     ],
                     'description' => 'Append a prefix to $sentence.',
-                    'values'      => 'hello, hi, bye',
+                    'values'      => ['hello', 'hi', 'bye'],
                     'type'        => 'string',
                 ],
                 [
@@ -92,7 +93,7 @@ class OptionsTest extends TraitsTestCase
                     'type'        => 'bool',
                 ],
             ],
-            $command->getExpectedOptions()
+            $command->getExpectedOptions(),
         );
     }
 
@@ -109,15 +110,12 @@ class OptionsTest extends TraitsTestCase
         static::assertSame(
             [
                 'property'    => 'prefix',
-                'names'       => [
-                    'prefix',
-                    'p',
-                ],
+                'names'       => ['prefix', 'p'],
                 'description' => 'Append a prefix to $sentence.',
-                'values'      => 'hello, hi, bye',
+                'values'      => ['hello', 'hi', 'bye'],
                 'type'        => 'string',
             ],
-            $command->getOptionDefinition('prefix')
+            $command->getOptionDefinition('prefix'),
         );
     }
 
@@ -171,7 +169,7 @@ class OptionsTest extends TraitsTestCase
             [
                 'help' => true,
             ],
-            $command->getOptions()
+            $command->getOptions(),
         );
     }
 
@@ -182,11 +180,11 @@ class OptionsTest extends TraitsTestCase
     {
         static::assertOutput(
             '[ESCAPE][0;31m-p option is not a boolean, so you can\'t use it in a aliases group[ESCAPE][0m',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'foobar', '-p');
-            }
+            },
         );
     }
 
@@ -197,11 +195,11 @@ class OptionsTest extends TraitsTestCase
     {
         static::assertOutput(
             '[ESCAPE][0;31m-h option is boolean and should not have value[ESCAPE][0m',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'foobar', '-h=yoh');
-            }
+            },
         );
     }
 
@@ -219,7 +217,7 @@ class OptionsTest extends TraitsTestCase
             [
                 'prefix' => 'hello',
             ],
-            $command->getOptions()
+            $command->getOptions(),
         );
 
         $command('file', 'foobar', '--help', '--prefix', 'hello');
@@ -229,7 +227,7 @@ class OptionsTest extends TraitsTestCase
                 'help'   => true,
                 'prefix' => 'hello',
             ],
-            $command->getOptions()
+            $command->getOptions(),
         );
     }
 
@@ -256,7 +254,7 @@ class OptionsTest extends TraitsTestCase
                 'verbose' => true,
                 'help'    => true,
             ],
-            $command->getOptions()
+            $command->getOptions(),
         );
 
         $command('file', 'foobar', '-hv');
@@ -266,7 +264,7 @@ class OptionsTest extends TraitsTestCase
                 'help'    => true,
                 'verbose' => true,
             ],
-            $command->getOptions()
+            $command->getOptions(),
         );
 
         $command('file', 'foobar', '-p=hi');
@@ -275,7 +273,7 @@ class OptionsTest extends TraitsTestCase
             [
                 'prefix' => 'hi',
             ],
-            $command->getOptions()
+            $command->getOptions(),
         );
 
         $command('file', 'foobar', '--prefix=bye');
@@ -284,7 +282,7 @@ class OptionsTest extends TraitsTestCase
             [
                 'prefix' => 'bye',
             ],
-            $command->getOptions()
+            $command->getOptions(),
         );
 
         $command('file', 'foobar', '--prefix', 'bye');
@@ -293,7 +291,7 @@ class OptionsTest extends TraitsTestCase
             [
                 'prefix' => 'bye',
             ],
-            $command->getOptions()
+            $command->getOptions(),
         );
     }
 }

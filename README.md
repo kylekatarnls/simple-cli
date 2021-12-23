@@ -22,6 +22,12 @@ Features:
   - Provides predefined options: `--help`, `--quiet` and `--verbose`.
   - Provides a CLI to create programs and commands bootstraps.
 
+The documentation below is for simple-cli 2 which requires PHP 8 and
+supports both attributes and annotations.
+
+[simple-cli 1](https://github.com/kylekatarnls/simple-cli/tree/1.x#readme)
+is compatible with PHP >= 7.1 and supports only annotations.
+
 ## Create a command line program
 
 You can add your command line program in any existing composer app, or create a new one using `composer init`.
@@ -66,7 +72,7 @@ class EasyCalc extends SimpleCli
 ```
 
 By default the name of the program will be calculated from the class name, here `EasyCalc` becomes `easy-calc` but
-you can pick any name by adding `protected $name = 'my-custom-name';` in your class.
+you can pick any name by adding `protected ?string $name = 'my-custom-name';` in your class.
 
 Now you can run from the console:
 
@@ -187,7 +193,7 @@ Now let's add some argument, so your command would actually do something.
 
 namespace MyVendorName\CliApp\Command;
 
-use SimpleCli\Annotation\argument;
+use SimpleCli\Attribute\Argument;
 use SimpleCli\Command;
 use SimpleCli\Options\Help;
 use SimpleCli\SimpleCli;
@@ -199,23 +205,11 @@ class Add implements Command
 {
     use Help;
 
-    /**
-     * @argument
-     *
-     * The first number
-     *
-     * @var float
-     */
-    public $number1 = 0;
+    #[Argument('The first number')]
+    public float $number1 = 0;
 
-    /**
-     * @argument
-     *
-     * The second number
-     *
-     * @var float
-     */
-    public $number2 = 0;
+    #[Argument('The second number')]
+    public float $number2 = 0;
 
     public function run(SimpleCli $cli): bool
     {
@@ -226,9 +220,11 @@ class Add implements Command
 }
 ```
 
-The `@argument` annotation allows simple-cli to know it's an argument.
+The `#[Argument]` attribute allows simple-cli to know it's an argument.
 
-If `@var` is not provided, property type hint (as available since PHP 7.4)
+Argument type will be taken from property type hint, if you need more
+precise type such as `string[]` instead of simply `array` you can specify
+it using `@var` annotation in a PHPDoc such as `/** @var string[] */`
 will be used instead, or else the type will be inferred from the default
 value. So `public float $number2;` will be considered as `float` and
 `public $number2 = false;` will be considered as `bool`.
@@ -248,15 +244,15 @@ Note than `run()` must return a boolean:
   - `true` for successful command (exit code 0)
   - `false` for error (exit code 1)
 
-You can also allow unlimited number of arguments using the annotation `@rest`
+You can also allow unlimited number of arguments using the attribute `#[Rest]`
 The *rest arguments* variable will be an array with all other arguments.
 
-So if you have 2 `@argument` and a `@rest` then if your user call your command
-with 5 arguments, the first one goes to the first `@argument`, the second one
-go to the second `@argument`, and the 3 other ones go as an array to the `@rest`
+So if you have 2 `#[Argument]` and a `#[Rest]` then if your user call your command
+with 5 arguments, the first one goes to the first `#[Argument]`, the second one
+go to the second `#[Argument]`, and the 3 other ones go as an array to the `#[Rest]`
 argument.
 
-Of course, you can also use `@rest` with any other argument so for our `add`
+Of course, you can also use `#[Rest]` with any other argument so for our `add`
 command, it could be:
 
 ```php
@@ -264,7 +260,7 @@ command, it could be:
 
 namespace MyVendorName\CliApp\Command;
 
-use SimpleCli\Annotation\rest;
+use SimpleCli\Attribute\Rest;
 use SimpleCli\Command;
 use SimpleCli\Options\Help;
 use SimpleCli\SimpleCli;
@@ -276,14 +272,9 @@ class Add implements Command
 {
     use Help;
 
-    /**
-     * @rest
-     *
-     * The numbers to sum
-     *
-     * @var float[]
-     */
-    public $numbers = [];
+    /** @var float[] */
+    #[Rest('The numbers to sum')]
+    public array $numbers = [];
 
     public function run(SimpleCli $cli): bool
     {
@@ -345,13 +336,13 @@ class Add implements Command
 }
 ```
 
-And you can create your own option using the `@option` annotation:
+And you can create your own option using the `#[Option]` attribute:
 ```php
 <?php
 
 namespace MyVendorName\CliApp\Command;
 
-use SimpleCli\Annotation\option;
+use SimpleCli\Attribute\Option;
 use SimpleCli\Command;
 use SimpleCli\SimpleCli;
 
@@ -360,18 +351,13 @@ use SimpleCli\SimpleCli;
  */
 class Add implements Command
 {
-    /**
-     * @option
-     *
-     * Something the command can use.
-     */
+    #[Option('Something the command can use.')]
     public $foo = 'default';
 
-    /**
-     * @option show-foo
-     *
-     * Whether foo should be displayed or not.
-     */
+    #[Option(
+        name: 'show-foo',
+        description: 'Whether foo should be displayed or not.',
+    )]
     public $showFoo = false;
 
     public function run(SimpleCli $cli): bool
@@ -391,24 +377,26 @@ bin/easy-calc --show-foo --foo=bar
 
 Outputs: `bar` (in red).
 
-Note than you can pass the name for the option and alias in the annotation:
-`@option some-name, other-name, s, o` this mean `--some-name`, `--other-name`
-`-s` and `-o` will all store the value in the same option variable.
+Note than you can pass the name for the option and alias in the attribute:
+`#[Option(name: ['some-name', 'other-name'], alias: ['s', 'o'])]` this mean
+`--some-name`, `--other-name`, `-s` and `-o` will all store the value
+in the same option variable.
 
-Also note than if options are boolean type (`@var bool` or a boolean
-default value) and have aliases, they can be merged.
-If you have `@option show-foo, s` and `@option verbose, v` and pass `-vs` in
+Also note than if options are boolean type (`bool` explicit type, `@var bool`
+or a boolean default value) and have aliases, they can be merged.
+If you have `#[Option(name: 'show-foo', alias: 's')` and
+`#[Option(name: 'verbose', alias: 'v')` and pass `-vs` in
 the CLI, both options will be `true`.
 
-For non boolean options values can be set using `--foo bar` or `--foo=bar`,
+For non-boolean options values can be set using `--foo bar` or `--foo=bar`,
 both are valid. And options can come anywhere (before, after or between
 arguments).
 
-Finally, if you don't set a name, using the `@option` annotation alone
+Finally, if you don't set a name, using the `#[Option]` attribute alone
 the option will have the same name as its variable and will have its
 first letter as alias if it's available.
 
-## Short annotations
+## Annotations
 
 Annotations for `@option`, `@argument` and `@rest` can be written on
 one line.
@@ -416,13 +404,13 @@ one line.
 ```php
 class Add implements Command
 {
-    /** @argument / First argument. */
+    #[Argument('First argument.')]
     public $first = 'main';
 
-    /** @rest / Other arguments. */
+    #[Rest('Other arguments.')]
     public $others = [];
 
-    /** @option / Something the command can use. */
+    #[Option('Something the command can use.')]
     public $foo = 'default';
 
     /** @option show-foo, f / Whether foo should be displayed or not. */
@@ -632,7 +620,7 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 > Get the composer version of the package handling the CLI program.
 
-### displayVariable(int $length, string $variable, array $definition, $defaultValue): void
+### displayVariable(int $length, string $variable, array $definition, mixed $defaultValue): void
 
 > Output standard command variable (argument or option).
 
@@ -640,9 +628,25 @@ your program) and all methods available from the `SimpleCli` inherited class:
 
 > Get possible completions for a given start.
 
-### read($prompt, $completion): string
+### read(string $prompt, Closure|callable|array|null $completion): string
 
 > Ask the user $prompt and return the CLI input.
+
+### getStandardInput(): string
+
+> Get the initial stdin content as receive by the command using:
+> echo "foobar" | command
+> Or:
+> command < some-file.txt
+> Returns an empty string if no input passed.
+
+### getColors(): array
+
+> List of the codes for each text color name.
+
+### getBackgrounds(): array
+
+> List of the codes for each background color name.
 
 ### isMuted(): bool
 
@@ -783,6 +787,10 @@ your program) and all methods available from the `SimpleCli` inherited class:
 ### extractClassNameDescription(string $className): string
 
 > Get PHP comment doc block content of a given class.
+
+### getAttributeOrAnnotation(string $source, string $annotation, ReflectionProperty $property, string $attributeClass): object|string|null
+
+> Get an attribute if present or extract an annotation content from a PHP comment doc block.
 
 ### extractAnnotation(string $source, string $annotation): string
 

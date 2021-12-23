@@ -49,7 +49,7 @@ class InputTest extends TraitsTestCase
                 }
 
                 return '42';
-            }
+            },
         );
 
         $command->read('Answer to the Ultimate Question of Life, the Universe, and Everything', ['foo', 'bar', 'biz']);
@@ -58,12 +58,10 @@ class InputTest extends TraitsTestCase
 
         $command->read(
             'Are you mad?',
-            function ($start) {
-                return [
-                    "$start??",
-                    '42',
-                ];
-            }
+            static fn ($start) => [
+                "$start??",
+                '42',
+            ],
         );
 
         static::assertSame(['b??', '42'], $command->autocomplete('b'));
@@ -83,7 +81,7 @@ class InputTest extends TraitsTestCase
                 }
 
                 return '42';
-            }
+            },
         );
 
         $answer = $command->read('Answer to the Ultimate Question of Life, the Universe, and Everything');
@@ -93,5 +91,28 @@ class InputTest extends TraitsTestCase
         $answer = $command->read('Are you mad?');
 
         static::assertSame('yes', $answer);
+    }
+
+    /**
+     * @covers ::getStandardInput
+     */
+    public function testGetStandardInput(): void
+    {
+        $command = new class() extends DemoCli {
+            public function setStdinStream(string $stdinStream): void
+            {
+                $this->stdinStream = $stdinStream;
+            }
+        };
+
+        $file = tempnam(sys_get_temp_dir(), 'scli');
+        $content = (string) mt_rand();
+        file_put_contents($file, $content);
+
+        $command->setStdinStream($file);
+        $stdin = $command->getStandardInput();
+        unlink($file);
+
+        static::assertSame($content, $stdin);
     }
 }

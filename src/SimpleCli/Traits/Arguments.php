@@ -9,16 +9,16 @@ use InvalidArgumentException;
 trait Arguments
 {
     /** @var array<string, string|int|float|bool|null> */
-    protected $arguments;
+    protected array $arguments;
 
-    /** @var array<array<string, mixed>> */
-    protected $expectedArguments;
+    /** @var array<array{type: ?string, property: string, values: ?array, description: string}> */
+    protected array $expectedArguments;
 
     /** @var array<string|int|float|bool|null> */
-    protected $restArguments;
+    protected array $restArguments;
 
-    /** @var array<string, mixed>|null */
-    protected $expectedRestArgument;
+    /** @var array{type: ?string, property: string, values: ?array, description: string}|null */
+    protected ?array $expectedRestArgument;
 
     /**
      * Get list of current filtered arguments.
@@ -53,7 +53,7 @@ trait Arguments
     /**
      * Get definition for the rest argument if a @rest property given.
      *
-     * @return array<string, mixed>|null
+     * @return array{type: ?string, property: string, values: ?array, description: string}|null
      */
     public function getExpectedRestArgument(): ?array
     {

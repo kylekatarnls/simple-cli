@@ -1,0 +1,42 @@
+name: Tests
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: ['8.0']
+
+    name: PHPCS
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: ast
+        tools: composer:v2
+        coverage: xdebug
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v2
+      with:
+        path: vendor
+        key: v4-${{ runner.os }}-php-v${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
+
+    - name: Install dependencies
+      if: steps.composer-cache.outputs.cache-hit != 'true'
+      run: composer update --prefer-dist --no-progress --no-suggest ${{ matrix.composerOptions }}
+
+    - name: PHPCS
+      run: composer cs;

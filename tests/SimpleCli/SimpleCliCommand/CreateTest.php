@@ -49,11 +49,11 @@ class CreateTest extends TestCase
     {
         static::assertOutput(
             "[ESCAPE][0;36m1 program created.\n[ESCAPE][0m",
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'create', 'Tests\\SimpleCli\\DemoApp\\DemoCli');
-            }
+            },
         );
 
         static::assertFileContentEquals(
@@ -99,11 +99,11 @@ php "%BIN_TARGET%" %*
 Creating bin/demo-cli.bat
 [ESCAPE][0;36m1 program created.
 [ESCAPE][0m',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'create', 'Tests\\SimpleCli\\DemoApp\\DemoCli', '--verbose');
-            }
+            },
         );
 
         static::assertFileContentEquals(
@@ -152,11 +152,11 @@ php "%BIN_TARGET%" %*
 [ESCAPE][0mPlease check your composer autoload is up to date and allow to load this class.
 [ESCAPE][0;36m0 programs created.
 [ESCAPE][0m',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'create', 'foobar');
-            }
+            },
         );
 
         $this->fileSystem->remove('bin');
@@ -165,11 +165,11 @@ php "%BIN_TARGET%" %*
             '[ESCAPE][0;31mstdClass needs to implement SimpleCli\SimpleCli
 [ESCAPE][0m[ESCAPE][0;36m0 programs created.
 [ESCAPE][0m',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'create', 'stdClass');
-            }
+            },
         );
 
         $this->fileSystem->remove('bin');
@@ -178,11 +178,11 @@ php "%BIN_TARGET%" %*
         static::assertOutput(
             '[ESCAPE][0;31mUnable to create the bin directory
 [ESCAPE][0m',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'create', 'foobar');
-            }
+            },
         );
     }
 }

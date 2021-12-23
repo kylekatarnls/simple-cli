@@ -31,14 +31,14 @@ class ProgressBarTest extends TestCase
                 '¤ 100% [===================================================]',
                 "\n",
             ]),
-            function () {
+            static function () {
                 $bar = new ProgressBar(new DemoCli());
                 $bar->start();
                 $bar->setValue(0.3);
                 $bar->setValue(0.7);
                 $bar->setValue(1);
                 $bar->end();
-            }
+            },
         );
 
         static::assertOutput(
@@ -50,7 +50,7 @@ class ProgressBarTest extends TestCase
                 '{¤ 100,0% (»»»»»»»»»»»»»»»»»»»»»)}',
                 "\n ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾",
             ]),
-            function () {
+            static function () {
                 $bar = new ProgressBar(new DemoCli());
                 $bar->total = 27;
                 $bar->decimals = 1;
@@ -69,7 +69,7 @@ class ProgressBarTest extends TestCase
                 $generator->send(20);
                 $generator->send(25);
                 $generator->send(27);
-            }
+            },
         );
 
         static::assertOutput(
@@ -79,7 +79,7 @@ class ProgressBarTest extends TestCase
                 '¤ 100% [█████]',
                 "\n",
             ]),
-            function () {
+            static function () {
                 $bar = new ProgressBar(new DemoCli());
                 $bar->width = 5;
                 $bar->bar = '█';
@@ -88,7 +88,7 @@ class ProgressBarTest extends TestCase
                 $generator = $bar();
                 $generator->send(0.6);
                 $generator->send(1);
-            }
+            },
         );
 
         static::assertOutput(
@@ -101,7 +101,7 @@ class ProgressBarTest extends TestCase
                 '¤ 100% [===================================================]',
                 "\n",
             ]),
-            function () {
+            static function () {
                 $bar = new ProgressBar(new DemoCli());
                 $bar->start();
                 $bar->setValue(0.3);
@@ -110,7 +110,7 @@ class ProgressBarTest extends TestCase
                 $bar->refresh();
                 $bar->setValue(1);
                 $bar->end();
-            }
+            },
         );
     }
 }

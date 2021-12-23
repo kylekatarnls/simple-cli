@@ -40,7 +40,7 @@ class TableTest extends TestCase
                 '│ song   │ Feeling Good │',
                 '└────────┴──────────────┘',
             ]),
-            function () {
+            static function () {
                 $cli = new DemoCli();
                 $table = new Table([
                     'artist' => 'Nina Simone',
@@ -48,7 +48,7 @@ class TableTest extends TestCase
                 ]);
 
                 $cli->write($table);
-            }
+            },
         );
     }
 
@@ -76,7 +76,7 @@ class TableTest extends TestCase
                 '│ song   │ Feeling Good │',
                 '└────────┴──────────────┘',
             ]),
-            function () {
+            static function () {
                 $cli = new DemoCli();
                 $cli->setEscapeCharacter("\033");
                 $table = new Table([
@@ -85,7 +85,7 @@ class TableTest extends TestCase
                 ]);
 
                 $cli->write($table);
-            }
+            },
         );
     }
 
@@ -109,7 +109,7 @@ class TableTest extends TestCase
                 '│ song   │ Feeling Good │',
                 '└────────┴──────────────┘',
             ]),
-            function () {
+            static function () {
                 $cli = new DemoCli();
                 $cli->setEscapeCharacter("\033");
                 $iterator = static function () use ($cli): Generator {
@@ -119,7 +119,7 @@ class TableTest extends TestCase
                 $table = new Table($iterator());
 
                 $cli->write($table);
-            }
+            },
         );
     }
 
@@ -152,7 +152,7 @@ class TableTest extends TestCase
                 '│ Total            │              │  42? │            │',
                 '└──────────────────┴──────────────┴──────┴────────────┘',
             ]),
-            function () {
+            static function () {
                 $cli = new DemoCli();
                 $iterator = static function (): Generator {
                     yield '';
@@ -169,7 +169,7 @@ class TableTest extends TestCase
                 $table->align = [Cell::ALIGN_LEFT, Cell::ALIGN_CENTER, Cell::ALIGN_RIGHT];
 
                 $cli->write($table);
-            }
+            },
         );
     }
 
@@ -194,7 +194,7 @@ class TableTest extends TestCase
                 '║>Hello<│>World<│>!~~~~<║',
                 '╚═══════╧═══════╧═══════╝',
             ]),
-            function () {
+            static function () {
                 $cli = new DemoCli();
                 $table = new Table([
                     ['One', 'Two', 'Three'],
@@ -210,7 +210,7 @@ class TableTest extends TestCase
                     ╚═══╧═══╝';
 
                 $cli->write($table);
-            }
+            },
         );
     }
 
@@ -233,7 +233,7 @@ class TableTest extends TestCase
                 '║ Other     │           │           ║',
                 '╚═══════════╧═══════════╧═══════════╝',
             ]),
-            function () {
+            static function () {
                 $cli = new DemoCli();
                 $table = new Table([
                     ['One', 'Two', 'Three'],
@@ -249,7 +249,7 @@ class TableTest extends TestCase
                     ╚═══╧═══╝';
 
                 $cli->write($table);
-            }
+            },
         );
     }
 
@@ -266,7 +266,7 @@ class TableTest extends TestCase
                 '║     │ 2   │ Three ║',
                 '╚═════╧═════╧═══════╝',
             ]),
-            function () {
+            static function () {
                 $cli = new DemoCli();
                 $table = new Table([
                     [
@@ -284,7 +284,7 @@ class TableTest extends TestCase
                     ╚═══╧═══╝';
 
                 $cli->write($table);
-            }
+            },
         );
     }
 
@@ -309,7 +309,7 @@ class TableTest extends TestCase
                 '│                   │ Other │       │',
                 '└─────────┴─────────┴───────┴───────┘',
             ]),
-            function () {
+            static function () {
                 $cli = new DemoCli();
 
                 $table = new Table([
@@ -319,7 +319,7 @@ class TableTest extends TestCase
                 ]);
 
                 $cli->write($table);
-            }
+            },
         );
     }
 
@@ -357,7 +357,7 @@ class TableTest extends TestCase
                 ' /        |       |        \║',
                 '╚═════════╧═══════╧═════════╝',
             ]),
-            function () {
+            static function () {
                 $cli = new DemoCli();
                 $table = new Table([
                     ['One', 'Two', 'Three'],
@@ -379,7 +379,7 @@ class TableTest extends TestCase
                     ╚═════╧═════╝';
 
                 $cli->write($table);
-            }
+            },
         );
 
         static::assertOutput(
@@ -388,7 +388,7 @@ class TableTest extends TestCase
                 'Hello World !    ',
                 'End              ',
             ]),
-            function () {
+            static function () {
                 $cli = new DemoCli();
                 $table = new Table([
                     ['One', 'Two', 'Three'],
@@ -398,7 +398,7 @@ class TableTest extends TestCase
                 $table->template = "1 2\n3 4";
 
                 $cli->write($table);
-            }
+            },
         );
     }
 

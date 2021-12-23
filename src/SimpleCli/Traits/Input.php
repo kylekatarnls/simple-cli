@@ -11,14 +11,14 @@ trait Input
     /** @var Closure|callable|string[]|null */
     protected $currentCompletion = null;
 
-    /** @var callable */
-    protected $readlineFunction = 'readline';
+    protected Closure|string|array $readlineFunction = 'readline';
 
-    /** @var callable|string */
-    protected $readlineCompletionRegisterFunction = 'readline_completion_function';
+    protected Closure|string|array $readlineCompletionRegisterFunction = 'readline_completion_function';
 
     /** @var string[] */
     protected array $readlineCompletionExtensions = ['readline'];
+
+    protected string $stdinStream = 'php://stdin';
 
     protected function recordAutocomplete(): void
     {
@@ -72,5 +72,33 @@ trait Input
         $this->currentCompletion = $completion;
 
         return ($this->readlineFunction)($prompt);
+    }
+
+    /**
+     * Get the initial stdin content as receive by the command using:
+     * echo "foobar" | command
+     * Or:
+     * command < some-file.txt
+     * Returns an empty string if no input passed.
+     *
+     * @return string
+     */
+    public function getStandardInput(): string
+    {
+        $stdin = '';
+        $stream = fopen($this->stdinStream, 'r');
+        $read = [$stream];
+        $write = null;
+        $except = null;
+
+        if (stream_select($read, $write, $except, 0) === 1) {
+            while ($line = fgets($stream)) {
+                $stdin .= $line;
+            }
+        }
+
+        fclose($stream);
+
+        return $stdin;
     }
 }
