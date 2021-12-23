@@ -53,8 +53,10 @@ trait Parameters
         ) {
             throw new InvalidArgumentException(
                 'The parameter '.((string) $parameterDefinition['property']).
+                ' must be one of the following values: ['.
                 // @phan-suppress-next-line PhanParamSpecial1
-                ' must be one of the following values: ['.implode(', ', $parameterDefinition['values'])."]; '$parameter' given.",
+                implode(', ', $parameterDefinition['values']).
+                "]; '$parameter' given.",
             );
         }
 

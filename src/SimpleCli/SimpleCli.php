@@ -19,6 +19,8 @@ use SimpleCli\Traits\Options;
 use SimpleCli\Traits\Output;
 use SimpleCli\Traits\Parameters;
 
+// phpcs:disable Generic.Files.LineLength
+
 /**
  * Class SimpleCli.
  *

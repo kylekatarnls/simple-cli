@@ -6,6 +6,8 @@ namespace SimpleCli\Traits;
 
 use InvalidArgumentException;
 
+// phpcs:disable Generic.Files.LineLength
+
 trait Options
 {
     /** @var array<string, mixed> */

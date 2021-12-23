@@ -413,7 +413,11 @@ class Add implements Command
     #[Option('Something the command can use.')]
     public $foo = 'default';
 
-    /** @option show-foo, f / Whether foo should be displayed or not. */
+    #[Option(
+        name: 'show-foo',
+        alias: 'f',
+        description: 'Whether foo should be displayed or not.',
+    )]
     public $showFoo = false;
 
     // run(...)
