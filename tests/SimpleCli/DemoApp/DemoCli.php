@@ -12,7 +12,6 @@ use SimpleCli\SimpleCliCommand\Create;
  */
 class DemoCli extends SimpleCli
 {
-    /** @var string */
     protected string $escapeCharacter = '[ESCAPE]';
 
     protected Closure|string|array $readlineFunction = [self::class, 'ask'];

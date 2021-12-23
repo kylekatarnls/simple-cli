@@ -35,11 +35,11 @@ class HelpTest extends TestCase
   [ESCAPE][0;32m-v, --verbose[ESCAPE][0m  If this option is set, extra debug information will be displayed.
                  [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
 ',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'create', '--help');
-            }
+            },
         );
 
         static::assertOutput(
@@ -58,11 +58,11 @@ class HelpTest extends TestCase
   [ESCAPE][0;32m-h, --help[ESCAPE][0m     Display documentation of the current command.
                  [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
 ',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'foobar', '--help');
-            }
+            },
         );
 
         static::assertOutput(
@@ -79,11 +79,11 @@ class HelpTest extends TestCase
   [ESCAPE][0;32m-h, --help[ESCAPE][0m            Display documentation of the current command.
                         [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
 ',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'hall', '--help');
-            }
+            },
         );
     }
 }

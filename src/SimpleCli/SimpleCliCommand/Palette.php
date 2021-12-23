@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleCli\SimpleCliCommand;
 
-use SimpleCli\Annotation\argument; // @phan-suppress-current-line PhanUnreferencedUseNormal used as annotation
+use SimpleCli\Attribute\Argument;
 use SimpleCli\Command;
 use SimpleCli\SimpleCli;
 
@@ -13,12 +13,8 @@ use SimpleCli\SimpleCli;
  */
 class Palette implements Command
 {
-    /**
-     * @argument
-     *
-     * @var string
-     */
-    public $text = 'Hello world!';
+    #[Argument]
+    public string $text = 'Hello world!';
 
     public function run(SimpleCli $cli): bool
     {

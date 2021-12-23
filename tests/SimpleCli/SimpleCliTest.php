@@ -76,29 +76,29 @@ class SimpleCliTest extends TestCase
   [ESCAPE][0;32m-v, --verbose[ESCAPE][0m  If this option is set, extra debug information will be displayed.
                  [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
 ',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'create', '--help');
-            }
+            },
         );
 
         static::assertOutput(
             "9\n\n",
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'all', '--biz', '9');
-            }
+            },
         );
 
         static::assertOutput(
             "[ESCAPE][0;31m--biz option is not a boolean, so you can't use it in a aliases group[ESCAPE][0m",
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'all', '--biz');
-            }
+            },
         );
     }
 
@@ -111,29 +111,29 @@ class SimpleCliTest extends TestCase
     {
         static::assertOutput(
             '[ESCAPE][0;31mstdClass needs to implement SimpleCli\Command[ESCAPE][0m',
-            function () {
+            static function () {
                 $command = new BadCli();
 
                 $command('file', 'bad');
-            }
+            },
         );
 
         static::assertOutput(
             '[ESCAPE][0;31mCommand ghost not found[ESCAPE][0m',
-            function () {
+            static function () {
                 $command = new BadCli();
 
                 $command('file', 'ghost');
-            }
+            },
         );
 
         static::assertOutput(
             "9\n\n",
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'all', '--biz', '9');
-            }
+            },
         );
     }
 
@@ -156,12 +156,12 @@ class SimpleCliTest extends TestCase
                     '',
                 ]
             ),
-            function () {
+            static function () {
                 $command = new InteractiveCli();
                 $command->setAnswers(['y']);
 
                 $command('file', 'ball', '--biz', '9');
-            }
+            },
         );
 
         static::assertOutput(
@@ -172,12 +172,12 @@ class SimpleCliTest extends TestCase
                     'Do you mean [ESCAPE][1;34mall[ESCAPE][0m?',
                 ]
             ),
-            function () {
+            static function () {
                 $command = new InteractiveCli();
                 $command->setAnswers(['n']);
 
                 $command('file', 'ball', '--biz', '9');
-            }
+            },
         );
 
         static::assertOutput(
@@ -191,12 +191,12 @@ class SimpleCliTest extends TestCase
                     '',
                 ]
             ),
-            function () {
+            static function () {
                 $command = new InteractiveCli();
                 $command->setAnswers(['o', 'y']);
 
                 $command('file', 'ball', '--biz', '9');
-            }
+            },
         );
     }
 
@@ -207,20 +207,20 @@ class SimpleCliTest extends TestCase
     {
         static::assertOutput(
             "9\n\n",
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'all', '--biz', '9');
-            }
+            },
         );
 
         static::assertOutput(
             "[ESCAPE][0;31m--biz option is not a boolean, so you can't use it in a aliases group[ESCAPE][0m",
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'all', '--biz');
-            }
+            },
         );
     }
 
@@ -246,38 +246,38 @@ class SimpleCliTest extends TestCase
   [ESCAPE][0;32m-v, --verbose[ESCAPE][0m  If this option is set, extra debug information will be displayed.
                  [ESCAPE][0;36mbool            [ESCAPE][0m[ESCAPE][0;33mdefault: false[ESCAPE][0m
 ',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'create', '--help');
-            }
+            },
         );
 
         static::assertOutput(
             "9\n\n",
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'all', '--biz', '9');
-            }
+            },
         );
 
         static::assertOutput(
             "[ESCAPE][0;31m--biz option is not a boolean, so you can't use it in a aliases group[ESCAPE][0m",
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'all', '--biz');
-            }
+            },
         );
 
         static::assertOutput(
             '',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'create', '--quiet');
-            }
+            },
         );
     }
 

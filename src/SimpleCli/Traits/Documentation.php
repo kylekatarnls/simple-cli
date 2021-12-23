@@ -283,7 +283,7 @@ trait Documentation
         ]);
     }
 
-    private function getPropertyType(ReflectionProperty $property, Command $command, Rest|string|null $rest): ?string
+    private function getRestTypeAndDescription(ReflectionProperty $property, Rest|string|null $rest): array
     {
         if ($rest instanceof Rest) {
             $rest = $rest->description;
@@ -294,6 +294,13 @@ trait Documentation
             ? $type->getName()
             : null;
 
+        return [$rest, $type];
+    }
+
+    private function getPropertyType(ReflectionProperty $property, Command $command, Rest|string|null $rest): ?string
+    {
+        [$description, $type] = $this->getRestTypeAndDescription($property, $rest);
+
         if (!$type) {
             $defaultValue = $property->getValue($command);
 
@@ -302,7 +309,7 @@ trait Documentation
             }
         }
 
-        if ($rest !== null && ($type ?? 'array') === 'array') {
+        if ($description !== null && ($type ?? 'array') === 'array') {
             $defaultValue = $defaultValue ?? $property->getValue($command);
 
             if (is_iterable($defaultValue)) {

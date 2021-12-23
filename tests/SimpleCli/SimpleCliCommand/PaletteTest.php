@@ -57,7 +57,7 @@ class PaletteTest extends TestCase
                 'white             48;5;255  [ESCAPE][48;5;255mHello world![ESCAPE][0m',
                 '',
             ]),
-            function () {
+            static function () {
                 $command = new class() extends DemoCli {
                     /** @return array<class-string> */
                     public function getCommands(): array
@@ -67,7 +67,7 @@ class PaletteTest extends TestCase
                 };
 
                 $command('file', 'palette');
-            }
+            },
         );
     }
 }

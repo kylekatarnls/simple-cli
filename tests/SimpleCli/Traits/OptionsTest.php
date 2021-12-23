@@ -180,11 +180,11 @@ class OptionsTest extends TraitsTestCase
     {
         static::assertOutput(
             '[ESCAPE][0;31m-p option is not a boolean, so you can\'t use it in a aliases group[ESCAPE][0m',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'foobar', '-p');
-            }
+            },
         );
     }
 
@@ -195,11 +195,11 @@ class OptionsTest extends TraitsTestCase
     {
         static::assertOutput(
             '[ESCAPE][0;31m-h option is boolean and should not have value[ESCAPE][0m',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'foobar', '-h=yoh');
-            }
+            },
         );
     }
 

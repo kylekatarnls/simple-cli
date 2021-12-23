@@ -18,7 +18,7 @@ abstract class TestCase extends FrameworkTestCase
      *
      * @return mixed
      */
-    protected static function invoke($object, string $method, ...$arguments)
+    protected static function invoke(object $object, string $method, ...$arguments): mixed
     {
         $reflection = (new ReflectionClass(get_class($object)))->getMethod($method);
         $reflection->setAccessible(true);
@@ -34,7 +34,7 @@ abstract class TestCase extends FrameworkTestCase
      *
      * @return mixed
      */
-    protected static function getPropertyValue($object, string $propertyName)
+    protected static function getPropertyValue(object $object, string $propertyName): mixed
     {
         $reflection = (new ReflectionClass(get_class($object)))->getProperty($propertyName);
         $reflection->setAccessible(true);
@@ -51,17 +51,31 @@ abstract class TestCase extends FrameworkTestCase
         ]);
     }
 
-    public static function assertOutput(string $expectedOutput, Closure $action): void
+    protected static function getActionOutput(Closure $action): ?string
     {
         ob_start();
         $action();
         $actualOutput = ob_get_contents();
         ob_end_clean();
 
+        return $actualOutput === false ? null : $actualOutput;
+    }
+
+    public static function assertOutput(string $expectedOutput, Closure $action): void
+    {
         static::assertSame(
             static::revealWhiteCharacters($expectedOutput),
-            static::revealWhiteCharacters($actualOutput ?: ''),
-            "Output should be: $expectedOutput"
+            static::revealWhiteCharacters(self::getActionOutput($action) ?? ''),
+            "Output should be: $expectedOutput",
+        );
+    }
+
+    public static function assertOutputContains(string $needle, Closure $action): void
+    {
+        static::assertStringContainsString(
+            static::revealWhiteCharacters($needle),
+            static::revealWhiteCharacters(self::getActionOutput($action) ?? ''),
+            "Output should contain: $needle",
         );
     }
 

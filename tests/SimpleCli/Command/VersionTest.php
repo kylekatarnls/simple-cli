@@ -17,11 +17,11 @@ class VersionTest extends TestCase
     {
         static::assertOutput(
             "[ESCAPE][0;33munknown[ESCAPE][0m\n",
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'version');
-            }
+            },
         );
     }
 }

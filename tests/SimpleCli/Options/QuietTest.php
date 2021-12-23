@@ -17,21 +17,21 @@ class QuietTest extends TestCase
     {
         static::assertOutput(
             '',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'create', '--quiet');
-            }
+            },
         );
 
         static::assertOutput(
             '[ESCAPE][0;36m0 programs created.
 [ESCAPE][0m',
-            function () {
+            static function () {
                 $command = new DemoCli();
 
                 $command('file', 'create');
-            }
+            },
         );
     }
 }
