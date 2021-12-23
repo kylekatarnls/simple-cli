@@ -7,6 +7,9 @@ use PHPUnit\Framework\TestCase as FrameworkTestCase;
 use ReflectionClass;
 use ReflectionException;
 
+/**
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
+ */
 abstract class TestCase extends FrameworkTestCase
 {
     /**
