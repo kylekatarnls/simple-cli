@@ -168,6 +168,15 @@ trait Documentation
         }
     }
 
+    /**
+     * @param Option|string|null          $option
+     * @param string                      $name
+     * @param string|null                 $doc
+     * @param Values|string[]|string|null $values
+     * @param string|null                 $type
+     *
+     * @return array{type: ?string, property: string, values: ?array, description: string, names: array<string>}
+     */
     private function extractOptionInfo(
         Option|string|null $option,
         string $name,
@@ -178,8 +187,11 @@ trait Documentation
         if ($option instanceof Option) {
             return [
                 'property'    => $name,
-                'names'       => array_merge((array) ($option->name ?? []), (array) ($option->alias ?? [])),
-                'description' => $option->description,
+                'names'       => array_map(
+                    'strval',
+                    array_merge((array) ($option->name ?? []), (array) ($option->alias ?? [])),
+                ),
+                'description' => $option->description ?? '',
                 'values'      => $this->getValues($values),
                 'type'        => $type,
             ];
@@ -197,6 +209,16 @@ trait Documentation
         ];
     }
 
+    /**
+     * @param Argument|string|null        $argument
+     * @param Rest|string|null            $rest
+     * @param string                      $name
+     * @param string|null                 $doc
+     * @param Values|string[]|string|null $values
+     * @param string|null                 $type
+     *
+     * @return array{type: ?string, property: string, values: ?array, description: string}
+     */
     private function extractArgumentInfo(
         Argument|string|null $argument,
         Rest|string|null $rest,
