@@ -40,6 +40,9 @@ class BuildPhar implements Command
     #[Option('Name of the main file of the PHAR.')]
     public string $mainFileName = 'main.php';
 
+    #[Option('Output file')]
+    public string $outputFile = '';
+
     #[Option('Where to search for programs (if no explicit classes passed as arguments).')]
     public string $binDirectory = 'bin';
 
@@ -162,11 +165,12 @@ class BuildPhar implements Command
             declare(strict_types=1);
 
             include __DIR__ . '/vendor/autoload.php';
-
+            {versionConstant}
             exit((new {className}())(...$argv) ? 0 : 1);
 
             EOS, [
-            '{className}' => $className,
+            '{className}'       => $className,
+            '{versionConstant}' => $this->getVersionConstantDeclaration(),
         ]));
         $this->setSubStep(0.3);
 
@@ -262,5 +266,18 @@ class BuildPhar implements Command
         }
 
         return $classNames;
+    }
+
+    protected function getVersionConstantDeclaration(): string
+    {
+        $version = getenv('PHAR_PACKAGE_VERSION');
+
+        if (is_string($version) && preg_match('`^(.*/)?v?(?<version>\d[^/]*)$`', $version, $match)) {
+            $version = var_export($match['version'], true);
+
+            return "\nconst SIMPLE_CLI_PHAR_PROGRAM_VERSION = $version;\n";
+        }
+
+        return '';
     }
 }

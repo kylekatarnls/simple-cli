@@ -14,6 +14,7 @@ A simple CLI framework oriented object and dependencies-free.
 Features:
 
   - Auto-documentation. `--help` is auto-generated using available commands, arguments and options.
+  - Clean syntax using PHP 8 attributes.
   - Detection of probable mistype and auto-suggestion.
   - Based on documentation annotations to preserve ultra-clean code.
   - Supports colors.
@@ -21,6 +22,7 @@ Features:
   - Provides predefined commands: `usage` and `version`.
   - Provides predefined options: `--help`, `--quiet` and `--verbose`.
   - Provides a CLI to create programs and commands bootstraps.
+  - Build your program as a PHAR file.
 
 The documentation below is for simple-cli 2 which requires PHP 8 and
 supports both attributes and annotations.
@@ -132,6 +134,104 @@ class EasyCalc extends SimpleCli
     }
 }
 ```
+
+## Build as PHAR
+
+Simple-CLI allow you to package your program as a single PHAR file.
+
+It will automatically pack all the files in your `src` folder, the
+root folder where your main class is if different, and the `vendor`
+folder.
+
+So to make it light, remove any unneeded files from those folders
+such as dev dependencies using:
+```
+composer install --no-dev
+```
+
+Then simply run:
+```
+./bin/simple-cli build-phar
+```
+
+From inside your working directory.
+
+You can also specify a version for your package:
+```
+PHAR_PACKAGE_VERSION=2.0.0 ./bin/simple-cli build-phar
+```
+
+So using GitHub Actions, building your project as a PHAR automatically
+on push can be easily done with:
+
+**.github/workflows/phar.yml**:
+```yaml
+name: Generate phar
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+  create:
+    tags:
+      - "*"
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      COMPOSER_NO_INTERACTION: 1
+
+    name: Build PHAR
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: phar-${{ runner.os }}-php${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-dev
+
+      - name: Build
+        run: |
+          chmod +x ./bin/simple-cli
+          ./bin/simple-cli build-phar
+        env:
+          PHAR_PACKAGE_VERSION: ${{ secrets.GITHUB_REF }}
+
+      - name: Upload my-cli.phar
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-cli.phar
+          path: my-cli.phar
+
+      - name: Release my-cli.phar
+        if: github.event_name == 'release'
+        uses: skx/github-action-publish-binaries@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: 'my-cli.phar'
+```
+Replace `my-cli` with the name of your program.
 
 ## Add commands
 

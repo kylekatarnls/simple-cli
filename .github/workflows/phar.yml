@@ -5,6 +5,12 @@ on:
     branches: [ '**' ]
   pull_request:
     branches: [ '**' ]
+  create:
+    tags:
+      - "*"
+  release:
+    types:
+      - created
 
 jobs:
   build:
@@ -45,9 +51,19 @@ jobs:
         run: |
           chmod +x ./bin/simple-cli
           ./bin/simple-cli build-phar
+        env:
+          PHAR_PACKAGE_VERSION: ${{ secrets.GITHUB_REF }}
 
       - name: Upload simple-cli.phar
         uses: actions/upload-artifact@v2
         with:
           name: simple-cli.phar
           path: simple-cli.phar
+
+      - name: Release simple-cli.phar
+        if: github.event_name == 'release'
+        uses: skx/github-action-publish-binaries@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: 'simple-cli.phar'

@@ -77,9 +77,12 @@ abstract class SimpleCli implements Writer
     {
         $packageName = $this->getPackageName();
         $start = $packageName === '' ? '' : $this->colorize($packageName, 'green').' version ';
+        $version = defined('SIMPLE_CLI_PHAR_PROGRAM_VERSION')
+            ? constant('SIMPLE_CLI_PHAR_PROGRAM_VERSION')
+            : $this->getInstalledPackageVersion($packageName);
 
         return $start.
-            $this->colorize($this->getInstalledPackageVersion($packageName), 'brown').
+            $this->colorize($version, 'brown').
             $this->getVersionDetails();
     }
 
