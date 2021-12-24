@@ -8,10 +8,7 @@ use SimpleCli\Composer\InstalledPackage;
 
 trait Composer
 {
-    /**
-     * @var string
-     */
-    protected $vendorDirectory = __DIR__.'/../../../..';
+    protected string $vendorDirectory = __DIR__.'/../../../..';
 
     /**
      * Get the composer package name that handle the CLI program.
@@ -50,7 +47,7 @@ trait Composer
      *
      * @return array<string|int, array<string, string>>
      */
-    public function getInstalledPackages()
+    public function getInstalledPackages(): array
     {
         $composerDirectory = $this->getVendorDirectory().'/composer';
 
@@ -60,7 +57,7 @@ trait Composer
             $installedData = $installedData['versions'] ?? $installedData;
 
             if (!empty($installedData)) {
-                return $installedData;
+                return (array) $installedData;
             }
         }
 
@@ -70,7 +67,7 @@ trait Composer
             : null;
         $installedData = $installedData ?: [];
 
-        return $installedData['packages'] ?? $installedData;
+        return (array) ($installedData['packages'] ?? $installedData);
     }
 
     /**
@@ -106,9 +103,6 @@ trait Composer
      */
     public function getInstalledPackageVersion(string $name): string
     {
-        $package = $this->getInstalledPackage($name);
-        $version = $package ? $package->version : null;
-
-        return $version ?: 'unknown';
+        return $this->getInstalledPackage($name)?->version ?: 'unknown';
     }
 }

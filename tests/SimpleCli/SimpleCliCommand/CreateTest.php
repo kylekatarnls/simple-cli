@@ -143,7 +143,7 @@ php "%BIN_TARGET%" %*
 
     /**
      * @covers ::run
-     * @covers ::error
+     * @covers \SimpleCli\Traits\Output::error
      */
     public function testRun(): void
     {

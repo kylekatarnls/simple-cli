@@ -13,6 +13,7 @@ use SimpleCli\Traits\Commands;
 use SimpleCli\Traits\Composer;
 use SimpleCli\Traits\Documentation;
 use SimpleCli\Traits\File;
+use SimpleCli\Traits\IniSet;
 use SimpleCli\Traits\Input;
 use SimpleCli\Traits\Name;
 use SimpleCli\Traits\Options;
@@ -45,6 +46,7 @@ abstract class SimpleCli implements Writer
     use Options;
     use Composer;
     use Documentation;
+    use IniSet;
 
     /**
      * @param array<string, string>|null $colors
@@ -133,7 +135,7 @@ abstract class SimpleCli implements Writer
         }
 
         $this->command = $command;
-        $this->parameters = $parameters;
+        $this->parameters = array_diff($parameters, SimpleCliOption::ALL);
 
         $commandClass = $this->getCommandClassFromName($commands, $command);
 

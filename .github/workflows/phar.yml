@@ -1,0 +1,51 @@
+name: Generate phar
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      COMPOSER_NO_INTERACTION: 1
+
+    strategy:
+      matrix:
+        php: [8.0]
+        setup: [prefer-stable]
+
+    name: Build PHAR
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: phar-v2-${{ runner.os }}-php${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-dev
+
+      - name: Build
+        run: ./bin/simple-cli build-phar
+
+      - name: Upload simple-cli.phar
+        uses: actions/upload-artifact@v2
+        with:
+          name: simple-cli.phar
+          path: simple-cli.phar
