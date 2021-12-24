@@ -257,6 +257,7 @@ trait Output
      * Output $text in red, add a new line and return false.
      *
      * @param string $text
+     *
      * @return false
      */
     public function error(string $text = ''): bool

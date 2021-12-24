@@ -42,7 +42,9 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-dev
 
       - name: Build
-        run: ./bin/simple-cli build-phar
+        run: |
+          chmod +x ./bin/simple-cli
+          ./bin/simple-cli build-phar
 
       - name: Upload simple-cli.phar
         uses: actions/upload-artifact@v2

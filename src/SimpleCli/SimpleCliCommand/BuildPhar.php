@@ -8,6 +8,7 @@ use Generator;
 use Phar;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use ReflectionClass;
 use SimpleCli\Attribute\Option;
 use SimpleCli\Attribute\Rest;
 use SimpleCli\Command;
@@ -18,6 +19,7 @@ use SimpleCli\SimpleCli;
 use SimpleCli\SimpleCliCommand\Traits\ValidateProgram;
 use SimpleCli\Widget\ProgressBar;
 use SplFileInfo;
+use Throwable;
 
 /**
  * Build the current program as a phar file.
@@ -34,6 +36,9 @@ class BuildPhar implements Command
         alias: ['b', 'd'],
     )]
     public string $baseDirectory;
+
+    #[Option('Name of the main file of the PHAR.')]
+    public string $mainFileName = 'main.php';
 
     #[Option('Where to search for programs (if no explicit classes passed as arguments).')]
     public string $binDirectory = 'bin';
@@ -52,6 +57,13 @@ class BuildPhar implements Command
             return $cli->error('Phar extension is disabled, install and enable it to run this command.');
         }
 
+        $this->baseDirectory = realpath(($this->baseDirectory ?? getcwd()) ?: '.');
+
+        if (!$this->baseDirectory || !is_dir($this->baseDirectory)) {
+            return $cli->error('Specified --base-directory is not a valid directory path.');
+        }
+
+        $this->baseDirectory .= DIRECTORY_SEPARATOR;
         $classNames = $this->getClassNames();
 
         if (!$classNames) {
@@ -110,17 +122,32 @@ class BuildPhar implements Command
             $className = "\\$className";
         }
 
-        $this->baseDirectory ??= getcwd() ?: '.';
-        $pharFile = $this->baseDirectory . "/$name.phar";
-        $mainFileName = 'main.php';
-        $mainFile = $this->baseDirectory . "/$mainFileName";
+        $directories = [];
+
+        try {
+            $class = new ReflectionClass($className);
+            $file = $class->getFileName();
+
+            if (str_starts_with($file, $this->baseDirectory)) {
+                $pos = strpos($file, DIRECTORY_SEPARATOR, strlen($this->baseDirectory));
+
+                if ($pos !== false) {
+                    $directories[] = substr($file, 0, $pos);
+                }
+            }
+        } catch (Throwable) {
+            // Empty $directories list
+        }
+
+        $pharFile = $this->baseDirectory."$name.phar";
+        $mainFile = $this->baseDirectory.$this->mainFileName;
 
         if (file_exists($pharFile)) {
             unlink($pharFile);
         }
 
-        if (file_exists($pharFile . '.gz')) {
-            unlink($pharFile . '.gz');
+        if (file_exists($pharFile.'.gz')) {
+            unlink($pharFile.'.gz');
         }
 
         $this->setSubStep(0.1);
@@ -143,10 +170,10 @@ class BuildPhar implements Command
         ]));
         $this->setSubStep(0.3);
 
-        $defaultStub = $phar->createDefaultStub($mainFileName);
+        $defaultStub = $phar->createDefaultStub($this->mainFileName);
         $this->setSubStep(0.35);
 
-        $phar->buildFromIterator($this->getFiles($mainFile), $this->baseDirectory);
+        $phar->buildFromIterator($this->getFiles($mainFile, $directories), $this->baseDirectory);
         $this->setSubStep(0.65);
 
         $success = $phar->setStub("#!/usr/bin/env php\n$defaultStub");
@@ -173,25 +200,33 @@ class BuildPhar implements Command
     }
 
     /**
+     * @param string[] $directories
+     *
      * @return Generator<SplFileInfo>
      */
-    protected function getPaths(): Generator
+    protected function getPaths(array $directories = []): Generator
     {
-        foreach ([$this->baseDirectory . '/src', $this->baseDirectory . '/vendor'] as $folder) {
+        array_push($directories, ...array_map(
+            'realpath',
+            [$this->baseDirectory.'/src', $this->baseDirectory.'/vendor'],
+        ));
+
+        foreach (array_unique($directories) as $folder) {
             yield from new RecursiveIteratorIterator(new RecursiveDirectoryIterator($folder));
         }
     }
 
     /**
-     * @param string $mainFile
+     * @param string   $mainFile
+     * @param string[] $directories
      *
      * @return Generator<SplFileInfo>
      */
-    protected function getFiles(string $mainFile): Generator
+    protected function getFiles(string $mainFile, array $directories = []): Generator
     {
         yield new SplFileInfo($mainFile);
 
-        foreach ($this->getPaths() as $path) {
+        foreach ($this->getPaths($directories) as $path) {
             if ($path->isFile()) {
                 yield $path;
             }
