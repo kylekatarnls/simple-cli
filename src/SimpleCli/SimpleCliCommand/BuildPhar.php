@@ -35,7 +35,7 @@ class BuildPhar implements Command
         'Where to build PHAR files, current directory is used if not set.',
         alias: ['b', 'd'],
     )]
-    public string $baseDirectory;
+    public string $baseDirectory = '';
 
     #[Option('Name of the main file of the PHAR.')]
     public string $mainFileName = 'main.php';
@@ -50,9 +50,9 @@ class BuildPhar implements Command
     #[Rest('List of program classes to build as PHAR files.')]
     public array $classNames = [];
 
-    protected ProgressBar $progressBar;
-    protected int $total;
-    protected int $index;
+    protected ?ProgressBar $progressBar = null;
+    protected int $total = 1;
+    protected int $index = 0;
 
     public function run(SimpleCli $cli): bool
     {
@@ -60,13 +60,14 @@ class BuildPhar implements Command
             return $cli->error('Phar extension is disabled, install and enable it to run this command.');
         }
 
-        $this->baseDirectory = realpath(($this->baseDirectory ?? getcwd()) ?: '.');
+        $this->baseDirectory = realpath($this->baseDirectory ?: getcwd() ?: '.');
 
         if (!$this->baseDirectory || !is_dir($this->baseDirectory)) {
             return $cli->error('Specified --base-directory is not a valid directory path.');
         }
 
         $this->baseDirectory .= DIRECTORY_SEPARATOR;
+        /** @var class-string[] $classNames */
         $classNames = $this->getClassNames();
 
         if (!$classNames) {
@@ -79,10 +80,31 @@ class BuildPhar implements Command
             return $handled;
         }
 
-        $count = 0;
         $this->progressBar = new ProgressBar($cli);
         $this->progressBar->start();
         $this->total = count($classNames);
+
+        $count = $this->buildPharFiles($cli, $classNames);
+
+        $this->progressBar->setValue(1.0);
+        $this->progressBar->end();
+
+        $program = $count === 1 ? 'program' : 'programs';
+
+        $cli->writeLine("$count $program built.", 'cyan');
+
+        return $count > 0;
+    }
+
+    /**
+     * @param SimpleCli      $cli
+     * @param class-string[] $classNames
+     *
+     * @return int
+     */
+    protected function buildPharFiles(SimpleCli $cli, array $classNames): int
+    {
+        $count = 0;
 
         foreach ($classNames as $index => $className) {
             $this->index = $index;
@@ -109,27 +131,18 @@ class BuildPhar implements Command
             $count++;
         }
 
-        $this->progressBar->setValue(1.0);
-        $this->progressBar->end();
-
-        $program = $count === 1 ? 'program' : 'programs';
-
-        $cli->writeLine("$count $program built.", 'cyan');
-
-        return $count > 0;
+        return $count;
     }
 
     protected function buildPhar(string $className, string $name): bool
     {
-        if (!str_starts_with($className, '\\')) {
-            $className = "\\$className";
-        }
-
+        /** @var class-string $className */
+        $className = str_starts_with($className, '\\') ? $className : "\\$className";
         $directories = [];
 
         try {
             $class = new ReflectionClass($className);
-            $file = $class->getFileName();
+            $file = $class->getFileName() ?: '';
 
             if (str_starts_with($file, $this->baseDirectory)) {
                 $pos = strpos($file, DIRECTORY_SEPARATOR, strlen($this->baseDirectory));
@@ -195,12 +208,16 @@ class BuildPhar implements Command
         unlink($mainFile);
         $this->setSubStep(0.95);
 
+        if ($this->outputFile) {
+            rename($mainFile, $this->outputFile);
+        }
+
         return $success;
     }
 
     protected function setSubStep(float $step): void
     {
-        $this->progressBar->setValue(($this->index + $step) / $this->total);
+        $this->progressBar?->setValue(($this->index + $step) / $this->total);
     }
 
     /**
@@ -248,19 +265,8 @@ class BuildPhar implements Command
             $programs = is_dir($this->binDirectory) ? scandir($this->binDirectory) : [];
 
             foreach ($programs as $file) {
-                $path = $this->binDirectory."/$file";
-
-                if (!is_file($path) || $file === 'build-api-reference.php') {
-                    continue;
-                }
-
-                foreach (token_get_all(file_get_contents($path)) as $token) {
-                    if (is_array($token) &&
-                        $token[0] === T_NAME_FULLY_QUALIFIED &&
-                        is_a($token[1], SimpleCli::class, true)
-                    ) {
-                        $classNames[] = $token[1];
-                    }
+                foreach ($this->getClassNamesFromFile($this->binDirectory."/$file") as $className) {
+                    $classNames[] = $className;
                 }
             }
         }
@@ -279,5 +285,21 @@ class BuildPhar implements Command
         }
 
         return '';
+    }
+
+    private function getClassNamesFromFile(string $path): Generator
+    {
+        if (!is_file($path)) {
+            return ;
+        }
+
+        foreach (token_get_all(file_get_contents($path)) as $token) {
+            if (is_array($token) &&
+                $token[0] === T_NAME_FULLY_QUALIFIED &&
+                is_a($token[1], SimpleCli::class, true)
+            ) {
+                yield $token[1];
+            }
+        }
     }
 }

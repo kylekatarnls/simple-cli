@@ -24,7 +24,10 @@ class Create implements Command
     use ValidateProgram;
     use Verbose;
 
-    /** @var string[] */
+    /**
+     * @var string[]
+     * @psalm-var class-string[]
+     */
     #[Rest('List of program classes to convert into executable CLI programs.')]
     public array $classNames = [];
 
