@@ -11,6 +11,8 @@ use SimpleCli\Writer;
 class IniSetTest extends TraitsTestCase
 {
     /**
+     * @SuppressWarnings(PHPMD.Superglobals)
+     *
      * @covers ::iniSet
      * @covers ::formatValues
      */
