@@ -2,6 +2,8 @@
 
 namespace Tests\SimpleCli\Traits;
 
+use SimpleCli\Traits\Input;
+use SimpleCli\Writer;
 use Tests\SimpleCli\DemoApp\DemoCli;
 
 /**
@@ -114,5 +116,47 @@ class InputTest extends TraitsTestCase
         unlink($file);
 
         static::assertSame($content, $stdin);
+    }
+
+    /**
+     * @covers ::displayMessage
+     */
+    public function testDisplayMessage(): void
+    {
+        $command = new class() {
+            use Input;
+
+            public function display(string $message): void
+            {
+                $this->displayMessage($message);
+            }
+        };
+        ob_start();
+        $command->display('Hello');
+        $contents = ob_get_contents();
+        ob_end_clean();
+
+        static::assertSame('Hello', $contents);
+
+        $command = new class() implements Writer {
+            use Input;
+
+            public array $output = [];
+
+            public function display(string $message): void
+            {
+                $this->displayMessage($message);
+            }
+
+            public function write(string $text = '', string $color = null, string $background = null): void
+            {
+                $this->output[] = [$text, $color, $background];
+            }
+        };
+        $command->display('Hello');
+
+        static::assertSame([
+            ['Hello', null, null],
+        ], $command->output);
     }
 }

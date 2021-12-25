@@ -42,7 +42,7 @@ trait IniSet
 
             $resultCode = null;
 
-            passthru(
+            ($this->passthruFunction ?? 'passthru')(
                 PHP_BINARY." -d $key=$expectedValue ".
                 escapeshellarg(
                     Phar::running(false) ?: get_included_files()[0],

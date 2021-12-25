@@ -133,17 +133,21 @@ trait Input
 
     private function readHiddenPrompt(string $prompt = ''): string|null|false
     {
+        // @codeCoverageIgnoreStart
         if (preg_match('/^win/i', PHP_OS)) {
             $this->displayMessage($prompt);
 
             return exec(__DIR__.'/../../../bin/prompt_win.bat');
         }
+        // @codeCoverageIgnoreEnd
 
-        if (rtrim(shell_exec("/usr/bin/env bash -c 'echo OK'") ?: '') !== 'OK') {
+        $exec = $this->execFunction ?? 'shell_exec';
+
+        if (rtrim($exec("/usr/bin/env bash -c 'echo OK'") ?: '') !== 'OK') {
             throw new RuntimeException("Can't invoke bash");
         }
 
-        $result = shell_exec(
+        $result = $exec(
             "/usr/bin/env bash -c 'read -s -p \"".
             addslashes($prompt).
             "\" secret && echo \$secret'",
