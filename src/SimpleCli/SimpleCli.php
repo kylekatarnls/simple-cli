@@ -17,6 +17,7 @@ use SimpleCli\Traits\File;
 use SimpleCli\Traits\IniSet;
 use SimpleCli\Traits\Input;
 use SimpleCli\Traits\Name;
+use SimpleCli\Traits\Open;
 use SimpleCli\Traits\Options;
 use SimpleCli\Traits\Output;
 use SimpleCli\Traits\Parameters;
@@ -50,6 +51,7 @@ abstract class SimpleCli implements Writer
     use Documentation;
     use IniSet;
     use Validations;
+    use Open;
 
     /**
      * @param array<string, string>|null $colors
