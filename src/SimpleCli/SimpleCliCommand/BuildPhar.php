@@ -26,6 +26,8 @@ use Throwable;
  */
 class BuildPhar implements Command
 {
+    protected const MAIN_STUB_TEMPLATE_FILE = __DIR__ . '/../../phar-template/main.php.stub';
+
     use Help;
     use Quiet;
     use ValidateProgram;
@@ -39,6 +41,9 @@ class BuildPhar implements Command
 
     #[Option('Name of the main file of the PHAR.')]
     public string $mainFileName = 'main.php';
+
+    #[Option('File path to the template to use for the main file of the PHAR.', alias: [])]
+    public string $mainTemplateFile = self::MAIN_STUB_TEMPLATE_FILE;
 
     #[Option('Output file')]
     public string $outputFile = '';
@@ -66,6 +71,12 @@ class BuildPhar implements Command
             return $cli->error('Specified --base-directory is not a valid directory path.');
         }
 
+        $template = $this->getMainTemplateFile();
+
+        if (!$template) {
+            return $cli->error("Unable to read --main-template-file option $this->mainTemplateFile.");
+        }
+
         $this->baseDirectory .= DIRECTORY_SEPARATOR;
         /** @var class-string[] $classNames */
         $classNames = $this->getClassNames();
@@ -84,7 +95,7 @@ class BuildPhar implements Command
         $this->progressBar->start();
         $this->total = count($classNames);
 
-        $count = $this->buildPharFiles($cli, $classNames);
+        $count = $this->buildPharFiles($cli, $classNames, $template);
 
         $this->progressBar->setValue(1.0);
         $this->progressBar->end();
@@ -99,10 +110,11 @@ class BuildPhar implements Command
     /**
      * @param SimpleCli      $cli
      * @param class-string[] $classNames
+     * @param string         $template
      *
      * @return int
      */
-    protected function buildPharFiles(SimpleCli $cli, array $classNames): int
+    protected function buildPharFiles(SimpleCli $cli, array $classNames, string $template): int
     {
         $count = 0;
 
@@ -126,7 +138,7 @@ class BuildPhar implements Command
              * @var SimpleCli $createdCli
              */
             $createdCli = new $className();
-            $this->buildPhar($className, $createdCli->getName() ?: $this->extractName($className));
+            $this->buildPhar($className, $createdCli->getName() ?: $this->extractName($className), $template);
 
             $count++;
         }
@@ -134,7 +146,7 @@ class BuildPhar implements Command
         return $count;
     }
 
-    protected function buildPhar(string $className, string $name): bool
+    protected function buildPhar(string $className, string $name, string $template): bool
     {
         /** @var class-string $className */
         $className = str_starts_with($className, '\\') ? $className : "\\$className";
@@ -172,16 +184,7 @@ class BuildPhar implements Command
         $phar->startBuffering();
         $this->setSubStep(0.2);
 
-        file_put_contents($mainFile, strtr(<<<'EOS'
-            <?php
-
-            declare(strict_types=1);
-
-            include __DIR__ . '/vendor/autoload.php';
-            {versionConstant}
-            exit((new {className}())(...$argv) ? 0 : 1);
-
-            EOS, [
+        file_put_contents($mainFile, strtr($template, [
             '{className}'       => $className,
             '{versionConstant}' => $this->getVersionConstantDeclaration(),
         ]));
@@ -287,10 +290,19 @@ class BuildPhar implements Command
         return '';
     }
 
+    protected function getMainTemplateFile(): ?string
+    {
+        try {
+            return file_get_contents($this->mainTemplateFile) ?: null;
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
     private function getClassNamesFromFile(string $path): Generator
     {
         if (!is_file($path)) {
-            return ;
+            return;
         }
 
         foreach (token_get_all(file_get_contents($path)) as $token) {

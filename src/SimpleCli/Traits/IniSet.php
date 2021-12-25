@@ -6,6 +6,7 @@ namespace SimpleCli\Traits;
 
 use Phar;
 use SimpleCli\SimpleCliOption;
+use SimpleCli\Writer;
 
 trait IniSet
 {
@@ -32,7 +33,11 @@ trait IniSet
             if (in_array(SimpleCliOption::SKIP_INI_FIX, $arguments, true)) {
                 $iniFile = php_ini_loaded_file() ?: 'php.ini';
 
-                return $this->error("$key is $originalValue, set $key=$expectedValue in $iniFile and retry.");
+                if ($this instanceof Writer) {
+                    $this->write("$key is $originalValue, set $key=$expectedValue in $iniFile and retry.\n", 'red');
+                }
+
+                return false;
             }
 
             $resultCode = null;
