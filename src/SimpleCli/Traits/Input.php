@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace SimpleCli\Traits;
 
 use Closure;
+use RuntimeException;
+use SimpleCli\Writer;
 
 trait Input
 {
@@ -75,6 +77,22 @@ trait Input
     }
 
     /**
+     * Ask secretly (keep user input hidden) $prompt and return the CLI input.
+     *
+     * @param string $prompt
+     * @param string $afterPrompt
+     *
+     * @return string
+     */
+    public function readHidden(string $prompt = '', string $afterPrompt = PHP_EOL): string
+    {
+        $secret = $this->readHiddenPrompt($prompt);
+        $this->displayMessage($afterPrompt);
+
+        return $secret;
+    }
+
+    /**
      * Get the initial stdin content as receive by the command using:
      * echo "foobar" | command
      * Or:
@@ -100,5 +118,33 @@ trait Input
         fclose($stream);
 
         return $stdin;
+    }
+
+    private function displayMessage(string $message): void
+    {
+        if ($this instanceof Writer) {
+            $this->write($message);
+        }
+
+        echo $message;
+    }
+
+    private function readHiddenPrompt(string $prompt = ''): string
+    {
+        if (preg_match('/^win/i', PHP_OS)) {
+            $this->displayMessage($prompt);
+
+            return exec(__DIR__ . '/../../../bin/prompt_win.bat');
+        }
+
+        if (rtrim(shell_exec("/usr/bin/env bash -c 'echo OK'")) !== 'OK') {
+            throw new RuntimeException("Can't invoke bash");
+        }
+
+        return preg_replace('/\n$/', '', shell_exec(
+            "/usr/bin/env bash -c 'read -s -p \"".
+            addslashes($prompt).
+            "\" secret && echo \$secret'",
+        ));
     }
 }
