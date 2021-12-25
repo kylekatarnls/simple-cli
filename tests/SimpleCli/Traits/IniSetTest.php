@@ -19,7 +19,7 @@ class IniSetTest extends TraitsTestCase
         $iniRawValue = ini_get('phar.readonly');
         $iniValue = (bool) (int) $iniRawValue;
         $commands = [];
-        $commander = new class () {
+        $commander = new class() {
             use IniSet;
         };
         $commander->passthruFunction = static function ($command) use (&$commands) {
@@ -52,7 +52,7 @@ class IniSetTest extends TraitsTestCase
         ], $commands);
 
         $commands = [];
-        $commander = new class () implements Writer {
+        $commander = new class() implements Writer {
             use IniSet;
 
             public array $output = [];
