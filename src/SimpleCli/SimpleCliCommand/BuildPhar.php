@@ -9,8 +9,10 @@ use Phar;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
+use SimpleCli\Attribute\GetFileContent;
 use SimpleCli\Attribute\Option;
 use SimpleCli\Attribute\Rest;
+use SimpleCli\Attribute\WritableFile;
 use SimpleCli\Command;
 use SimpleCli\Options\Help;
 use SimpleCli\Options\Quiet;
@@ -35,20 +37,38 @@ class BuildPhar implements Command
 
     #[Option(
         'Where to build PHAR files, current directory is used if not set.',
-        alias: ['b', 'd'],
+        name: 'base-directory',
+        alias: 'd',
     )]
     public string $baseDirectory = '';
 
-    #[Option('Name of the main file of the PHAR.')]
+    #[Option(
+        'Name of the main file of the PHAR.',
+        name: 'main-file-name',
+        alias: 'm',
+    )]
     public string $mainFileName = 'main.php';
 
-    #[Option('File path to the template to use for the main file of the PHAR.', alias: [])]
+    #[Option(
+        'File path to the template to use for the main file of the PHAR.',
+        name: 'main-template-file',
+    )]
+    #[GetFileContent]
     public string $mainTemplateFile = self::MAIN_STUB_TEMPLATE_FILE;
 
-    #[Option('Output file')]
-    public string $outputFile = '';
+    #[Option(
+        'Output file',
+        name: 'output-file',
+        alias: 'o',
+    )]
+    #[WritableFile]
+    public ?string $outputFile = null;
 
-    #[Option('Where to search for programs (if no explicit classes passed as arguments).')]
+    #[Option(
+        'Where to search for programs (if no explicit classes passed as arguments).',
+        name: 'bin-directory',
+        alias: 'b',
+    )]
     public string $binDirectory = 'bin';
 
     /** @var string[] */
@@ -71,12 +91,6 @@ class BuildPhar implements Command
             return $cli->error('Specified --base-directory is not a valid directory path.');
         }
 
-        $template = $this->getMainTemplateFile();
-
-        if (!$template) {
-            return $cli->error("Unable to read --main-template-file option $this->mainTemplateFile.");
-        }
-
         $this->baseDirectory .= DIRECTORY_SEPARATOR;
         /** @var class-string[] $classNames */
         $classNames = $this->getClassNames();
@@ -95,7 +109,7 @@ class BuildPhar implements Command
         $this->progressBar->start();
         $this->total = count($classNames);
 
-        $count = $this->buildPharFiles($cli, $classNames, $template);
+        $count = $this->buildPharFiles($cli, $classNames);
 
         $this->progressBar->setValue(1.0);
         $this->progressBar->end();
@@ -110,11 +124,10 @@ class BuildPhar implements Command
     /**
      * @param SimpleCli      $cli
      * @param class-string[] $classNames
-     * @param string         $template
      *
      * @return int
      */
-    protected function buildPharFiles(SimpleCli $cli, array $classNames, string $template): int
+    protected function buildPharFiles(SimpleCli $cli, array $classNames): int
     {
         $count = 0;
 
@@ -138,7 +151,7 @@ class BuildPhar implements Command
              * @var SimpleCli $createdCli
              */
             $createdCli = new $className();
-            $this->buildPhar($className, $createdCli->getName() ?: $this->extractName($className), $template);
+            $this->buildPhar($className, $createdCli->getName() ?: $this->extractName($className));
 
             $count++;
         }
@@ -146,7 +159,7 @@ class BuildPhar implements Command
         return $count;
     }
 
-    protected function buildPhar(string $className, string $name, string $template): bool
+    protected function buildPhar(string $className, string $name): bool
     {
         /** @var class-string $className */
         $className = str_starts_with($className, '\\') ? $className : "\\$className";
@@ -184,7 +197,7 @@ class BuildPhar implements Command
         $phar->startBuffering();
         $this->setSubStep(0.2);
 
-        file_put_contents($mainFile, strtr($template, [
+        file_put_contents($mainFile, strtr($this->mainTemplateFile, [
             '{className}'       => $className,
             '{versionConstant}' => $this->getVersionConstantDeclaration(),
         ]));

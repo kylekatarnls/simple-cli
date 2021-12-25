@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SimpleCli;
 
 use InvalidArgumentException;
+use SimpleCli\Attribute\Validation;
 use SimpleCli\Options\Help;
 use SimpleCli\Options\Quiet;
 use SimpleCli\Traits\Arguments;
@@ -19,19 +20,20 @@ use SimpleCli\Traits\Name;
 use SimpleCli\Traits\Options;
 use SimpleCli\Traits\Output;
 use SimpleCli\Traits\Parameters;
+use SimpleCli\Traits\Validations;
 
 // phpcs:disable Generic.Files.LineLength
 
 /**
  * Class SimpleCli.
  *
- * @property string                                                                                                        $command
- * @property string[]                                                                                                      $parameters
- * @property array<string, string|int|float|bool|null>                                                                     $arguments
- * @property array<array{type: ?string, property: string, values: ?array, description: string}>                            $expectedArguments
- * @property array<string|int|float|bool|null>                                                                             $restArguments
- * @property array<string, mixed>                                                                                          $options
- * @property array<array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null}> $expectedOptions
+ * @property string                                                                                                                                   $command
+ * @property string[]                                                                                                                                 $parameters
+ * @property array<string, string|int|float|bool|null>                                                                                                $arguments
+ * @property array<array{type: ?string, property: string, values: ?array, description: string, validation?: Validation[]}>                            $expectedArguments
+ * @property array<string|int|float|bool|null>                                                                                                        $restArguments
+ * @property array<string, mixed>                                                                                                                     $options
+ * @property array<array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null, validation?: Validation[]}> $expectedOptions
  */
 abstract class SimpleCli implements Writer
 {
@@ -47,6 +49,7 @@ abstract class SimpleCli implements Writer
     use Composer;
     use Documentation;
     use IniSet;
+    use Validations;
 
     /**
      * @param array<string, string>|null $colors
@@ -359,6 +362,6 @@ abstract class SimpleCli implements Writer
             $commander->$property = $value;
         }
 
-        return $commander;
+        return $this->validateExpectedOptions($commander);
     }
 }

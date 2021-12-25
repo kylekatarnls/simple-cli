@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SimpleCli\Traits;
 
 use InvalidArgumentException;
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
@@ -13,8 +14,11 @@ use ReflectionProperty;
 use SimpleCli\Attribute\Argument;
 use SimpleCli\Attribute\Option;
 use SimpleCli\Attribute\Rest;
+use SimpleCli\Attribute\Validation;
 use SimpleCli\Attribute\Values;
 use SimpleCli\Command;
+
+// phpcs:disable Generic.Files.LineLength
 
 /**
  * Trait Documentation.
@@ -127,6 +131,18 @@ trait Documentation
         return rtrim($doc);
     }
 
+    /**
+     * @param Option|string|null       $option
+     * @param Argument|string|null     $argument
+     * @param Rest|string|null         $rest
+     * @param string                   $name
+     * @param string|null              $doc
+     * @param Values|array|string|null $values
+     * @param string|null              $type
+     * @param Validation[]             $validation
+     *
+     * @return void
+     */
     private function addExpectation(
         Option|string|null $option,
         Argument|string|null $argument,
@@ -135,6 +151,7 @@ trait Documentation
         ?string $doc,
         Values|array|string|null $values,
         ?string $type,
+        array $validation,
     ): void {
         if ($option !== null) {
             if ($argument !== null) {
@@ -146,6 +163,7 @@ trait Documentation
             $optionInfo = $this->extractOptionInfo($option, $name, $doc, $values, $type);
 
             $optionInfo['names'] = array_filter($optionInfo['names']);
+            $optionInfo['validation'] = $validation;
 
             if (!count($optionInfo['names'])) {
                 $optionInfo['names'] = [$name, substr($name, 0, 1)];
@@ -158,6 +176,7 @@ trait Documentation
 
         if ($argument !== null || $rest !== null) {
             $definition = $this->extractArgumentInfo($argument, $rest, $name, $doc, $values, $type);
+            $definition['validation'] = $validation;
 
             if ($rest !== null) {
                 $definition['type'] = $definition['type'] === 'array'
@@ -171,6 +190,9 @@ trait Documentation
             $this->expectedArguments[] = $definition;
         }
     }
+    //          array<array-key, array{description: string, property: string, type: null|string, validation?: array<array-key, SimpleCli\Attribute\Validation>, values: array<array-key, mixed>|null}>
+    //non-empty-array<array-key, array{description: string, property: string, type: null|string, validation?: array<array-key, SimpleCli\Attribute\Validation|mixed>, values: array<array-key, mixed>|null}>
+    //
 
     /**
      * @param Option|string|null          $option
@@ -298,7 +320,26 @@ trait Documentation
                 $option = "$name, ".substr($name, 0, 1);
             }
 
-            $this->addExpectation($option, $argument, $rest, $name, $doc, $values, $type);
+            $this->addExpectation(
+                $option,
+                $argument,
+                $rest,
+                $name,
+                $doc,
+                $values,
+                $type,
+                array_map(
+                    static fn (ReflectionAttribute $attribute) => $attribute->newInstance(),
+                    array_filter(
+                        $property->getAttributes(),
+                        static fn (ReflectionAttribute $attribute) => is_a(
+                            $attribute->getName(),
+                            Validation::class,
+                            true,
+                        ),
+                    ),
+                ),
+            );
         }
     }
 

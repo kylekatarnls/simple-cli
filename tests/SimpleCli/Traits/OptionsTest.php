@@ -71,6 +71,7 @@ class OptionsTest extends TraitsTestCase
                     'description' => 'Append a prefix to $sentence.',
                     'values'      => ['hello', 'hi', 'bye'],
                     'type'        => 'string',
+                    'validation'  => [],
                 ],
                 [
                     'property'    => 'verbose',
@@ -81,6 +82,7 @@ class OptionsTest extends TraitsTestCase
                     'description' => 'If this option is set, extra debug information will be displayed.',
                     'values'      => null,
                     'type'        => 'bool',
+                    'validation'  => [],
                 ],
                 [
                     'property'    => 'help',
@@ -91,6 +93,7 @@ class OptionsTest extends TraitsTestCase
                     'description' => 'Display documentation of the current command.',
                     'values'      => null,
                     'type'        => 'bool',
+                    'validation'  => [],
                 ],
             ],
             $command->getExpectedOptions(),
@@ -114,6 +117,7 @@ class OptionsTest extends TraitsTestCase
                 'description' => 'Append a prefix to $sentence.',
                 'values'      => ['hello', 'hi', 'bye'],
                 'type'        => 'string',
+                'validation'  => [],
             ],
             $command->getOptionDefinition('prefix'),
         );

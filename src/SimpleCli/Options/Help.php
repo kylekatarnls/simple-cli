@@ -43,6 +43,13 @@ trait Help
             );
             $firstAlias = array_shift($aliases);
             $start = '    ';
+            $option['names'] = array_map(
+                static fn (string $name) => "--$name",
+                array_filter(
+                    $option['names'],
+                    static fn (string $name) => strlen($name) !== 1,
+                ),
+            );
 
             if ($firstAlias) {
                 $start = "-$firstAlias, ";
@@ -51,13 +58,7 @@ trait Help
                         static fn (string $alias) => "-$alias",
                         $aliases,
                     ),
-                    array_map(
-                        static fn (string $name) => "--$name",
-                        array_filter(
-                            $option['names'],
-                            static fn (string $name) => strlen($name) !== 1,
-                        ),
-                    ),
+                    $option['names'],
                 );
             }
 

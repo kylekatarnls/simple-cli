@@ -27,7 +27,7 @@ class ArgumentsTest extends TraitsTestCase
             [
                 'sentence' => 'My sentence',
             ],
-            $command->getArguments()
+            $command->getArguments(),
         );
     }
 
@@ -52,6 +52,7 @@ class ArgumentsTest extends TraitsTestCase
                     'description' => 'Sentence to display.',
                     'values'      => null,
                     'type'        => 'string',
+                    'validation'  => [],
                 ],
             ],
             $command->getExpectedArguments()
@@ -97,8 +98,9 @@ class ArgumentsTest extends TraitsTestCase
                 'description' => 'Suffixes after the sentence.',
                 'values'      => null,
                 'type'        => 'string',
+                'validation'  => [],
             ],
-            $command->getExpectedRestArgument()
+            $command->getExpectedRestArgument(),
         );
     }
 
@@ -112,16 +114,12 @@ class ArgumentsTest extends TraitsTestCase
 
         static::assertOutput(
             'Expect only 0 arguments',
-            function () use ($command) {
-                $command('file', 'version', 'too-argument');
-            }
+            static fn () => $command('file', 'version', 'too-argument'),
         );
 
         static::assertOutput(
             "Hello world!\n",
-            function () use ($command) {
-                $command('file', 'rest', 'Hello', ' world', '!');
-            }
+            static fn () => $command('file', 'rest', 'Hello', ' world', '!'),
         );
     }
 }

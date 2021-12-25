@@ -5,19 +5,20 @@ declare(strict_types=1);
 namespace SimpleCli\Traits;
 
 use InvalidArgumentException;
+use SimpleCli\Attribute\Validation;
 
 trait Arguments
 {
     /** @var array<string, string|int|float|bool|null> */
     protected array $arguments;
 
-    /** @var array<array{type: ?string, property: string, values: ?array, description: string}> */
+    /** @var array<array{type: ?string, property: string, values: ?array, description: string, validation?: Validation[]}> */
     protected array $expectedArguments;
 
     /** @var array<string|int|float|bool|null> */
     protected array $restArguments;
 
-    /** @var array{type: ?string, property: string, values: ?array, description: string}|null */
+    /** @var array{type: ?string, property: string, values: ?array, description: string, validation?: Validation[]}|null */
     protected ?array $expectedRestArgument;
 
     /**
@@ -69,7 +70,12 @@ trait Arguments
 
             if ($restDefinition) {
                 // @phan-suppress-next-line PhanUndeclaredMethod
-                $this->restArguments[] = $this->getParameterValue($argument, $restDefinition);
+                $this->restArguments[] = $this->validateValueWith(
+                    $restDefinition['property'],
+                    // @phan-suppress-next-line PhanUndeclaredMethod
+                    $this->getParameterValue($argument, $restDefinition),
+                    $restDefinition['validation'] ?? [],
+                );
 
                 return;
             }
@@ -82,6 +88,11 @@ trait Arguments
         }
 
         // @phan-suppress-next-line PhanUndeclaredMethod
-        $this->arguments[$definition['property']] = $this->getParameterValue($argument, $definition);
+        $this->arguments[$definition['property']] = $this->validateValueWith(
+            $definition['property'],
+            // @phan-suppress-next-line PhanUndeclaredMethod
+            $this->getParameterValue($argument, $definition),
+            $definition['validation'] ?? [],
+        );
     }
 }

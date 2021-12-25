@@ -44,14 +44,14 @@
         "md": "phpmd src,tests text ./phpmd.xml",
         "stan": "phpstan analyse --autoload-file=vendor/autoload.php -c phpstan.neon",
         "phan": "phan",
-        "psalm": "psalm --show-info=true",
+        "psalm": "psalm --show-info=true --no-cache",
         "style": [
             "@psalm",
             "@phan",
             "@cs",
             "@md",
-            "@stan",
-            "@csf"
+            "@csf",
+            "@stan"
         ],
         "test": [
             "@unit",
