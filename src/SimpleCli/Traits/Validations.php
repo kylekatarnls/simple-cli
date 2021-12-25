@@ -39,8 +39,8 @@ trait Validations
     protected function validateExpectedOptions(SimpleCliCommand $commander): ?SimpleCliCommand
     {
         try {
-            // @phan-suppress-next-line PhanUndeclaredProperty
-            foreach (($this->expectedOptions ?? []) as $definition) {
+            // @phan-suppress-next-line PhanUndeclaredMethod
+            foreach ($this->getExpectedOptions() as $definition) {
                 $validation = $definition['validation'] ?? [];
 
                 if ($validation) {

@@ -14,6 +14,14 @@ final class WritableFile extends Validation
 {
     public function proceed(mixed &$value): ?string
     {
+        if (is_string($value) && !preg_match('`^(/|[A-Za-z]:\\\\)`', $value)) {
+            $valueInCwd = getcwd().DIRECTORY_SEPARATOR.$value;
+
+            if (is_writable(dirname($valueInCwd))) {
+                $value = $valueInCwd;
+            }
+        }
+
         if ($value !== null && !(is_string($value) && is_writable(dirname($value)))) {
             $export = var_export($value, true);
 

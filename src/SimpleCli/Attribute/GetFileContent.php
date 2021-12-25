@@ -21,10 +21,11 @@ final class GetFileContent extends Validation
             return null;
         }
 
-        if (!(is_string($value) && is_file($value) && is_readable($value))) {
-            $export = var_export($value, true);
+        $readable = new ReadableFile();
+        $error = $readable->proceed($value);
 
-            return "$export is not a readable file path.";
+        if ($error) {
+            return $error;
         }
 
         $value = file_get_contents($value) ?: null;
