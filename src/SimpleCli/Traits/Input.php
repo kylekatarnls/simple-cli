@@ -89,7 +89,7 @@ trait Input
         $secret = $this->readHiddenPrompt($prompt);
         $this->displayMessage($afterPrompt);
 
-        return $secret;
+        return $secret === false || $secret === null ? '' : $secret;
     }
 
     /**
@@ -124,27 +124,31 @@ trait Input
     {
         if ($this instanceof Writer) {
             $this->write($message);
+
+            return;
         }
 
         echo $message;
     }
 
-    private function readHiddenPrompt(string $prompt = ''): string
+    private function readHiddenPrompt(string $prompt = ''): string|null|false
     {
         if (preg_match('/^win/i', PHP_OS)) {
             $this->displayMessage($prompt);
 
-            return exec(__DIR__ . '/../../../bin/prompt_win.bat');
+            return exec(__DIR__.'/../../../bin/prompt_win.bat');
         }
 
-        if (rtrim(shell_exec("/usr/bin/env bash -c 'echo OK'")) !== 'OK') {
+        if (rtrim(shell_exec("/usr/bin/env bash -c 'echo OK'") ?: '') !== 'OK') {
             throw new RuntimeException("Can't invoke bash");
         }
 
-        return preg_replace('/\n$/', '', shell_exec(
+        $result = shell_exec(
             "/usr/bin/env bash -c 'read -s -p \"".
             addslashes($prompt).
             "\" secret && echo \$secret'",
-        ));
+        );
+
+        return is_string($result) ? preg_replace('/\n$/', '', $result) : $result;
     }
 }

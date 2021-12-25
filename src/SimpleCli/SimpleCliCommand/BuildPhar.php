@@ -81,6 +81,9 @@ class BuildPhar implements Command
 
     public function run(SimpleCli $cli): bool
     {
+        var_dump($cli->readHidden('A:'));
+
+        exit;
         if (!class_exists(Phar::class)) {
             return $cli->error('Phar extension is disabled, install and enable it to run this command.');
         }
