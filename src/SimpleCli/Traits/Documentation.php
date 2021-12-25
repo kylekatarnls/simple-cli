@@ -6,6 +6,7 @@ namespace SimpleCli\Traits;
 
 use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionNamedType;
 use ReflectionObject;
 use ReflectionProperty;
@@ -37,7 +38,7 @@ trait Documentation
         try {
             /** @psalm-var class-string $className */
             $doc = (new ReflectionClass($className))->getDocComment();
-        } catch (\ReflectionException $e) {
+        } catch (ReflectionException) {
             $doc = null;
         }
 
@@ -111,7 +112,10 @@ trait Documentation
 
         $source = trim($source, "\n");
 
-        return $result;
+        return match ($result) {
+            'class-string' => 'string',
+            default        => $result,
+        };
     }
 
     private function cleanPhpDocComment(string $doc): string
@@ -280,9 +284,12 @@ trait Documentation
             $rest = $this->getAttributeOrAnnotation($doc, 'rest', $property, Rest::class);
             $option = $this->getAttributeOrAnnotation($doc, 'option', $property, Option::class);
             $values = $this->getAttributeOrAnnotation($doc, 'values', $property, Values::class);
+            $var = $this->extractAnnotation($doc, 'var');
+            $psalmVar = $this->extractAnnotation($doc, 'psalm-var');
             $type = $this->normalizeScalarType(
-                $this->extractAnnotation($doc, 'var')
+                $var
                     ?? $this->getPropertyType($property, $command, $rest)
+                    ?? $psalmVar
             );
 
             $doc = trim($doc);

@@ -26,7 +26,7 @@ use Throwable;
  */
 class BuildPhar implements Command
 {
-    protected const MAIN_STUB_TEMPLATE_FILE = __DIR__ . '/../../phar-template/main.php.stub';
+    protected const MAIN_STUB_TEMPLATE_FILE = __DIR__.'/../../phar-template/main.php.stub';
 
     use Help;
     use Quiet;
