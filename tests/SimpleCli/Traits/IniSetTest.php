@@ -38,8 +38,10 @@ class IniSetTest extends TraitsTestCase
         static::assertSame([
             PHP_BINARY.' -d phar.readonly=Off '.
             escapeshellarg(get_included_files()[0]).' '.
-            implode(' ', array_map('escapeshellarg', array_slice($GLOBALS['argv'], 1))).
-            ' "--simple-cli-skip-ini-fix"',
+            implode(' ', array_map('escapeshellarg', [
+                ...array_slice($GLOBALS['argv'], 1),
+                '--simple-cli-skip-ini-fix',
+            ])),
         ], $commands);
 
         $commander->iniSet('phar.readonly', $iniValue ? 'On' : 'Off');
@@ -49,10 +51,23 @@ class IniSetTest extends TraitsTestCase
         static::assertSame([
             PHP_BINARY.' -d phar.readonly=Off '.
             escapeshellarg(get_included_files()[0]).' '.
-            implode(' ', array_map('escapeshellarg', array_slice($GLOBALS['argv'], 1))).
-            ' "--simple-cli-skip-ini-fix"',
+            implode(' ', array_map('escapeshellarg', [
+                ...array_slice($GLOBALS['argv'], 1),
+                '--simple-cli-skip-ini-fix',
+            ])),
         ], $commands);
+    }
 
+    /**
+     * @SuppressWarnings(PHPMD.Superglobals)
+     *
+     * @covers ::iniSet
+     * @covers ::formatValues
+     */
+    public function testIniSetWithWriter(): void
+    {
+        $iniRawValue = ini_get('phar.readonly');
+        $iniValue = (bool) (int) $iniRawValue;
         $commands = [];
         $commander = new class() implements Writer {
             use IniSet;
@@ -76,8 +91,10 @@ class IniSetTest extends TraitsTestCase
         static::assertSame([
             PHP_BINARY.' -d phar.readonly=Off '.
             escapeshellarg(get_included_files()[0]).' '.
-            implode(' ', array_map('escapeshellarg', array_slice($GLOBALS['argv'], 1))).
-            ' "--simple-cli-skip-ini-fix"',
+            implode(' ', array_map('escapeshellarg', [
+                ...array_slice($GLOBALS['argv'], 1),
+                '--simple-cli-skip-ini-fix',
+            ])),
         ], $commands);
         static::assertSame([], $commander->output);
 
