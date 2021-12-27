@@ -145,19 +145,19 @@ folder.
 
 So to make it light, remove any unneeded files from those folders
 such as dev dependencies using:
-```
+```shell
 composer install --no-dev
 ```
 
 Then simply run:
-```
+```shell
 ./bin/simple-cli build-phar
 ```
 
 From inside your working directory.
 
 You can also specify a version for your package:
-```
+```shell
 PHAR_PACKAGE_VERSION=2.0.0 ./bin/simple-cli build-phar
 ```
 

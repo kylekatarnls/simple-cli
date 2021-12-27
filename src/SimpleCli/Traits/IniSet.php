@@ -28,7 +28,7 @@ trait IniSet
 
         if ($value !== $expectedValue) {
             /** @var list<string> $arguments */
-            $arguments = $GLOBALS['argv'] ?? [];
+            $arguments = $GLOBALS['argv'] ?? []; // phpcs:disable SuperglobalSniff
 
             if (in_array(SimpleCliOption::SKIP_INI_FIX, $arguments, true)) {
                 $iniFile = php_ini_loaded_file() ?: 'php.ini';
