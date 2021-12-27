@@ -10,6 +10,7 @@ use SimpleCli\Options\Help;
 use SimpleCli\Options\Quiet;
 use SimpleCli\Options\Verbose;
 use SimpleCli\SimpleCli;
+use SimpleCli\SimpleCliCommand\Traits\ValidateProgram;
 
 /**
  * Create a program in the bin directory that call the class given as argument.
@@ -20,16 +21,20 @@ class Create implements Command
 {
     use Help;
     use Quiet;
+    use ValidateProgram;
     use Verbose;
 
-    /** @var string[] */
+    /**
+     * @var string[]
+     * @psalm-var class-string[]
+     */
     #[Rest('List of program classes to convert into executable CLI programs.')]
     public array $classNames = [];
 
     public function run(SimpleCli $cli): bool
     {
         if (!$this->ensureBinDirectoryExists()) {
-            return $this->error($cli, 'Unable to create the bin directory');
+            return $cli->error('Unable to create the bin directory');
         }
 
         $count = 0;
@@ -39,16 +44,7 @@ class Create implements Command
                 $cli->writeLine("Creating program for $className", 'light_cyan');
             }
 
-            if (!class_exists($className)) {
-                $this->error($cli, "$className class not found");
-                $cli->writeLine('Please check your composer autoload is up to date and allow to load this class.');
-
-                continue;
-            }
-
-            if (!is_subclass_of($className, SimpleCli::class)) {
-                $this->error($cli, "$className needs to implement ".SimpleCli::class);
-
+            if (!$this->validateProgram($cli, $className)) {
                 continue;
             }
 
@@ -62,7 +58,7 @@ class Create implements Command
             $this->copyBinTemplate(
                 $cli,
                 $createdCli->getName() ?: $this->extractName($className),
-                '\\'.ltrim($className, '\\')
+                '\\'.ltrim($className, '\\'),
             );
 
             $count++;
@@ -75,40 +71,12 @@ class Create implements Command
         return $count > 0;
     }
 
-    protected function error(SimpleCli $cli, string $text): bool
-    {
-        $cli->writeLine($text, 'red');
-
-        return false;
-    }
-
-    /**
-     * @param string $className
-     *
-     * @return string
-     */
-    protected function extractName($className): string
-    {
-        $parts = explode('\\', $className);
-
-        return trim(
-            (string) preg_replace_callback(
-                '/[A-Z]/',
-                function (array $match) {
-                    return '-'.strtolower($match[0]);
-                },
-                end($parts)
-            ),
-            '-'
-        );
-    }
-
     protected function copyBinTemplate(SimpleCli $cli, string $name, string $className): void
     {
         $binTemplate = __DIR__.'/../../bin-template';
 
         foreach (scandir($binTemplate) ?: [] as $file) {
-            if (substr($file, 0, 1) !== '.') {
+            if (!str_starts_with($file, '.')) {
                 $path = 'bin/'.str_replace('program', $name, $file);
 
                 if ($this->verbose) {
@@ -122,8 +90,8 @@ class Create implements Command
                         [
                             '{name}'  => $name,
                             '{class}' => $className,
-                        ]
-                    )
+                        ],
+                    ),
                 );
             }
         }

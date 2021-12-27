@@ -33,7 +33,7 @@ trait Output
     ];
 
     /** @var array<string, string> */
-    protected $backgrounds = [
+    protected array $backgrounds = [
         'black'        => '40',
         'dark_gray'    => '48;5;59',
         'blue'         => '44',
@@ -251,6 +251,20 @@ trait Output
     public function rewriteLine(string $text = '', ?string $color = null, ?string $background = null): void
     {
         $this->write("\r$text", $color, $background);
+    }
+
+    /**
+     * Output $text in red, add a new line and return false.
+     *
+     * @param string $text
+     *
+     * @return false
+     */
+    public function error(string $text = ''): bool
+    {
+        $this->writeLine($text, 'red');
+
+        return false;
     }
 
     /**

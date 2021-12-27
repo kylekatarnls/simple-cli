@@ -5,15 +5,22 @@ declare(strict_types=1);
 namespace SimpleCli\Traits;
 
 use InvalidArgumentException;
+use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionNamedType;
 use ReflectionObject;
 use ReflectionProperty;
+use ReflectionType;
+use ReflectionUnionType;
 use SimpleCli\Attribute\Argument;
 use SimpleCli\Attribute\Option;
 use SimpleCli\Attribute\Rest;
+use SimpleCli\Attribute\Validation;
 use SimpleCli\Attribute\Values;
 use SimpleCli\Command;
+
+// phpcs:disable Generic.Files.LineLength
 
 /**
  * Trait Documentation.
@@ -37,7 +44,7 @@ trait Documentation
         try {
             /** @psalm-var class-string $className */
             $doc = (new ReflectionClass($className))->getDocComment();
-        } catch (\ReflectionException $e) {
+        } catch (ReflectionException) {
             $doc = null;
         }
 
@@ -111,7 +118,10 @@ trait Documentation
 
         $source = trim($source, "\n");
 
-        return $result;
+        return match ($result) {
+            'class-string' => 'string',
+            default        => $result,
+        };
     }
 
     private function cleanPhpDocComment(string $doc): string
@@ -123,6 +133,18 @@ trait Documentation
         return rtrim($doc);
     }
 
+    /**
+     * @param Option|string|null       $option
+     * @param Argument|string|null     $argument
+     * @param Rest|string|null         $rest
+     * @param string                   $name
+     * @param string|null              $doc
+     * @param Values|array|string|null $values
+     * @param string|null              $type
+     * @param Validation[]             $validation
+     *
+     * @return void
+     */
     private function addExpectation(
         Option|string|null $option,
         Argument|string|null $argument,
@@ -131,6 +153,7 @@ trait Documentation
         ?string $doc,
         Values|array|string|null $values,
         ?string $type,
+        array $validation,
     ): void {
         if ($option !== null) {
             if ($argument !== null) {
@@ -142,6 +165,7 @@ trait Documentation
             $optionInfo = $this->extractOptionInfo($option, $name, $doc, $values, $type);
 
             $optionInfo['names'] = array_filter($optionInfo['names']);
+            $optionInfo['validation'] = $validation;
 
             if (!count($optionInfo['names'])) {
                 $optionInfo['names'] = [$name, substr($name, 0, 1)];
@@ -154,6 +178,7 @@ trait Documentation
 
         if ($argument !== null || $rest !== null) {
             $definition = $this->extractArgumentInfo($argument, $rest, $name, $doc, $values, $type);
+            $definition['validation'] = $validation;
 
             if ($rest !== null) {
                 $definition['type'] = $definition['type'] === 'array'
@@ -167,6 +192,9 @@ trait Documentation
             $this->expectedArguments[] = $definition;
         }
     }
+    //          array<array-key, array{description: string, property: string, type: null|string, validation?: array<array-key, SimpleCli\Attribute\Validation>, values: array<array-key, mixed>|null}>
+    //non-empty-array<array-key, array{description: string, property: string, type: null|string, validation?: array<array-key, SimpleCli\Attribute\Validation|mixed>, values: array<array-key, mixed>|null}>
+    //
 
     /**
      * @param Option|string|null          $option
@@ -280,9 +308,12 @@ trait Documentation
             $rest = $this->getAttributeOrAnnotation($doc, 'rest', $property, Rest::class);
             $option = $this->getAttributeOrAnnotation($doc, 'option', $property, Option::class);
             $values = $this->getAttributeOrAnnotation($doc, 'values', $property, Values::class);
+            $var = $this->extractAnnotation($doc, 'var');
+            $psalmVar = $this->extractAnnotation($doc, 'psalm-var');
             $type = $this->normalizeScalarType(
-                $this->extractAnnotation($doc, 'var')
+                $var
                     ?? $this->getPropertyType($property, $command, $rest)
+                    ?? $psalmVar
             );
 
             $doc = trim($doc);
@@ -291,7 +322,19 @@ trait Documentation
                 $option = "$name, ".substr($name, 0, 1);
             }
 
-            $this->addExpectation($option, $argument, $rest, $name, $doc, $values, $type);
+            $this->addExpectation(
+                $option,
+                $argument,
+                $rest,
+                $name,
+                $doc,
+                $values,
+                $type,
+                array_map(
+                    static fn (ReflectionAttribute $attribute) => $attribute->newInstance(),
+                    $property->getAttributes(Validation::class, ReflectionAttribute::IS_INSTANCEOF),
+                ),
+            );
         }
     }
 
@@ -305,26 +348,35 @@ trait Documentation
         ]);
     }
 
-    private function getRestTypeAndDescription(ReflectionProperty $property, Rest|string|null $rest): array
+    private function getTypeAndRestDescription(ReflectionProperty $property, Rest|string|null $rest): array
     {
         if ($rest instanceof Rest) {
             $rest = $rest->description;
         }
 
-        $type = $property->getType();
-        $type = $type instanceof ReflectionNamedType
-            ? $type->getName()
-            : null;
+        return [$rest, $this->getTypeName($property->getType())];
+    }
 
-        return [$rest, $type];
+    private function getTypeName(?ReflectionType $type): ?string
+    {
+        if ($type instanceof ReflectionUnionType) {
+            return implode('|', array_map(
+                fn (ReflectionType $subType) => $this->getTypeName($subType),
+                $type->getTypes(),
+            ));
+        }
+
+        return $type instanceof ReflectionNamedType
+            ? ($type->allowsNull() ? '?' : '').$type->getName()
+            : null;
     }
 
     private function getPropertyType(ReflectionProperty $property, Command $command, Rest|string|null $rest): ?string
     {
-        [$description, $type] = $this->getRestTypeAndDescription($property, $rest);
+        [$description, $type] = $this->getTypeAndRestDescription($property, $rest);
 
         if (!$type) {
-            $defaultValue = $property->getValue($command);
+            $defaultValue = $property->hasDefaultValue() ? $property->getValue($command) : null;
 
             if ($defaultValue !== null) {
                 $type = gettype($defaultValue);

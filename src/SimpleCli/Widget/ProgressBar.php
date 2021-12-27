@@ -12,59 +12,25 @@ use SimpleCli\SimpleCli;
  */
 class ProgressBar
 {
-    /** @var int|float */
-    public $total = 1;
+    public int|float $total = 1;
+    public int $decimals = 0;
+    public int $width = 50;
+    public string $before = '';
+    public string $after = '';
+    public string $start = "\n";
+    public string $end = "\n";
+    public string $rewind = "\r";
+    public string $bar = '=';
+    public string $emptyBar = ' ';
+    public string $barStart = '[';
+    public string $barEnd = ']';
+    public string $cursor = '>';
+    public string $decimalPoint = '.';
+    public string $thousandsSeparator = '.';
 
-    /** @var int */
-    public $decimals = 0;
-
-    /** @var int */
-    public $width = 50;
-
-    /** @var string */
-    public $before = '';
-
-    /** @var string */
-    public $after = '';
-
-    /** @var string */
-    public $start = "\n";
-
-    /** @var string */
-    public $end = "\n";
-
-    /** @var string */
-    public $rewind = "\r";
-
-    /** @var string */
-    public $bar = '=';
-
-    /** @var string */
-    public $emptyBar = ' ';
-
-    /** @var string */
-    public $barStart = '[';
-
-    /** @var string */
-    public $barEnd = ']';
-
-    /** @var string */
-    public $cursor = '>';
-
-    /** @var string */
-    public $decimalPoint = '.';
-
-    /** @var string */
-    public $thousandsSeparator = '.';
-
-    /** @var SimpleCli */
-    protected $cli;
-
-    /** @var int|float */
-    protected $value = 0;
-
-    /** @var int */
-    protected $step = -1;
+    protected SimpleCli $cli;
+    protected int|float $value = 0;
+    protected int $step = -1;
 
     public function __construct(SimpleCli $cli)
     {
@@ -108,7 +74,7 @@ class ProgressBar
         $this->start();
 
         while ($this->isInProgress()) {
-            $this->setValue(yield);
+            $this->setValue((float) yield);
         }
 
         $this->end();
@@ -135,7 +101,7 @@ class ProgressBar
                 ($this->value * 100) / $this->total,
                 $this->decimals,
                 $this->decimalPoint,
-                $this->thousandsSeparator
+                $this->thousandsSeparator,
             ), $length, ' ', STR_PAD_LEFT),
             $this->barStart,
             str_repeat($this->bar, $bar),
@@ -143,7 +109,7 @@ class ProgressBar
             str_repeat($this->emptyBar, $this->width - $bar),
             $this->barEnd,
             $this->after,
-            $this->rewind
+            $this->rewind,
         );
     }
 }

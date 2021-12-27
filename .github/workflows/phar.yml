@@ -1,0 +1,69 @@
+name: Generate phar
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+  create:
+    tags:
+      - "*"
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      COMPOSER_NO_INTERACTION: 1
+
+    strategy:
+      matrix:
+        php: [8.0]
+        setup: [prefer-stable]
+
+    name: Build PHAR
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: phar-v2-${{ runner.os }}-php${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-dev
+
+      - name: Build
+        run: |
+          chmod +x ./bin/simple-cli
+          ./bin/simple-cli build-phar
+        env:
+          PHAR_PACKAGE_VERSION: ${{ secrets.GITHUB_REF }}
+
+      - name: Upload simple-cli.phar
+        uses: actions/upload-artifact@v2
+        with:
+          name: simple-cli.phar
+          path: simple-cli.phar
+
+      - name: Release simple-cli.phar
+        if: github.event_name == 'release'
+        uses: skx/github-action-publish-binaries@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: 'simple-cli.phar'

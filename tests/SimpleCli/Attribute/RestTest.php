@@ -12,7 +12,8 @@ class RestTest extends TestCase
 {
     /**
      * @covers ::__construct
-     * @covers \SimpleCli\Traits\Documentation::getRestTypeAndDescription
+     * @covers \SimpleCli\Traits\Documentation::getTypeAndRestDescription
+     * @covers \SimpleCli\Traits\Documentation::getTypeName
      */
     public function testRest(): void
     {
@@ -28,7 +29,8 @@ class RestTest extends TestCase
 
     /**
      * @covers ::__construct
-     * @covers \SimpleCli\Traits\Documentation::getRestTypeAndDescription
+     * @covers \SimpleCli\Traits\Documentation::getTypeAndRestDescription
+     * @covers \SimpleCli\Traits\Documentation::getTypeName
      */
     public function testHelp(): void
     {

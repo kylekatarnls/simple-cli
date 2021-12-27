@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SimpleCli;
 
 use InvalidArgumentException;
+use SimpleCli\Attribute\Validation;
 use SimpleCli\Options\Help;
 use SimpleCli\Options\Quiet;
 use SimpleCli\Traits\Arguments;
@@ -13,24 +14,27 @@ use SimpleCli\Traits\Commands;
 use SimpleCli\Traits\Composer;
 use SimpleCli\Traits\Documentation;
 use SimpleCli\Traits\File;
+use SimpleCli\Traits\IniSet;
 use SimpleCli\Traits\Input;
 use SimpleCli\Traits\Name;
+use SimpleCli\Traits\Open;
 use SimpleCli\Traits\Options;
 use SimpleCli\Traits\Output;
 use SimpleCli\Traits\Parameters;
+use SimpleCli\Traits\Validations;
 
 // phpcs:disable Generic.Files.LineLength
 
 /**
  * Class SimpleCli.
  *
- * @property string                                                                                                        $command
- * @property string[]                                                                                                      $parameters
- * @property array<string, string|int|float|bool|null>                                                                     $arguments
- * @property array<array{type: ?string, property: string, values: ?array, description: string}>                            $expectedArguments
- * @property array<string|int|float|bool|null>                                                                             $restArguments
- * @property array<string, mixed>                                                                                          $options
- * @property array<array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null}> $expectedOptions
+ * @property string                                                                                                                                   $command
+ * @property string[]                                                                                                                                 $parameters
+ * @property array<string, string|int|float|bool|null>                                                                                                $arguments
+ * @property array<array{type: ?string, property: string, values: ?array, description: string, validation?: Validation[]}>                            $expectedArguments
+ * @property array<string|int|float|bool|null>                                                                                                        $restArguments
+ * @property array<string, mixed>                                                                                                                     $options
+ * @property array<array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null, validation?: Validation[]}> $expectedOptions
  */
 abstract class SimpleCli implements Writer
 {
@@ -45,6 +49,9 @@ abstract class SimpleCli implements Writer
     use Options;
     use Composer;
     use Documentation;
+    use IniSet;
+    use Validations;
+    use Open;
 
     /**
      * @param array<string, string>|null $colors
@@ -75,9 +82,12 @@ abstract class SimpleCli implements Writer
     {
         $packageName = $this->getPackageName();
         $start = $packageName === '' ? '' : $this->colorize($packageName, 'green').' version ';
+        $version = defined('SIMPLE_CLI_PHAR_PROGRAM_VERSION')
+            ? constant('SIMPLE_CLI_PHAR_PROGRAM_VERSION')
+            : $this->getInstalledPackageVersion($packageName);
 
         return $start.
-            $this->colorize($this->getInstalledPackageVersion($packageName), 'brown').
+            $this->colorize($version, 'brown').
             $this->getVersionDetails();
     }
 
@@ -133,7 +143,7 @@ abstract class SimpleCli implements Writer
         }
 
         $this->command = $command;
-        $this->parameters = $parameters;
+        $this->parameters = array_diff($parameters, SimpleCliOption::ALL);
 
         $commandClass = $this->getCommandClassFromName($commands, $command);
 
@@ -354,6 +364,6 @@ abstract class SimpleCli implements Writer
             $commander->$property = $value;
         }
 
-        return $commander;
+        return $this->validateExpectedOptions($commander);
     }
 }

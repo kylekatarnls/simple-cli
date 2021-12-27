@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SimpleCli\Traits;
 
 use InvalidArgumentException;
+use SimpleCli\Attribute\Validation;
 
 // phpcs:disable Generic.Files.LineLength
 
@@ -29,7 +30,7 @@ trait Options
     /**
      * Get definition of expected options.
      *
-     * @return array<array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null}>
+     * @return array<array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null, validation?: Validation[]}>
      */
     public function getExpectedOptions(): array
     {
@@ -41,7 +42,7 @@ trait Options
      *
      * @param string $name
      *
-     * @return array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null}
+     * @return array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null, validation?: Validation[]}
      */
     public function getOptionDefinition(string $name): array
     {

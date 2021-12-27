@@ -34,17 +34,8 @@ trait Parameters
      */
     public function getParameterValue(string $parameter, array $parameterDefinition): string|int|float|bool|null
     {
-        $value = $parameter;
-
-        try {
-            settype($value, $parameterDefinition['type'] ?? 'string');
-        } catch (Throwable $exception) {
-            throw new InvalidArgumentException(
-                "Cannot cast $parameter to ".((string) $parameterDefinition['type']),
-                0,
-                $exception,
-            );
-        }
+        $types = $this->getTypesFromDefinition($parameterDefinition);
+        $value = $this->castToTypes($parameter, $types);
 
         if ($parameter !== '' &&
             $parameterDefinition['values'] &&
@@ -58,6 +49,45 @@ trait Parameters
                 implode(', ', $parameterDefinition['values']).
                 "]; '$parameter' given.",
             );
+        }
+
+        return $value;
+    }
+
+    protected function getTypesFromDefinition(array $parameterDefinition): array
+    {
+        $types = $parameterDefinition['type'] ?? 'string';
+        $nullable = str_contains("|$types", '|?');
+        $types = explode('|', strtr($types, ['?' => '']));
+
+        if ($nullable) {
+            $types[] = 'null';
+        }
+
+        return array_unique($types);
+    }
+
+    protected function castToTypes(mixed &$parameter, array $types): mixed
+    {
+        $value = $parameter;
+        $exceptions = [];
+
+        foreach ($types as $type) {
+            try {
+                settype($value, $type);
+
+                break;
+            } catch (Throwable $exception) {
+                $exceptions[] = new InvalidArgumentException(
+                    "Cannot cast $parameter to $type",
+                    0,
+                    $exception,
+                );
+            }
+        }
+
+        if (count($exceptions) === count($types)) {
+            throw $exceptions[0];
         }
 
         return $value;

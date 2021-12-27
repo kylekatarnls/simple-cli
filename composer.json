@@ -21,7 +21,8 @@
         "phpmd/phpmd": "^2.11.1",
         "phpstan/phpstan": "^1.2.0",
         "squizlabs/php_codesniffer": "^3.5.8",
-        "vimeo/psalm": "^4.13.1"
+        "vimeo/psalm": "^4.13.1",
+        "pdepend/pdepend": "dev-fix/traits-collision as 2.11.0"
     },
     "autoload": {
         "psr-4": {
@@ -44,14 +45,14 @@
         "md": "phpmd src,tests text ./phpmd.xml",
         "stan": "phpstan analyse --autoload-file=vendor/autoload.php -c phpstan.neon",
         "phan": "phan",
-        "psalm": "psalm --show-info=true",
+        "psalm": "psalm --show-info=true --no-cache",
         "style": [
             "@psalm",
             "@phan",
             "@cs",
             "@md",
-            "@stan",
-            "@csf"
+            "@csf",
+            "@stan"
         ],
         "test": [
             "@unit",

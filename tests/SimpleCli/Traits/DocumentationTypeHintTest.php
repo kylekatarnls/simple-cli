@@ -12,7 +12,8 @@ class DocumentationTypeHintTest extends TraitsTestCase
 {
     /**
      * @covers ::getPropertyType
-     * @covers ::getRestTypeAndDescription
+     * @covers ::getTypeAndRestDescription
+     * @covers ::getTypeName
      */
     public function testPropertyTypeByHint(): void
     {

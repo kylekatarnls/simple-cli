@@ -194,7 +194,8 @@ class DocumentationTest extends TraitsTestCase
 
     /**
      * @covers ::getPropertyType
-     * @covers ::getRestTypeAndDescription
+     * @covers ::getTypeAndRestDescription
+     * @covers ::getTypeName
      * @covers ::normalizeScalarType
      */
     public function testPropertyTypeByVarAnnotation(): void
@@ -215,7 +216,8 @@ class DocumentationTest extends TraitsTestCase
 
     /**
      * @covers ::getPropertyType
-     * @covers ::getRestTypeAndDescription
+     * @covers ::getTypeAndRestDescription
+     * @covers ::getTypeName
      */
     public function testPropertyTypeByDefaultValue(): void
     {
