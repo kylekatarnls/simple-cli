@@ -34,10 +34,8 @@ trait ValidateProgram
         return trim(
             (string) preg_replace_callback(
                 '/[A-Z]/',
-                function (array $match) {
-                    return '-'.strtolower($match[0]);
-                },
-                end($parts)
+                static fn (array $match) => '-'.strtolower($match[0]),
+                end($parts),
             ),
             '-'
         );

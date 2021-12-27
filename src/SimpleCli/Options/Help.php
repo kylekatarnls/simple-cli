@@ -139,7 +139,14 @@ trait Help
 
     protected function getDefaultValue(self $defaultInstance, string $property, array $definition): mixed
     {
-        return $defaultInstance->$property ?? match ($definition['type'] ?? null) {
+        if (isset($defaultInstance->$property)) {
+            return $defaultInstance->$property;
+        }
+
+        $type = explode('|', (string) ($definition['type'] ?? 'string'));
+        $type = ltrim($type[0], '?');
+
+        return match ($type) {
             'float' => 0.0,
             'int'   => 0,
             'array' => [],

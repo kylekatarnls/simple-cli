@@ -144,6 +144,7 @@ php "%BIN_TARGET%" %*
     /**
      * @covers ::run
      * @covers \SimpleCli\Traits\Output::error
+     * @covers \SimpleCli\SimpleCliCommand\Traits\ValidateProgram::validateProgram
      */
     public function testRun(): void
     {

@@ -29,14 +29,26 @@ class IniSetTest extends TraitsTestCase
         };
         $commander->iniSet('phar.readonly', $iniValue);
         $commander->iniSet('phar.readonly', (string) $iniRawValue);
-        $commander->iniSet('phar.readonly', (int) $iniRawValue);
 
         static::assertSame([], $commands);
+
+        $commander->iniSet('phar.readonly', (int) $iniRawValue);
+
+        static::assertSame($iniValue ? [] : [
+            PHP_BINARY.' -d phar.readonly=0 '.
+            escapeshellarg(get_included_files()[0]).' '.
+            implode(' ', array_map('escapeshellarg', [
+                ...array_slice($GLOBALS['argv'], 1),
+                '--simple-cli-skip-ini-fix',
+            ])),
+        ], $commands);
+
+        $commands = [];
 
         $commander->iniSet('phar.readonly', !$iniValue);
 
         static::assertSame([
-            PHP_BINARY.' -d phar.readonly=Off '.
+            PHP_BINARY.' -d phar.readonly='.($iniValue ? 'Off' : 'On').' '.
             escapeshellarg(get_included_files()[0]).' '.
             implode(' ', array_map('escapeshellarg', [
                 ...array_slice($GLOBALS['argv'], 1),
@@ -49,7 +61,7 @@ class IniSetTest extends TraitsTestCase
         $commander->iniSet('phar.readonly', $iniValue ? 'Off' : 'On');
 
         static::assertSame([
-            PHP_BINARY.' -d phar.readonly=Off '.
+            PHP_BINARY.' -d phar.readonly='.($iniValue ? 'Off' : 'On').' '.
             escapeshellarg(get_included_files()[0]).' '.
             implode(' ', array_map('escapeshellarg', [
                 ...array_slice($GLOBALS['argv'], 1),
@@ -89,7 +101,7 @@ class IniSetTest extends TraitsTestCase
         $commander->iniSet('phar.readonly', !$iniValue);
 
         static::assertSame([
-            PHP_BINARY.' -d phar.readonly=Off '.
+            PHP_BINARY.' -d phar.readonly='.($iniValue ? 'Off' : 'On').' '.
             escapeshellarg(get_included_files()[0]).' '.
             implode(' ', array_map('escapeshellarg', [
                 ...array_slice($GLOBALS['argv'], 1),
@@ -108,7 +120,7 @@ class IniSetTest extends TraitsTestCase
         static::assertSame([], $commands);
         static::assertSame([
             [
-                'phar.readonly is 1, set phar.readonly=Off in '.
+                'phar.readonly is '.$iniRawValue.', set phar.readonly='.($iniValue ? 'Off' : 'On').' in '.
                 (php_ini_loaded_file() ?: 'php.ini')." and retry.\n",
                 'red',
                 null,

@@ -11,6 +11,8 @@ use ReflectionException;
 use ReflectionNamedType;
 use ReflectionObject;
 use ReflectionProperty;
+use ReflectionType;
+use ReflectionUnionType;
 use SimpleCli\Attribute\Argument;
 use SimpleCli\Attribute\Option;
 use SimpleCli\Attribute\Rest;
@@ -330,14 +332,7 @@ trait Documentation
                 $type,
                 array_map(
                     static fn (ReflectionAttribute $attribute) => $attribute->newInstance(),
-                    array_filter(
-                        $property->getAttributes(),
-                        static fn (ReflectionAttribute $attribute) => is_a(
-                            $attribute->getName(),
-                            Validation::class,
-                            true,
-                        ),
-                    ),
+                    $property->getAttributes(Validation::class, ReflectionAttribute::IS_INSTANCEOF),
                 ),
             );
         }
@@ -353,26 +348,35 @@ trait Documentation
         ]);
     }
 
-    private function getRestTypeAndDescription(ReflectionProperty $property, Rest|string|null $rest): array
+    private function getTypeAndRestDescription(ReflectionProperty $property, Rest|string|null $rest): array
     {
         if ($rest instanceof Rest) {
             $rest = $rest->description;
         }
 
-        $type = $property->getType();
-        $type = $type instanceof ReflectionNamedType
-            ? $type->getName()
-            : null;
+        return [$rest, $this->getTypeName($property->getType())];
+    }
 
-        return [$rest, $type];
+    private function getTypeName(?ReflectionType $type): ?string
+    {
+        if ($type instanceof ReflectionUnionType) {
+            return implode('|', array_map(
+                fn (ReflectionType $subType) => $this->getTypeName($subType),
+                $type->getTypes(),
+            ));
+        }
+
+        return $type instanceof ReflectionNamedType
+            ? ($type->allowsNull() ? '?' : '').$type->getName()
+            : null;
     }
 
     private function getPropertyType(ReflectionProperty $property, Command $command, Rest|string|null $rest): ?string
     {
-        [$description, $type] = $this->getRestTypeAndDescription($property, $rest);
+        [$description, $type] = $this->getTypeAndRestDescription($property, $rest);
 
         if (!$type) {
-            $defaultValue = $property->getValue($command);
+            $defaultValue = $property->hasDefaultValue() ? $property->getValue($command) : null;
 
             if ($defaultValue !== null) {
                 $type = gettype($defaultValue);

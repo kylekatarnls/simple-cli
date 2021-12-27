@@ -45,11 +45,18 @@ trait Validations
 
                 if ($validation) {
                     $property = $definition['property'];
-                    $commander->$property = $this->validateValueWith(
+                    $value = $this->validateValueWith(
                         $definition['names'][0] ?? $property,
-                        $commander->$property,
+                        $commander->$property ?? null,
                         $validation,
                     );
+
+                    // @phan-suppress-next-line PhanUndeclaredMethod
+                    if ($value === null && !in_array('null', $this->getTypesFromDefinition($definition), true)) {
+                        throw new InvalidArgumentException("$property is mandatory.");
+                    }
+
+                    $commander->$property = $value;
                 }
             }
         } catch (InvalidArgumentException $exception) {

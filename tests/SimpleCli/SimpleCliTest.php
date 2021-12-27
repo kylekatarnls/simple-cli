@@ -53,6 +53,10 @@ class SimpleCliTest extends TestCase
     public function testGetVersion(): void
     {
         static::assertSame('[ESCAPE][0;33munknown[ESCAPE][0m', (new DemoCli())->getVersion());
+
+        define('SIMPLE_CLI_PHAR_PROGRAM_VERSION', '1.2.3');
+
+        static::assertSame('[ESCAPE][0;33m1.2.3[ESCAPE][0m', (new DemoCli())->getVersion());
     }
 
     /**

@@ -25,6 +25,7 @@ jobs:
         php-version: ${{ matrix.php }}
         tools: composer:v2
         coverage: xdebug
+        ini-values: phar.readonly=Off
 
     - name: Cache Composer packages
       id: composer-cache

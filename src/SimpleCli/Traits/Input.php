@@ -17,6 +17,10 @@ trait Input
 
     protected Closure|string|array $readlineCompletionRegisterFunction = 'readline_completion_function';
 
+    protected Closure|string|array|null $execFunction = null;
+
+    protected Closure|string|array|null $execBatFunction = null;
+
     /** @var string[] */
     protected array $readlineCompletionExtensions = ['readline'];
 
@@ -135,18 +139,20 @@ trait Input
     {
         // @codeCoverageIgnoreStart
         if (preg_match('/^win/i', PHP_OS)) {
+            $execBar = $this->execBatFunction ?? 'exec';
             $this->displayMessage($prompt);
 
-            return exec(__DIR__.'/../../../bin/prompt_win.bat');
+            return $execBar(__DIR__.'/../../../bin/prompt_win.bat');
         }
         // @codeCoverageIgnoreEnd
 
-        // @phan-suppress-next-line PhanUndeclaredProperty
         $exec = $this->execFunction ?? 'shell_exec';
 
+        // @codeCoverageIgnoreStart
         if (rtrim($exec("/usr/bin/env bash -c 'echo OK'") ?: '') !== 'OK') {
             throw new RuntimeException("Can't invoke bash");
         }
+        // @codeCoverageIgnoreEnd
 
         $result = $exec(
             "/usr/bin/env bash -c 'read -s -p \"".

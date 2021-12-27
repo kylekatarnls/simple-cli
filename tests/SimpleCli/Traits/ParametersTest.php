@@ -29,6 +29,8 @@ class ParametersTest extends TraitsTestCase
 
     /**
      * @covers ::getParameterValue
+     * @covers ::getTypesFromDefinition
+     * @covers ::castToTypes
      */
     public function testGetParameterValue(): void
     {
@@ -70,6 +72,8 @@ class ParametersTest extends TraitsTestCase
 
     /**
      * @covers ::getParameterValue
+     * @covers ::getTypesFromDefinition
+     * @covers ::castToTypes
      */
     public function testGetParameterValueWrongCast(): void
     {
@@ -89,6 +93,8 @@ class ParametersTest extends TraitsTestCase
 
     /**
      * @covers ::getParameterValue
+     * @covers ::getTypesFromDefinition
+     * @covers ::castToTypes
      */
     public function testGetParameterValueWrongValue(): void
     {

@@ -65,6 +65,24 @@ class BuildPhar implements Command
     public ?string $outputFile = null;
 
     #[Option(
+        'List of files and directory (coma-separated) to include to the PHAR.',
+        name: 'include',
+    )]
+    public string $include = '';
+
+    #[Option(
+        'Exclude the vendor directory from the PHAR.',
+        name: 'no-vendor',
+    )]
+    public bool $noVendor = false;
+
+    #[Option(
+        'Exclude the src directory from the PHAR.',
+        name: 'no-src',
+    )]
+    public bool $noSrc = false;
+
+    #[Option(
         'Where to search for programs (if no explicit classes passed as arguments).',
         name: 'bin-directory',
         alias: 'b',
@@ -81,17 +99,12 @@ class BuildPhar implements Command
 
     public function run(SimpleCli $cli): bool
     {
-        if (!class_exists(Phar::class)) {
-            return $cli->error('Phar extension is disabled, install and enable it to run this command.');
+        $error = $this->initialize();
+
+        if ($error) {
+            return $cli->error($error);
         }
 
-        $this->baseDirectory = realpath($this->baseDirectory ?: getcwd() ?: '.');
-
-        if (!$this->baseDirectory || !is_dir($this->baseDirectory)) {
-            return $cli->error('Specified --base-directory is not a valid directory path.');
-        }
-
-        $this->baseDirectory .= DIRECTORY_SEPARATOR;
         /** @var class-string[] $classNames */
         $classNames = $this->getClassNames();
 
@@ -102,7 +115,7 @@ class BuildPhar implements Command
         $handled = $cli->iniSet('phar.readonly', false);
 
         if ($handled !== null) {
-            return $handled;
+            return $handled; // @codeCoverageIgnore
         }
 
         $this->progressBar = new ProgressBar($cli);
@@ -176,7 +189,7 @@ class BuildPhar implements Command
                     $directories[] = substr($file, 0, $pos);
                 }
             }
-        } catch (Throwable) {
+        } catch (Throwable) { // @codeCoverageIgnore
             // Empty $directories list
         }
 
@@ -225,7 +238,7 @@ class BuildPhar implements Command
         $this->setSubStep(0.95);
 
         if ($this->outputFile) {
-            rename($mainFile, $this->outputFile);
+            rename($pharFile, $this->outputFile);
         }
 
         return $success;
@@ -245,7 +258,11 @@ class BuildPhar implements Command
     {
         array_push($directories, ...array_map(
             'realpath',
-            [$this->baseDirectory.'/src', $this->baseDirectory.'/vendor'],
+            array_filter([
+                $this->noSrc ? null : $this->baseDirectory.'/src',
+                $this->noVendor ? null : $this->baseDirectory.'/vendor',
+                ...explode(',', $this->include),
+            ]),
         ));
 
         foreach (array_unique($directories) as $folder) {
@@ -303,15 +320,6 @@ class BuildPhar implements Command
         return '';
     }
 
-    protected function getMainTemplateFile(): ?string
-    {
-        try {
-            return file_get_contents($this->mainTemplateFile) ?: null;
-        } catch (Throwable) {
-            return null;
-        }
-    }
-
     private function getClassNamesFromFile(string $path): Generator
     {
         if (!is_file($path)) {
@@ -326,5 +334,27 @@ class BuildPhar implements Command
                 yield $token[1];
             }
         }
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     */
+    private function initialize(): ?string
+    {
+        if (!class_exists(Phar::class)) {
+            // @codeCoverageIgnoreStart
+            return 'Phar extension is disabled, install and enable it to run this command.';
+            // @codeCoverageIgnoreEnd
+        }
+
+        $this->baseDirectory = realpath($this->baseDirectory ?: getcwd() ?: '.') ?: '';
+
+        if (!$this->baseDirectory || !is_dir($this->baseDirectory)) {
+            return 'Specified --base-directory is not a valid directory path.';
+        }
+
+        $this->baseDirectory .= DIRECTORY_SEPARATOR;
+
+        return null;
     }
 }

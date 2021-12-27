@@ -12,6 +12,11 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class Option
 {
+    /**
+     * @param string|null               $description
+     * @param array<string>|string|null $name
+     * @param array<string>|string|null $alias
+     */
     public function __construct(
         public ?string $description = null,
         public array|string|null $name = null,

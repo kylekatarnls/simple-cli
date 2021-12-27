@@ -16,4 +16,7 @@
       <directory>tests/SimpleCli</directory>
     </testsuite>
   </testsuites>
+  <php>
+    <ini name="phar.readonly" value="Off"/>
+  </php>
 </phpunit>

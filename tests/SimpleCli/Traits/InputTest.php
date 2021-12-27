@@ -2,9 +2,11 @@
 
 namespace Tests\SimpleCli\Traits;
 
+use Closure;
 use SimpleCli\Traits\Input;
 use SimpleCli\Writer;
 use Tests\SimpleCli\DemoApp\DemoCli;
+use Tests\SimpleCli\DemoApp\UnionCli;
 
 /**
  * @coversDefaultClass \SimpleCli\Traits\Input
@@ -158,5 +160,67 @@ class InputTest extends TraitsTestCase
         static::assertSame([
             ['Hello', null, null],
         ], $command->output);
+    }
+
+    /**
+     * @covers ::readHidden
+     * @covers ::readHiddenPrompt
+     */
+    public function testReadHidden(): void
+    {
+        $commands = [
+            'shell' => [],
+            'bat'   => [],
+        ];
+        $output = null;
+        $windows = preg_match('/^win/i', PHP_OS);
+
+        static::assertOutput(
+            ($windows ? 'Password:' : '').PHP_EOL,
+            static function () use (&$commands, &$output) {
+                $command = new class() extends DemoCli {
+                    public function setExecBatFunction(array|Closure|string|null $execBatFunction): void
+                    {
+                        $this->execBatFunction = $execBatFunction;
+                    }
+
+                    public function setExecFunction(array|Closure|string|null $execFunction): void
+                    {
+                        $this->execFunction = $execFunction;
+                    }
+                };
+                $command->setExecFunction(static function (string $command) use (&$commands) {
+                    $commands['shell'][] = $command;
+
+                    return 'OK';
+                });
+                $command->setExecBatFunction(static function (string $command) use (&$commands) {
+                    $commands['bat'][] = $command;
+
+                    return 'OK';
+                });
+
+                $output = $command->readHidden('Password:');
+            },
+        );
+
+        static::assertSame('OK', $output);
+        static::assertSame(
+            $windows
+                ? [
+                    'shell' => [],
+                    'bat'   => [
+                        realpath(__DIR__.'/../../../src/SimpleCli/Traits').'/../../../bin/prompt_win.bat',
+                    ],
+                ]
+                : [
+                    'shell' => [
+                        "/usr/bin/env bash -c 'echo OK'",
+                        "/usr/bin/env bash -c 'read -s -p \"Password:\" secret && echo \$secret'",
+                    ],
+                    'bat'   => [],
+                ],
+            $commands,
+        );
     }
 }
