@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SimpleCli\Exception;
 
 use RuntimeException;
+use Throwable;
 
 class UnableToReadException extends RuntimeException implements ExceptionWithResult
 {

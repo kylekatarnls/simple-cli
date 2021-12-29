@@ -228,7 +228,7 @@ abstract class SimpleCli implements Writer
                 'NULL'  => 'null',
                 'FALSE' => 'false',
                 'TRUE'  => 'true',
-            ]
+            ],
         );
     }
 

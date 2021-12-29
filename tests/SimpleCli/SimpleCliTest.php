@@ -292,7 +292,7 @@ class SimpleCliTest extends TestCase
     {
         static::assertSame([
             'SimpleCli\Options\Verbose' => 'SimpleCli\Options\Verbose',
-            'SimpleCli\Trait\Input'    => 'SimpleCli\Trait\Input',
+            'SimpleCli\Trait\Input'     => 'SimpleCli\Trait\Input',
         ], (new InteractiveCli())->traits(TraitCommand::class));
     }
 
