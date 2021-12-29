@@ -3,10 +3,11 @@
 namespace Tests\SimpleCli\Trait;
 
 use Closure;
+use SimpleCli\Exception\ExceptionWithResult;
+use SimpleCli\Exception\UnableToReadException;
 use SimpleCli\Trait\Input;
 use SimpleCli\Writer;
 use Tests\SimpleCli\DemoApp\DemoCli;
-use Tests\SimpleCli\DemoApp\UnionCli;
 
 /**
  * @coversDefaultClass \SimpleCli\Trait\Input
@@ -95,6 +96,29 @@ class InputTest extends TraitsTestCase
         $answer = $command->read('Are you mad?');
 
         static::assertSame('yes', $answer);
+    }
+
+    /**
+     * @covers ::read
+     * @covers \SimpleCli\Exception\UnableToReadException::__construct
+     * @covers \SimpleCli\Exception\UnableToReadException::getResult
+     */
+    public function testReadException(): void
+    {
+        $command = new DemoCli();
+
+        $command->setAnswerer(static fn () => false);
+        $caughtException = null;
+
+        try {
+            $command->read('Question');
+        } catch (UnableToReadException $exception) {
+            $caughtException = $exception;
+        }
+
+        static::assertInstanceOf(UnableToReadException::class, $caughtException);
+        static::assertInstanceOf(ExceptionWithResult::class, $caughtException);
+        static::assertFalse($caughtException->getResult());
     }
 
     /**

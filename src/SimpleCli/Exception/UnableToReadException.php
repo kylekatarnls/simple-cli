@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SimpleCli\Exception;
 
-use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
 use RuntimeException;
 
 class UnableToReadException extends RuntimeException implements ExceptionWithResult
