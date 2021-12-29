@@ -40,7 +40,7 @@ class GetFileContentTest extends TestCase
 
         static::assertOutput(
             '[ESCAPE][0;31minput is mandatory.[ESCAPE][0m',
-            static function () use ($path) {
+            static function () {
                 $command = new FileCli();
 
                 $command('file', 'read');
