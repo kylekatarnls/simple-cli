@@ -135,7 +135,7 @@ class BuildPharTest extends TestCase
 
         static::assertSame(
             "[ESCAPE][0;31mSpecified --base-directory is not a valid directory path.\n[ESCAPE][0m",
-            strtr((string) static::getActionOutput(static function () use ($file, $template) {
+            strtr((string) static::getActionOutput(static function () {
                 $cli = new SimpleCliCommand();
                 $cli('simple-cli', 'build-phar', '--base-directory', '/i/do/not/exist');
             }), ["\033" => '[ESCAPE]', "\r" => '']),
@@ -143,7 +143,7 @@ class BuildPharTest extends TestCase
 
         static::assertSame(
             "[ESCAPE][0;31mEmpty list of class names and none found from scanning \"bin\" directory.\n[ESCAPE][0m",
-            strtr((string) static::getActionOutput(static function () use ($file, $template) {
+            strtr((string) static::getActionOutput(static function () {
                 $cli = new SimpleCliCommand();
                 $cli('simple-cli', 'build-phar', '--bin-directory', '/i/do/not/exist');
             }), ["\033" => '[ESCAPE]', "\r" => '']),

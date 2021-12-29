@@ -2,7 +2,6 @@
 
 namespace Tests\SimpleCli\DemoApp;
 
-use SimpleCli\Attribute\GetFileContent;
 use SimpleCli\Attribute\Option;
 use SimpleCli\CommandBase;
 use SimpleCli\SimpleCli;
