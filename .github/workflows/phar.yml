@@ -50,9 +50,7 @@ jobs:
       - name: Build
         run: |
           chmod +x ./bin/simple-cli
-          ./bin/simple-cli build-phar
-        env:
-          PHAR_PACKAGE_VERSION: ${{ secrets.GITHUB_REF }}
+          PHAR_PACKAGE_VERSION=${GITHUB_REF##*/} ./bin/simple-cli build-phar
 
       - name: Upload simple-cli.phar
         uses: actions/upload-artifact@v2

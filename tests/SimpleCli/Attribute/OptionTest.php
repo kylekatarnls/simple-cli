@@ -13,7 +13,7 @@ class OptionTest extends TestCase
 {
     /**
      * @covers ::__construct
-     * @covers \SimpleCli\Traits\Documentation::getAttributeOrAnnotation
+     * @covers \SimpleCli\Trait\Documentation::getAttributeOrAnnotation
      */
     public function testTwoOptions(): void
     {

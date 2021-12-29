@@ -8,20 +8,20 @@ use InvalidArgumentException;
 use SimpleCli\Attribute\Validation;
 use SimpleCli\Options\Help;
 use SimpleCli\Options\Quiet;
-use SimpleCli\Traits\Arguments;
-use SimpleCli\Traits\Command as CommandTrait;
-use SimpleCli\Traits\Commands;
-use SimpleCli\Traits\Composer;
-use SimpleCli\Traits\Documentation;
-use SimpleCli\Traits\File;
-use SimpleCli\Traits\IniSet;
-use SimpleCli\Traits\Input;
-use SimpleCli\Traits\Name;
-use SimpleCli\Traits\Open;
-use SimpleCli\Traits\Options;
-use SimpleCli\Traits\Output;
-use SimpleCli\Traits\Parameters;
-use SimpleCli\Traits\Validations;
+use SimpleCli\Trait\Arguments;
+use SimpleCli\Trait\Command as CommandTrait;
+use SimpleCli\Trait\Commands;
+use SimpleCli\Trait\Composer;
+use SimpleCli\Trait\Documentation;
+use SimpleCli\Trait\File;
+use SimpleCli\Trait\IniSet;
+use SimpleCli\Trait\Input;
+use SimpleCli\Trait\Name;
+use SimpleCli\Trait\Open;
+use SimpleCli\Trait\Options;
+use SimpleCli\Trait\Output;
+use SimpleCli\Trait\Parameters;
+use SimpleCli\Trait\Validations;
 
 // phpcs:disable Generic.Files.LineLength
 
@@ -228,7 +228,7 @@ abstract class SimpleCli implements Writer
                 'NULL'  => 'null',
                 'FALSE' => 'false',
                 'TRUE'  => 'true',
-            ]
+            ],
         );
     }
 
