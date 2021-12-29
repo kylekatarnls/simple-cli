@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\SimpleCli\Traits;
+namespace Tests\SimpleCli\Trait;
 
 use stdClass;
 use Tests\SimpleCli\DemoApp\DemoCli;
@@ -9,7 +9,7 @@ use Tests\SimpleCli\SimpleCliCommand\DefaultValue;
 use Tests\SimpleCli\SimpleCliCommand\VarAnnotation;
 
 /**
- * @coversDefaultClass \SimpleCli\Traits\Documentation
+ * @coversDefaultClass \SimpleCli\Trait\Documentation
  */
 class DocumentationTest extends TraitsTestCase
 {

@@ -12,7 +12,7 @@ class ArgumentTest extends TestCase
 {
     /**
      * @covers ::__construct
-     * @covers \SimpleCli\Traits\Documentation::extractArgumentInfo
+     * @covers \SimpleCli\Trait\Documentation::extractArgumentInfo
      */
     public function testHybrid(): void
     {
@@ -28,7 +28,7 @@ class ArgumentTest extends TestCase
 
     /**
      * @covers ::__construct
-     * @covers \SimpleCli\Traits\Documentation::extractArgumentInfo
+     * @covers \SimpleCli\Trait\Documentation::extractArgumentInfo
      */
     public function testUse(): void
     {

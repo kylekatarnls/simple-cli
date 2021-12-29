@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\SimpleCli\Traits;
+namespace Tests\SimpleCli\Trait;
 
 use InvalidArgumentException;
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\DemoApp\DummyCli;
 
 /**
- * @coversDefaultClass \SimpleCli\Traits\Options
+ * @coversDefaultClass \SimpleCli\Trait\Options
  */
 class OptionsTest extends TraitsTestCase
 {
@@ -37,7 +37,7 @@ class OptionsTest extends TraitsTestCase
 
     /**
      * @covers ::getExpectedOptions
-     * @covers \SimpleCli\Traits\Documentation::getValues
+     * @covers \SimpleCli\Trait\Documentation::getValues
      */
     public function testGetExpectedOptions(): void
     {

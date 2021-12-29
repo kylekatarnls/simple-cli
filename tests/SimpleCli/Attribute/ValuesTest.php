@@ -12,7 +12,7 @@ class ValuesTest extends TestCase
 {
     /**
      * @covers ::__construct
-     * @covers \SimpleCli\Traits\Documentation::getValues
+     * @covers \SimpleCli\Trait\Documentation::getValues
      */
     public function testInvalidValue(): void
     {

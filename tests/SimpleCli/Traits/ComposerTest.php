@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\SimpleCli\Traits;
+namespace Tests\SimpleCli\Trait;
 
 use SimpleCli\Composer\InstalledPackage;
 use Tests\SimpleCli\DemoApp\DemoCli;
 
 /**
- * @coversDefaultClass \SimpleCli\Traits\Composer
+ * @coversDefaultClass \SimpleCli\Trait\Composer
  *
  * @SuppressWarnings(PHPMD.ErrorControlOperator)
  */

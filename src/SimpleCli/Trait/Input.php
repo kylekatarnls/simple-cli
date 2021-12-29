@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace SimpleCli\Traits;
+namespace SimpleCli\Trait;
 
 use Closure;
 use RuntimeException;
+use SimpleCli\Exception\UnableToReadException;
 use SimpleCli\Writer;
 
 trait Input
@@ -76,8 +77,13 @@ trait Input
     public function read(string $prompt, Closure|callable|array|null $completion = null): string
     {
         $this->currentCompletion = $completion;
+        $result = ($this->readlineFunction)($prompt);
 
-        return ($this->readlineFunction)($prompt);
+        if (!is_string($result)) {
+            throw new UnableToReadException($result);
+        }
+
+        return $result;
     }
 
     /**

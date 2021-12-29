@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\SimpleCli\Traits;
+namespace Tests\SimpleCli\Trait;
 
 use Tests\SimpleCli\DemoApp\DemoCli;
 
 /**
- * @coversDefaultClass \SimpleCli\Traits\Command
+ * @coversDefaultClass \SimpleCli\Trait\Command
  */
 class CommandTest extends TraitsTestCase
 {

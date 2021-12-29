@@ -10,8 +10,8 @@ class ReadableFileTest extends TestCase
     /**
      * @covers \SimpleCli\Attribute\ReadableFile::proceed
      * @covers \SimpleCli\Attribute\WritableFile::proceed
-     * @covers \SimpleCli\Traits\Validations::validateValueWith
-     * @covers \SimpleCli\Traits\Validations::validateExpectedOptions
+     * @covers \SimpleCli\Trait\Validations::validateValueWith
+     * @covers \SimpleCli\Trait\Validations::validateExpectedOptions
      */
     public function testCopy(): void
     {

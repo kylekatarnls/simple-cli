@@ -12,8 +12,8 @@ use Tests\SimpleCli\TestCase;
 class PaletteTest extends TestCase
 {
     /**
-     * @covers \SimpleCli\Traits\Output::getColors
-     * @covers \SimpleCli\Traits\Output::getBackgrounds
+     * @covers \SimpleCli\Trait\Output::getColors
+     * @covers \SimpleCli\Trait\Output::getBackgrounds
      * @covers ::run
      */
     public function testRun(): void

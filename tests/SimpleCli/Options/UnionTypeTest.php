@@ -6,7 +6,7 @@ use Tests\SimpleCli\DemoApp\UnionCli;
 use Tests\SimpleCli\TestCase;
 
 /**
- * @coversDefaultClass \SimpleCli\Traits\Documentation
+ * @coversDefaultClass \SimpleCli\Trait\Documentation
  */
 class UnionTypeTest extends TestCase
 {

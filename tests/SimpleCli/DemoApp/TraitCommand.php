@@ -5,7 +5,7 @@ namespace Tests\SimpleCli\DemoApp;
 use SimpleCli\Command;
 use SimpleCli\Options\Verbose;
 use SimpleCli\SimpleCli;
-use SimpleCli\Traits\Input;
+use SimpleCli\Trait\Input;
 
 /**
  * This is a demo.

@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\SimpleCli\Traits;
+namespace Tests\SimpleCli\Trait;
 
-use SimpleCli\Traits\IniSet;
+use SimpleCli\Trait\IniSet;
 use SimpleCli\Writer;
 
 /**
- * @coversDefaultClass \SimpleCli\Traits\IniSet
+ * @coversDefaultClass \SimpleCli\Trait\IniSet
  */
 class IniSetTest extends TraitsTestCase
 {

@@ -12,8 +12,8 @@ class GetFileContentTest extends TestCase
 {
     /**
      * @covers ::proceed
-     * @covers \SimpleCli\Traits\Validations::validateValueWith
-     * @covers \SimpleCli\Traits\Validations::validateExpectedOptions
+     * @covers \SimpleCli\Trait\Validations::validateValueWith
+     * @covers \SimpleCli\Trait\Validations::validateExpectedOptions
      */
     public function testGetFileContent(): void
     {
@@ -50,9 +50,9 @@ class GetFileContentTest extends TestCase
 
     /**
      * @covers ::proceed
-     * @covers \SimpleCli\Traits\Validations::validateValueWith
-     * @covers \SimpleCli\Traits\Validations::validateExpectedOptions
-     * @covers \SimpleCli\Traits\Parameters::getTypesFromDefinition
+     * @covers \SimpleCli\Trait\Validations::validateValueWith
+     * @covers \SimpleCli\Trait\Validations::validateExpectedOptions
+     * @covers \SimpleCli\Trait\Parameters::getTypesFromDefinition
      */
     public function testGetFileContentOptionalParameter(): void
     {

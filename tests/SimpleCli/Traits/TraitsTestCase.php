@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\SimpleCli\Traits;
+namespace Tests\SimpleCli\Trait;
 
 use Tests\SimpleCli\TestCase;
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\SimpleCli\Traits;
+namespace Tests\SimpleCli\Trait;
 
 use InvalidArgumentException;
 use Tests\SimpleCli\DemoApp\DemoCli;
 
 /**
- * @coversDefaultClass \SimpleCli\Traits\Parameters
+ * @coversDefaultClass \SimpleCli\Trait\Parameters
  */
 class ParametersTest extends TraitsTestCase
 {

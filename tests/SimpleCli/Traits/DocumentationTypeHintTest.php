@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\SimpleCli\Traits;
+namespace Tests\SimpleCli\Trait;
 
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\SimpleCliCommand\TypeHint;
 
 /**
- * @coversDefaultClass \SimpleCli\Traits\Documentation
+ * @coversDefaultClass \SimpleCli\Trait\Documentation
  */
 class DocumentationTypeHintTest extends TraitsTestCase
 {

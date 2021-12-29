@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\SimpleCli\Traits;
+namespace Tests\SimpleCli\Trait;
 
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\DemoApp\DummyCli;
 
 /**
- * @coversDefaultClass \SimpleCli\Traits\Name
+ * @coversDefaultClass \SimpleCli\Trait\Name
  */
 class NameTest extends TraitsTestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\SimpleCli\Traits;
+namespace Tests\SimpleCli\Trait;
 
 use SimpleCli\Command\Usage;
 use SimpleCli\Command\Version;
@@ -9,7 +9,7 @@ use Tests\SimpleCli\DemoApp\AutoNamingCli;
 use Tests\SimpleCli\DemoApp\DummyCli;
 
 /**
- * @coversDefaultClass \SimpleCli\Traits\Commands
+ * @coversDefaultClass \SimpleCli\Trait\Commands
  */
 class CommandsTest extends TraitsTestCase
 {

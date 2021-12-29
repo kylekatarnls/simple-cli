@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\SimpleCli\Traits;
+namespace Tests\SimpleCli\Trait;
 
 use Tests\SimpleCli\DemoApp\DemoCli;
 
 /**
- * @coversDefaultClass \SimpleCli\Traits\File
+ * @coversDefaultClass \SimpleCli\Trait\File
  */
 class FileTest extends TraitsTestCase
 {

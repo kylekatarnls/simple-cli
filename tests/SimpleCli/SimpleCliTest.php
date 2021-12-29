@@ -292,13 +292,13 @@ class SimpleCliTest extends TestCase
     {
         static::assertSame([
             'SimpleCli\Options\Verbose' => 'SimpleCli\Options\Verbose',
-            'SimpleCli\Traits\Input'    => 'SimpleCli\Traits\Input',
+            'SimpleCli\Trait\Input'    => 'SimpleCli\Trait\Input',
         ], (new InteractiveCli())->traits(TraitCommand::class));
     }
 
     /**
-     * @covers \SimpleCli\Traits\Commands::getAvailableCommands
-     * @covers \SimpleCli\Traits\Commands::getCommandKey
+     * @covers \SimpleCli\Trait\Commands::getAvailableCommands
+     * @covers \SimpleCli\Trait\Commands::getCommandKey
      */
     public function testCommandsFilter(): void
     {

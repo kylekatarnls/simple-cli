@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SimpleCli\Traits;
+namespace SimpleCli\Trait;
 
 use SimpleCli\Command;
 use SimpleCli\Command\Usage;

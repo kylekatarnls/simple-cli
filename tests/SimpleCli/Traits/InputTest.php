@@ -1,15 +1,15 @@
 <?php
 
-namespace Tests\SimpleCli\Traits;
+namespace Tests\SimpleCli\Trait;
 
 use Closure;
-use SimpleCli\Traits\Input;
+use SimpleCli\Trait\Input;
 use SimpleCli\Writer;
 use Tests\SimpleCli\DemoApp\DemoCli;
 use Tests\SimpleCli\DemoApp\UnionCli;
 
 /**
- * @coversDefaultClass \SimpleCli\Traits\Input
+ * @coversDefaultClass \SimpleCli\Trait\Input
  */
 class InputTest extends TraitsTestCase
 {

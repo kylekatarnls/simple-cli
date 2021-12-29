@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\SimpleCli\Traits;
+namespace Tests\SimpleCli\Trait;
 
 use Tests\SimpleCli\DemoApp\DemoCli;
 
 /**
- * @coversDefaultClass \SimpleCli\Traits\Arguments
+ * @coversDefaultClass \SimpleCli\Trait\Arguments
  */
 class ArgumentsTest extends TraitsTestCase
 {
@@ -78,8 +78,8 @@ class ArgumentsTest extends TraitsTestCase
 
     /**
      * @covers ::getExpectedRestArgument
-     * @covers \SimpleCli\Traits\Documentation::addExpectation
-     * @covers \SimpleCli\Traits\Documentation::extractArgumentInfo
+     * @covers \SimpleCli\Trait\Documentation::addExpectation
+     * @covers \SimpleCli\Trait\Documentation::extractArgumentInfo
      */
     public function testGetExpectedRestArgument(): void
     {

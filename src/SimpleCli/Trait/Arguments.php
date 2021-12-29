@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SimpleCli\Traits;
+namespace SimpleCli\Trait;
 
 use InvalidArgumentException;
 use SimpleCli\Attribute\Validation;
