@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace SimpleCli\SimpleCliCommand;
 
 use SimpleCli\Attribute\Rest;
-use SimpleCli\Command;
-use SimpleCli\Options\Help;
+use SimpleCli\CommandBase;
 use SimpleCli\Options\Quiet;
 use SimpleCli\Options\Verbose;
 use SimpleCli\SimpleCli;
@@ -17,9 +16,8 @@ use SimpleCli\SimpleCliCommand\Traits\ValidateProgram;
  * Argument should be a class name (with namespace) that extends SimpleCli\SimpleCli.
  * Note that you must escape it, e.g. MyNamespace\\MyClass.
  */
-class Create implements Command
+class Create extends CommandBase
 {
-    use Help;
     use Quiet;
     use ValidateProgram;
     use Verbose;

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace SimpleCli\Command;
 
-use SimpleCli\Command;
+use SimpleCli\CommandBase;
 use SimpleCli\SimpleCli;
 
 /**
  * Get the list of available commands in this program.
  */
-class Usage implements Command
+class Usage extends CommandBase
 {
     public function run(SimpleCli $cli): bool
     {

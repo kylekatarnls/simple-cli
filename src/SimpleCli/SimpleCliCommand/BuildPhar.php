@@ -13,8 +13,7 @@ use SimpleCli\Attribute\GetFileContent;
 use SimpleCli\Attribute\Option;
 use SimpleCli\Attribute\Rest;
 use SimpleCli\Attribute\WritableFile;
-use SimpleCli\Command;
-use SimpleCli\Options\Help;
+use SimpleCli\CommandBase;
 use SimpleCli\Options\Quiet;
 use SimpleCli\Options\Verbose;
 use SimpleCli\SimpleCli;
@@ -26,11 +25,10 @@ use Throwable;
 /**
  * Build the current program as a phar file.
  */
-class BuildPhar implements Command
+class BuildPhar extends CommandBase
 {
     protected const MAIN_STUB_TEMPLATE_FILE = __DIR__.'/../../phar-template/main.php.stub';
 
-    use Help;
     use Quiet;
     use ValidateProgram;
     use Verbose;

@@ -21,6 +21,29 @@ trait Commands
     }
 
     /**
+     * Get the aliases leading a command name to a canonical one.
+     *
+     * @return array<string, string>
+     */
+    public function getCommandAliases(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function getCommandAliasMap(): array
+    {
+        return array_merge([
+            '-h'        => 'list',
+            '--help'    => 'list',
+            '-v'        => 'version',
+            '--version' => 'version',
+        ], $this->getCommandAliases());
+    }
+
+    /**
      * Get the list of commands included those provided by SimpleCli.
      *
      * @psalm-suppress InvalidReturnType

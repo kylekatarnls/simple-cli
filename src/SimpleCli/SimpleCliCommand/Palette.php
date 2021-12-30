@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace SimpleCli\SimpleCliCommand;
 
 use SimpleCli\Attribute\Argument;
-use SimpleCli\Command;
+use SimpleCli\CommandBase;
 use SimpleCli\SimpleCli;
 
 /**
  * Get the list of available colors and backgrounds.
  */
-class Palette implements Command
+class Palette extends CommandBase
 {
     #[Argument]
     public string $text = 'Hello world!';

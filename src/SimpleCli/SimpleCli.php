@@ -266,7 +266,7 @@ abstract class SimpleCli implements Writer
      */
     private function findClosestCommand(array $commands, string $command): ?string
     {
-        $words = new WordsList(array_keys($commands));
+        $words = new WordsList(array_keys(array_merge($commands, $this->getCommandAliasMap())));
         $closestCommand = $words->findClosestWord($command);
 
         if ($closestCommand) {
@@ -299,6 +299,12 @@ abstract class SimpleCli implements Writer
     private function getCommandName(array $commands, string $command): ?string
     {
         if (!isset($commands[$command])) {
+            $aliasMap = $this->getCommandAliasMap();
+
+            if (isset($aliasMap[$command])) {
+                return $aliasMap[$command];
+            }
+
             $this->write("Command $command not found", 'red');
 
             return $this->findClosestCommand($commands, $command);
@@ -317,12 +323,11 @@ abstract class SimpleCli implements Writer
      */
     private function getCommandClassFromName(array $commands, string $command): ?string
     {
-        /**
-         * @var string $commandClass
-         */
-        $commandClass = $commands[$command];
+        $aliasMap = $this->getCommandAliasMap();
+        /** @var string|null $commandClass */
+        $commandClass = $commands[$command] ?? (isset($aliasMap[$command]) ? $commands[$aliasMap[$command]] ?? null : null);
 
-        if (!is_subclass_of($commandClass, Command::class)) {
+        if (!is_string($commandClass) || !is_subclass_of($commandClass, Command::class)) {
             $this->write("$commandClass needs to implement ".Command::class, 'red');
 
             return null;
