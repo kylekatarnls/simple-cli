@@ -48,4 +48,9 @@ class SimpleCliCommand extends SimpleCli
             'selfupdate'  => 'self-update',
         ];
     }
+
+    public function getRepository(): string
+    {
+        return 'kylekatarnls/simple-cli';
+    }
 }

@@ -36,7 +36,7 @@ use SimpleCli\Trait\Validations;
  * @property array<string, mixed>                                                                                                                     $options
  * @property array<array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null, validation?: Validation[]}> $expectedOptions
  */
-abstract class SimpleCli implements Writer
+abstract class SimpleCli implements Writer, UpdatableViaGitHub
 {
     use Input;
     use Output;
@@ -370,5 +370,15 @@ abstract class SimpleCli implements Writer
         }
 
         return $this->validateExpectedOptions($commander);
+    }
+
+    public function getRepository(): string
+    {
+        return $this->getPackageName();
+    }
+
+    public function getAssetName(?string $version = null): string
+    {
+        return $this->name . '.phar';
     }
 }
