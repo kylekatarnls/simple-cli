@@ -10,6 +10,7 @@ use SimpleCli\Attribute\Option;
 use SimpleCli\CommandBase;
 use SimpleCli\SimpleCli;
 use SimpleCli\Updatable;
+use SimpleCli\Widget\ProgressBar;
 
 /**
  * Build the current program as a phar file.
@@ -41,13 +42,44 @@ class SelfUpdate extends CommandBase
         $url = $this->getUrl($cli);
         $cli->writeLine("Downloading $url", 'light_cyan');
 
-        if (!copy($url, $phar)) {
+        if (!is_writable($phar)) {
+            return $cli->error("$phar is not writable");
+        }
+
+        if (!$this->download($cli, $url, $phar)) {
             return $cli->error("Unable to update $phar");
         }
 
         $cli->writeLine("$phar updated", 'light_cyan');
 
         return true;
+    }
+
+    protected function download(SimpleCli $cli, string $from, string $to): bool
+    {
+        if (!function_exists('curl_init')) {
+            return copy($from, $to);
+        }
+
+        $progressBar = new ProgressBar($cli);
+        $progressBar->start();
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $from);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_PROGRESSFUNCTION,
+            static function ($resource, $downloadSize, $downloaded) use ($progressBar) {
+                $progressBar->setValue($downloaded / $downloadSize);
+            },
+        );
+        curl_setopt($ch, CURLOPT_NOPROGRESS, false);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        $content = curl_exec($ch);
+        curl_close($ch);
+        $progressBar->end();
+
+        return is_string($content) && $content !== '' && file_put_contents($to, $content);
     }
 
     protected function getUrl(SimpleCli $cli): string
