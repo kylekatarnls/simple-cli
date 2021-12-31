@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SimpleCli\Trait;
 
-use InvalidArgumentException;
 use SimpleCli\Attribute\Validation;
 use SimpleCli\Command as SimpleCliCommand;
+use SimpleCli\Exception\InvalidArgumentException;
 use SimpleCli\Writer;
 use Stringable;
 
@@ -29,6 +29,7 @@ trait Validations
                     'Validation failed for '.
                     ((string) $name).': '.
                     $error,
+                    InvalidArgumentException::FAILED_VALIDATION,
                 );
             }
         }
@@ -53,13 +54,16 @@ trait Validations
 
                     // @phan-suppress-next-line PhanUndeclaredMethod
                     if ($value === null && !in_array('null', $this->getTypesFromDefinition($definition), true)) {
-                        throw new InvalidArgumentException("$property is mandatory.");
+                        throw new InvalidArgumentException(
+                            "$property is mandatory.",
+                            InvalidArgumentException::MANDATORY_PROPERTY,
+                        );
                     }
 
                     $commander->$property = $value;
                 }
             }
-        } catch (InvalidArgumentException $exception) {
+        } catch (\InvalidArgumentException $exception) {
             if ($this instanceof Writer) {
                 $this->write($exception->getMessage(), 'red');
             }

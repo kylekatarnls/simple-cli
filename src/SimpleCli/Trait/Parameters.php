@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleCli\Trait;
 
-use InvalidArgumentException;
+use SimpleCli\Exception\InvalidArgumentException;
 use Throwable;
 
 trait Parameters
@@ -48,6 +48,7 @@ trait Parameters
                 // @phan-suppress-next-line PhanParamSpecial1
                 implode(', ', $parameterDefinition['values']).
                 "]; '$parameter' given.",
+                InvalidArgumentException::INVALID_VALUE,
             );
         }
 
@@ -80,7 +81,7 @@ trait Parameters
             } catch (Throwable $exception) {
                 $exceptions[] = new InvalidArgumentException(
                     "Cannot cast $parameter to $type",
-                    0,
+                    InvalidArgumentException::UNABLE_TO_CAST,
                     $exception,
                 );
             }

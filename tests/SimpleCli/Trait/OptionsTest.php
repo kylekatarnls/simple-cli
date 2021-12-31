@@ -46,14 +46,32 @@ class OptionsTest extends TraitsTestCase
 
         $command('file');
 
-        static::assertSame([], $command->getExpectedOptions());
+        static::assertSame([
+            [
+                'property'    => 'help',
+                'names'       => ['help', 'h'],
+                'description' => 'Display documentation of the current command.',
+                'values'      => null,
+                'type'        => 'bool',
+                'validation'  => [],
+            ],
+        ], $command->getExpectedOptions());
 
         $command = new DemoCli();
         $command->mute();
 
         $command('file');
 
-        static::assertSame([], $command->getExpectedOptions());
+        static::assertSame([
+            [
+                'property'    => 'help',
+                'names'       => ['help', 'h'],
+                'description' => 'Display documentation of the current command.',
+                'values'      => null,
+                'type'        => 'bool',
+                'validation'  => [],
+            ],
+        ], $command->getExpectedOptions());
 
         $command = new DemoCli();
         $command->mute();

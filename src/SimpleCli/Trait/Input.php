@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SimpleCli\Trait;
 
 use Closure;
-use RuntimeException;
+use SimpleCli\Exception\RuntimeException;
 use SimpleCli\Exception\UnableToReadException;
 use SimpleCli\Writer;
 
@@ -156,7 +156,7 @@ trait Input
 
         // @codeCoverageIgnoreStart
         if (rtrim($exec("/usr/bin/env bash -c 'echo OK'") ?: '') !== 'OK') {
-            throw new RuntimeException("Can't invoke bash");
+            throw new RuntimeException("Can't invoke bash", RuntimeException::CANT_INVOKE_BASH);
         }
         // @codeCoverageIgnoreEnd
 

@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace SimpleCli\Widget;
 
 use Closure;
-use InvalidArgumentException;
-use function preg_match;
+use SimpleCli\Exception\InvalidArgumentException;
 use SimpleCli\Widget\Traits\TableOutput;
 use SimpleCli\Widget\Traits\TableSpan;
 use Stringable;
@@ -117,7 +116,8 @@ class Table
                 "  - 0, 1 or more separation line(s),\n".
                 "  - 1 line containing '3' and '4' representing 2 other cells,\n".
                 "  - 0, 1 or more footer line(s).\n".
-                "Template given:\n$template"
+                "Template given:\n$template",
+                InvalidArgumentException::UNABLE_TO_PARSE_TABLE_TEMPLATE,
             );
         }
 

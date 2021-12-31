@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SimpleCli\Trait;
 
-use InvalidArgumentException;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
@@ -19,6 +18,7 @@ use SimpleCli\Attribute\Rest;
 use SimpleCli\Attribute\Validation;
 use SimpleCli\Attribute\Values;
 use SimpleCli\Command;
+use SimpleCli\Exception\InvalidArgumentException;
 
 // phpcs:disable Generic.Files.LineLength
 
@@ -81,6 +81,7 @@ trait Documentation
         if ($count > 1) {
             throw new InvalidArgumentException(
                 "Only 1 attribute of $attributeClass can be set on a given property.",
+                InvalidArgumentException::DUPLICATE_ATTRIBUTE,
             );
         }
 
@@ -159,6 +160,7 @@ trait Documentation
             if ($argument !== null) {
                 throw new InvalidArgumentException(
                     'A property cannot be both #Option / @option and #Argument / @argument',
+                    InvalidArgumentException::ATTRIBUTE_CONFLICT,
                 );
             }
 

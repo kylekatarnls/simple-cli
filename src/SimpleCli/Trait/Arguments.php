@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SimpleCli\Trait;
 
-use InvalidArgumentException;
 use SimpleCli\Attribute\Validation;
+use SimpleCli\Exception\InvalidArgumentException;
 
 trait Arguments
 {
@@ -83,7 +83,8 @@ trait Arguments
             $count = count($this->expectedArguments);
 
             throw new InvalidArgumentException(
-                'Expect only '.$count.' argument'.($count === 1 ? '' : 's')
+                'Expect only '.$count.' argument'.($count === 1 ? '' : 's'),
+                InvalidArgumentException::INVALID_NUMBER_OF_ARGUMENTS,
             );
         }
 

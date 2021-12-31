@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace SimpleCli\Command;
 
 use Phar;
-use RuntimeException;
 use SimpleCli\Attribute\Option;
 use SimpleCli\CommandBase;
+use SimpleCli\Exception\RuntimeException;
 use SimpleCli\SimpleCli;
 use SimpleCli\Updatable;
 use SimpleCli\Widget\ProgressBar;
@@ -29,7 +29,7 @@ class SelfUpdate extends CommandBase
 
     public function run(SimpleCli $cli): bool
     {
-        $phar = class_exists(Phar::class) ? Phar::running(false) : null;
+        $phar = $this->getRunningPhar();
         $exactVersion = !in_array($this->version, ['latest', 'highest', 'newest'], true);
 
         if (!$phar) {
@@ -55,6 +55,18 @@ class SelfUpdate extends CommandBase
         return true;
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    protected function getRunningPhar(): ?string
+    {
+        return class_exists(Phar::class) ? Phar::running(false) : null;
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings(PHPMD.ShortVariable)
+     */
     protected function download(SimpleCli $cli, string $from, string $to): bool
     {
         if (!function_exists('curl_init')) {
@@ -63,20 +75,20 @@ class SelfUpdate extends CommandBase
 
         $progressBar = new ProgressBar($cli);
         $progressBar->start();
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $from);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $curlHandle = curl_init();
+        curl_setopt($curlHandle, CURLOPT_URL, $from);
+        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt(
-            $ch,
+            $curlHandle,
             CURLOPT_PROGRESSFUNCTION,
             static function ($resource, $downloadSize, $downloaded) use ($progressBar) {
                 $progressBar->setValue($downloaded / $downloadSize);
             },
         );
-        curl_setopt($ch, CURLOPT_NOPROGRESS, false);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        $content = curl_exec($ch);
-        curl_close($ch);
+        curl_setopt($curlHandle, CURLOPT_NOPROGRESS, false);
+        curl_setopt($curlHandle, CURLOPT_HEADER, 0);
+        $content = curl_exec($curlHandle);
+        curl_close($curlHandle);
         $progressBar->end();
 
         return is_string($content) && $content !== '' && file_put_contents($to, $content);
@@ -101,6 +113,7 @@ class SelfUpdate extends CommandBase
             default   => $this->version,
         };
 
+        // @phan-suppress-next-line PhanParamSuspiciousOrder
         return strtr(static::GITHUB_DOWNLOAD_URL_PATTERN, [
             '{repo}'    => $cli->getRepository(),
             '{asset}'   => $cli->getAssetName($version),
@@ -113,10 +126,10 @@ class SelfUpdate extends CommandBase
         return json_decode(file_get_contents("https://api.github.com/repos/$repository/releases$suffix"), true);
     }
 
-    protected function getTag(mixed $tag, string $error): string
+    protected function getTag(mixed $tag, string $error, int $code): string
     {
         if (!is_string($tag)) {
-            throw new RuntimeException($error);
+            throw new RuntimeException($error, $code);
         }
 
         return $tag;
@@ -127,9 +140,13 @@ class SelfUpdate extends CommandBase
         return $this->getTag(
             $this->getGitHubReleases($repository, '/latest')['tag_name'] ?? null,
             "No latest release found in $repository GitHub repository.",
+            RuntimeException::LATEST_RELEASE_NOT_FOUND,
         );
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.ShortVariable)
+     */
     protected function getGitHubHighestVersion(string $repository): string
     {
         $releases = $this->getGitHubReleases($repository);
@@ -145,9 +162,16 @@ class SelfUpdate extends CommandBase
             break;
         }
 
-        return $this->getTag($tag, "No highest release found in $repository GitHub repository.");
+        return $this->getTag(
+            $tag,
+            "No highest release found in $repository GitHub repository.",
+            RuntimeException::HIGHEST_RELEASE_NOT_FOUND,
+        );
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.ShortVariable)
+     */
     protected function getGitHubNewestVersion(string $repository): string
     {
         $releases = $this->getGitHubReleases($repository);
@@ -160,6 +184,10 @@ class SelfUpdate extends CommandBase
             break;
         }
 
-        return $this->getTag($tag, "No newest release found in $repository GitHub repository.");
+        return $this->getTag(
+            $tag,
+            "No newest release found in $repository GitHub repository.",
+            RuntimeException::NEWEST_RELEASE_NOT_FOUND,
+        );
     }
 }

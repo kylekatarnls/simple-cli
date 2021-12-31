@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SimpleCli\Trait;
 
-use InvalidArgumentException;
 use SimpleCli\Attribute\Validation;
+use SimpleCli\Exception\InvalidArgumentException;
 
 // phpcs:disable Generic.Files.LineLength
 
@@ -55,7 +55,8 @@ trait Options
         $name = strlen($name) === 1 ? "-$name" : "--$name";
 
         throw new InvalidArgumentException(
-            "Unknown $name option"
+            "Unknown $name option",
+            InvalidArgumentException::UNKNOWN_OPTION,
         );
     }
 
@@ -68,7 +69,8 @@ trait Options
     {
         if ($definition['type'] !== 'bool') {
             throw new InvalidArgumentException(
-                "$name option is not a boolean, so you can't use it in a aliases group"
+                "$name option is not a boolean, so you can't use it in a aliases group",
+                InvalidArgumentException::OPTION_NOT_BOOLEAN,
             );
         }
 

@@ -379,6 +379,6 @@ abstract class SimpleCli implements Writer, UpdatableViaGitHub
 
     public function getAssetName(?string $version = null): string
     {
-        return $this->name . '.phar';
+        return $this->name.'.phar';
     }
 }
