@@ -15,7 +15,7 @@ parameters:
             path: src/SimpleCli/SimpleCli.php
         -
             message: '#Method SimpleCli\\SimpleCli::getAvailableCommands\(\) should return array<string, class-string<SimpleCli\\Command>> but returns array<string, class-string<SimpleCli\\Command>\|false>\.#'
-            path: src/SimpleCli/Traits/Commands.php
+            path: src/SimpleCli/Trait/Commands.php
         -
             message: '#Property Tests\\SimpleCli\\DemoApp\\RestCommand::\$suffixes type has no value type specified in iterable type array\.#'
             path: tests/SimpleCli/DemoApp/RestCommand.php

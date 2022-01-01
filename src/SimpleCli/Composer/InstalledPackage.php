@@ -6,15 +6,9 @@ namespace SimpleCli\Composer;
 
 class InstalledPackage
 {
-    /**
-     * @var string|null
-     */
-    public $name = null;
+    public ?string $name = null;
 
-    /**
-     * @var string|null
-     */
-    public $version = null;
+    public ?string $version = null;
 
     /**
      * @param array<string, string> $data

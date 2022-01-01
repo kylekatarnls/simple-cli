@@ -22,7 +22,8 @@ class BuildPharTest extends TestCase
      * @covers ::getClassNames
      * @covers ::getVersionConstantDeclaration
      * @covers ::getClassNamesFromFile
-     * @covers \SimpleCli\SimpleCliCommand\Traits\ValidateProgram::validateProgram
+     * @covers \SimpleCli\SimpleCliCommand\Trait\ValidateProgram::validateProgram
+     * @covers \SimpleCli\Trait\Name::getDisplayName
      */
     public function testBuildPhar(): void
     {
@@ -102,7 +103,8 @@ class BuildPharTest extends TestCase
      * @covers ::getClassNames
      * @covers ::getVersionConstantDeclaration
      * @covers ::getClassNamesFromFile
-     * @covers \SimpleCli\SimpleCliCommand\Traits\ValidateProgram::validateProgram
+     * @covers \SimpleCli\SimpleCliCommand\Trait\ValidateProgram::validateProgram
+     * @covers \SimpleCli\Trait\Name::getDisplayName
      */
     public function testBuildPharErrors(): void
     {

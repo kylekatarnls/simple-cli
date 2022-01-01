@@ -75,16 +75,23 @@ abstract class SimpleCli implements Writer, UpdatableViaGitHub
 
     /**
      * Get the composer version of the package handling the CLI program.
-     *
-     * @return string
      */
     public function getVersion(): string
     {
+        return defined('SIMPLE_CLI_PHAR_PROGRAM_VERSION')
+            ? (string) constant('SIMPLE_CLI_PHAR_PROGRAM_VERSION')
+            : $this->getInstalledPackageVersion($this->getPackageName());
+    }
+
+    /**
+     * Get the composer version info of the package handling the CLI program to be displayed
+     * in a console.
+     */
+    public function getVersionInfo(): string
+    {
         $packageName = $this->getPackageName();
         $start = $packageName === '' ? '' : $this->colorize($packageName, 'green').' version ';
-        $version = defined('SIMPLE_CLI_PHAR_PROGRAM_VERSION')
-            ? constant('SIMPLE_CLI_PHAR_PROGRAM_VERSION')
-            : $this->getInstalledPackageVersion($packageName);
+        $version = $this->getVersion();
 
         return $start.
             $this->colorize($version, 'brown').
@@ -379,6 +386,6 @@ abstract class SimpleCli implements Writer, UpdatableViaGitHub
 
     public function getAssetName(?string $version = null): string
     {
-        return $this->name.'.phar';
+        return $this->getDisplayName().'.phar';
     }
 }

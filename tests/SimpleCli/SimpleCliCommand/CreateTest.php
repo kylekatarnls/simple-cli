@@ -42,7 +42,7 @@ class CreateTest extends TestCase
      * @covers \SimpleCli\SimpleCli::parseParameters
      * @covers ::ensureBinDirectoryExists
      * @covers ::copyBinTemplate
-     * @covers ::extractName
+     * @covers \SimpleCli\Trait\Name::extractName
      * @covers ::run
      */
     public function testCopyBinTemplate(): void
@@ -144,7 +144,7 @@ php "%BIN_TARGET%" %*
     /**
      * @covers ::run
      * @covers \SimpleCli\Trait\Output::error
-     * @covers \SimpleCli\SimpleCliCommand\Traits\ValidateProgram::validateProgram
+     * @covers \SimpleCli\SimpleCliCommand\Trait\ValidateProgram::validateProgram
      */
     public function testRun(): void
     {

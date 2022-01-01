@@ -9,7 +9,7 @@ use SimpleCli\CommandBase;
 use SimpleCli\Options\Quiet;
 use SimpleCli\Options\Verbose;
 use SimpleCli\SimpleCli;
-use SimpleCli\SimpleCliCommand\Traits\ValidateProgram;
+use SimpleCli\SimpleCliCommand\Trait\ValidateProgram;
 
 /**
  * Create a program in the bin directory that call the class given as argument.
@@ -53,11 +53,7 @@ class Create extends CommandBase
              */
             $createdCli = new $className();
 
-            $this->copyBinTemplate(
-                $cli,
-                $createdCli->getName() ?: $this->extractName($className),
-                '\\'.ltrim($className, '\\'),
-            );
+            $this->copyBinTemplate($cli, $createdCli->getDisplayName(), '\\'.ltrim($className, '\\'));
 
             $count++;
         }

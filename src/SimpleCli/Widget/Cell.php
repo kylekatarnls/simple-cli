@@ -14,27 +14,22 @@ class Cell
     public const ALIGN_MIDDLE = 'middle';
     public const ALIGN_BOTTOM = 'bottom';
 
-    /** @var string|object */
-    protected $content;
+    protected string|object $content;
 
-    /** @var string|null */
-    protected $horizontalAlign;
+    protected ?string $horizontalAlign;
 
-    /** @var string|null */
-    protected $verticalAlign;
+    protected ?string $verticalAlign;
 
-    /** @var int */
-    protected $colSpan = 1;
+    protected int $colSpan = 1;
 
-    /** @var int */
-    protected $rowSpan = 1;
+    protected int $rowSpan = 1;
 
     /**
      * @param object|string $content         string content or object with __toString() method.
      * @param string|null   $horizontalAlign left, center or right
      * @param string|null   $verticalAlign   top, middle or bottom
      */
-    public function __construct($content, ?string $horizontalAlign = null, ?string $verticalAlign = null)
+    public function __construct(object|string $content, ?string $horizontalAlign = null, ?string $verticalAlign = null)
     {
         $this->content = $content;
         $this->horizontalAlign = $horizontalAlign;

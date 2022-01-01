@@ -17,7 +17,7 @@ use SimpleCli\CommandBase;
 use SimpleCli\Options\Quiet;
 use SimpleCli\Options\Verbose;
 use SimpleCli\SimpleCli;
-use SimpleCli\SimpleCliCommand\Traits\ValidateProgram;
+use SimpleCli\SimpleCliCommand\Trait\ValidateProgram;
 use SimpleCli\Widget\ProgressBar;
 use SplFileInfo;
 use Throwable;
@@ -162,7 +162,7 @@ class BuildPhar extends CommandBase
              * @var SimpleCli $createdCli
              */
             $createdCli = new $className();
-            $this->buildPhar($className, $createdCli->getName() ?: $this->extractName($className));
+            $this->buildPhar($className, $createdCli->getDisplayName());
 
             $count++;
         }

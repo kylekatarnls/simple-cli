@@ -6,8 +6,8 @@ namespace SimpleCli\Widget;
 
 use Closure;
 use SimpleCli\Exception\InvalidArgumentException;
-use SimpleCli\Widget\Traits\TableOutput;
-use SimpleCli\Widget\Traits\TableSpan;
+use SimpleCli\Widget\Trait\TableOutput;
+use SimpleCli\Widget\Trait\TableSpan;
 use Stringable;
 
 /**
@@ -19,13 +19,11 @@ class Table
     use TableSpan;
 
     /** @var string[] */
-    public $align = [];
+    public array $align = [];
 
-    /** @var string */
-    public $fill = ' ';
+    public string $fill = ' ';
 
-    /** @var string|Stringable */
-    public $template = '
+    public string|Stringable $template = '
         !template!
         ┌───┬───┐
         │ 1 │ 2 │
@@ -33,11 +31,10 @@ class Table
         │ 3 │ 4 │
         └───┴───┘';
 
-    /** @var bool */
-    public $cache = true;
+    public bool $cache = true;
 
     /** @var iterable<mixed> */
-    protected $source;
+    protected iterable $source;
 
     /**
      * @param iterable<mixed> $source

@@ -17,4 +17,23 @@ trait Name
     {
         return $this->name;
     }
+
+    public function getDisplayName(): string
+    {
+        return $this->getName() ?: $this->extractName(static::class);
+    }
+
+    protected function extractName(mixed $className): string
+    {
+        $parts = explode('\\', (string) $className);
+
+        return trim(
+            (string) preg_replace_callback(
+                '/[A-Z]/',
+                static fn (array $match) => '-'.strtolower($match[0]),
+                end($parts),
+            ),
+            '-'
+        );
+    }
 }

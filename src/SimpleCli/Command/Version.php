@@ -14,7 +14,7 @@ class Version implements Command
 {
     public function run(SimpleCli $cli): bool
     {
-        $cli->writeLine($cli->getVersion());
+        $cli->writeLine($cli->getVersionInfo());
 
         return true;
     }

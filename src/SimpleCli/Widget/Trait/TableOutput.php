@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace SimpleCli\Widget\Traits;
+namespace SimpleCli\Widget\Trait;
 
 trait TableOutput
 {
-    /** @var string|null */
-    protected $output = null;
+    protected ?string $output = null;
 
     protected function resetOutput(): void
     {

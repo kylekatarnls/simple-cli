@@ -63,35 +63,70 @@ class SelfUpdate extends CommandBase
         return class_exists(Phar::class) ? Phar::running(false) : null;
     }
 
+    protected function getUserAgent(SimpleCli $cli): string
+    {
+        return 'PHP '.PHP_VERSION.' curl '.$cli->getDisplayName().'/'.$cli->getVersion();
+    }
+
+    /**
+     * @return resource
+     */
+    protected function getStreamContext(SimpleCli $cli)
+    {
+        return stream_context_create([
+            'http' => [
+                'method'           => 'GET',
+                'protocol_version' => 1.1,
+                'follow_location'  => 1,
+                'header'           => 'User-Agent: '.$this->getUserAgent($cli)."\r\n",
+            ],
+        ]);
+    }
+
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @SuppressWarnings(PHPMD.ShortVariable)
      */
     protected function download(SimpleCli $cli, string $from, string $to): bool
     {
-        if (!function_exists('curl_init')) {
-            return copy($from, $to);
+        $error = null;
+
+        if (function_exists('curl_init')) {
+            $progressBar = new ProgressBar($cli);
+            $progressBar->start();
+            $curlHandle = curl_init();
+            curl_setopt($curlHandle, CURLOPT_URL, $from);
+            curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curlHandle, CURLOPT_USERAGENT, $this->getUserAgent($cli));
+            curl_setopt(
+                $curlHandle,
+                CURLOPT_PROGRESSFUNCTION,
+                /** @param resource $resource */
+                static fn ($resource, int $downloadSize, int $downloaded) => $progressBar->setValue(
+                    $downloadSize ? ($downloaded / $downloadSize) : 0.0,
+                ),
+            );
+            curl_setopt($curlHandle, CURLOPT_NOPROGRESS, false);
+            curl_setopt($curlHandle, CURLOPT_HEADER, 0);
+            $content = curl_exec($curlHandle);
+            $error = curl_error($curlHandle);
+            curl_close($curlHandle);
+            $progressBar->end();
+
+            if (is_string($content) && $content !== '' && file_put_contents($to, $content)) {
+                return true;
+            }
         }
 
-        $progressBar = new ProgressBar($cli);
-        $progressBar->start();
-        $curlHandle = curl_init();
-        curl_setopt($curlHandle, CURLOPT_URL, $from);
-        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt(
-            $curlHandle,
-            CURLOPT_PROGRESSFUNCTION,
-            static function ($resource, $downloadSize, $downloaded) use ($progressBar) {
-                $progressBar->setValue($downloaded / $downloadSize);
-            },
-        );
-        curl_setopt($curlHandle, CURLOPT_NOPROGRESS, false);
-        curl_setopt($curlHandle, CURLOPT_HEADER, 0);
-        $content = curl_exec($curlHandle);
-        curl_close($curlHandle);
-        $progressBar->end();
+        if (copy($from, $to, $this->getStreamContext($cli))) {
+            return true;
+        }
 
-        return is_string($content) && $content !== '' && file_put_contents($to, $content);
+        if ($error) {
+            $cli->error($error);
+        }
+
+        return false;
     }
 
     protected function getUrl(SimpleCli $cli): string
@@ -107,9 +142,9 @@ class SelfUpdate extends CommandBase
 
         $repository = $cli->getRepository();
         $version = match ($this->version) {
-            'latest'  => $this->getGitHubLatestVersion($repository),
-            'highest' => $this->getGitHubHighestVersion($repository),
-            'newest'  => $this->getGitHubNewestVersion($repository),
+            'latest'  => $this->getGitHubLatestVersion($cli, $repository),
+            'highest' => $this->getGitHubHighestVersion($cli, $repository),
+            'newest'  => $this->getGitHubNewestVersion($cli, $repository),
             default   => $this->version,
         };
 
@@ -121,9 +156,15 @@ class SelfUpdate extends CommandBase
         ]);
     }
 
-    protected function getGitHubReleases(string $repository, string $suffix = ''): array
+    protected function getGitHubReleases(SimpleCli $cli, string $repository, string $suffix = ''): array
     {
-        return json_decode(file_get_contents("https://api.github.com/repos/$repository/releases$suffix"), true);
+        return json_decode(
+            file_get_contents(
+                "https://api.github.com/repos/$repository/releases$suffix",
+                context: $this->getStreamContext($cli),
+            ),
+            true,
+        );
     }
 
     protected function getTag(mixed $tag, string $error, int $code): string
@@ -135,10 +176,10 @@ class SelfUpdate extends CommandBase
         return $tag;
     }
 
-    protected function getGitHubLatestVersion(string $repository): string
+    protected function getGitHubLatestVersion(SimpleCli $cli, string $repository): string
     {
         return $this->getTag(
-            $this->getGitHubReleases($repository, '/latest')['tag_name'] ?? null,
+            $this->getGitHubReleases($cli, $repository, '/latest')['tag_name'] ?? null,
             "No latest release found in $repository GitHub repository.",
             RuntimeException::LATEST_RELEASE_NOT_FOUND,
         );
@@ -147,9 +188,9 @@ class SelfUpdate extends CommandBase
     /**
      * @SuppressWarnings(PHPMD.ShortVariable)
      */
-    protected function getGitHubHighestVersion(string $repository): string
+    protected function getGitHubHighestVersion(SimpleCli $cli, string $repository): string
     {
-        $releases = $this->getGitHubReleases($repository);
+        $releases = $this->getGitHubReleases($cli, $repository);
         usort($releases, static fn (array $a, array $b) => version_compare(
             $b['tag_name'] ?? '0.0.0',
             $a['tag_name'] ?? '0.0.0',
@@ -172,9 +213,9 @@ class SelfUpdate extends CommandBase
     /**
      * @SuppressWarnings(PHPMD.ShortVariable)
      */
-    protected function getGitHubNewestVersion(string $repository): string
+    protected function getGitHubNewestVersion(SimpleCli $cli, string $repository): string
     {
-        $releases = $this->getGitHubReleases($repository);
+        $releases = $this->getGitHubReleases($cli, $repository);
         usort($releases, static fn (array $a, array $b) => $a['published_at'] <=> $b['published_at']);
         $tag = null;
 

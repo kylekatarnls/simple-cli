@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SimpleCli\SimpleCliCommand\Traits;
+namespace SimpleCli\SimpleCliCommand\Trait;
 
 use SimpleCli\SimpleCli;
 use SimpleCli\Writer;
@@ -25,19 +25,5 @@ trait ValidateProgram
         }
 
         return true;
-    }
-
-    protected function extractName(mixed $className): string
-    {
-        $parts = explode('\\', (string) $className);
-
-        return trim(
-            (string) preg_replace_callback(
-                '/[A-Z]/',
-                static fn (array $match) => '-'.strtolower($match[0]),
-                end($parts),
-            ),
-            '-'
-        );
     }
 }
