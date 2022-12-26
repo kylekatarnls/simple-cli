@@ -50,8 +50,6 @@ jobs:
     - name: Run test suite
       run: |
         ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml;
-        cp coverage.xml clover.xml;
-        ls;
 
     - name: Code Climate Test Reporter
       if: matrix.php == '8.0'
@@ -65,8 +63,7 @@ jobs:
       if: matrix.php == '8.0'
       run: |
         bash <(curl -s https://codecov.io/bash);
-        composer require codacy/coverage;
-        vendor/bin/codacycoverage clover coverage.xml;
+        bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage.xml
       env:
         CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
         PHP_VERSION: ${{ matrix.php }}
