@@ -85,6 +85,7 @@ trait Options
      * @param string                                                                                                      $name
      * @param string|null                                                                                                 $value
      * @param array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null}|null $optionDefinition
+     *
      * @param-out array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null} $optionDefinition
      */
     private function setOption(string $name, string $value = null, ?array &$optionDefinition = null): void
@@ -111,6 +112,7 @@ trait Options
     /**
      * @param string                                                                                                      $option
      * @param array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null}|null $optionDefinition
+     *
      * @param-out array{type: ?string, property: string, values: ?array, description: string, names: array<string>|null} $optionDefinition
      */
     private function parseOption(string $option, array &$optionDefinition = null): void

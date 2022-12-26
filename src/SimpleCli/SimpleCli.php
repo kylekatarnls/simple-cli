@@ -163,6 +163,7 @@ abstract class SimpleCli implements Writer
 
         /**
          * @var Help $helper
+         *
          * @psalm-suppress UndefinedDocblockClass
          */
         $helper = $commander;
@@ -333,6 +334,7 @@ abstract class SimpleCli implements Writer
 
     /**
      * @param string $commandClass
+     *
      * @psalm-param class-string $commandClass
      *
      * @return Command|null
@@ -341,6 +343,7 @@ abstract class SimpleCli implements Writer
     {
         /**
          * @var Command $commander
+         *
          * @psalm-var Command $commander
          */
         $commander = new $commandClass();

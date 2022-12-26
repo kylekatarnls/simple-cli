@@ -399,19 +399,19 @@ class Table
 
     private function getLeftPad(?string $align): float
     {
-        return ([
+        return [
             Cell::ALIGN_LEFT   => 0,
             Cell::ALIGN_CENTER => 0.5,
             Cell::ALIGN_RIGHT  => 1,
-        ])[(string) $align] ?? 0;
+        ][(string) $align] ?? 0;
     }
 
     private function getTopPad(?string $align): float
     {
-        return ([
+        return [
             Cell::ALIGN_TOP    => 0,
             Cell::ALIGN_MIDDLE => 0.5,
             Cell::ALIGN_BOTTOM => 1,
-        ])[(string) $align] ?? 0;
+        ][(string) $align] ?? 0;
     }
 }
