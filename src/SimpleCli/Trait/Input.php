@@ -153,9 +153,11 @@ trait Input
         // @codeCoverageIgnoreEnd
 
         $exec = $this->execFunction ?? 'shell_exec';
+        /** @var string */
+        $bashOk = rtrim($exec("/usr/bin/env bash -c 'echo OK'") ?: '');
 
         // @codeCoverageIgnoreStart
-        if (rtrim($exec("/usr/bin/env bash -c 'echo OK'") ?: '') !== 'OK') {
+        if ($bashOk !== 'OK') {
             throw new RuntimeException("Can't invoke bash");
         }
         // @codeCoverageIgnoreEnd
